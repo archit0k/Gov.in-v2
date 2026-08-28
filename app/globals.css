@@ -12,8 +12,8 @@
   --panel-2: #fbfbfa;
   --ink: #14161a;
   --ink-2: #3d434d;
-  --muted: #6c7482;
-  --faint: #9aa1ad;
+  --muted: #5c6472;
+  --faint: #6b7280;
   --line: #e5e4df;
   --line-2: #eeede9;
 
@@ -44,8 +44,8 @@
   --panel-2: #1a1e24;
   --ink: #f2f3f5;
   --ink-2: #c3c8d1;
-  --muted: #8d95a2;
-  --faint: #666e7c;
+  --muted: #949cab;
+  --faint: #8a93a1;
   --line: #262b33;
   --line-2: #1e232a;
 
@@ -76,8 +76,8 @@
   --panel-2: #1a1e24;
   --ink: #f2f3f5;
   --ink-2: #c3c8d1;
-  --muted: #8d95a2;
-  --faint: #666e7c;
+  --muted: #949cab;
+  --faint: #8a93a1;
   --line: #262b33;
   --line-2: #1e232a;
 
@@ -127,6 +127,37 @@
   --font-mono: var(--font-mono-stack);
   --radius-card: var(--radius);
   --radius-panel: var(--radius-lg);
+}
+
+/* ============================================================
+   DEPARTMENT ACCENTS
+   A department supplies one colour, inline, as --svc. Every
+   other accent token is derived from it against the current
+   surface, so one palette entry works in both themes and no
+   department can ship an unreadable combination.
+   ============================================================ */
+
+[data-service] {
+  --accent: var(--svc);
+  --accent-soft: color-mix(in srgb, var(--svc) 9%, var(--panel));
+  --accent-line: color-mix(in srgb, var(--svc) 26%, var(--panel));
+  --accent-ink: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) [data-service] {
+    --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
+    --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
+    --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
+    --accent-ink: #0d0f12;
+  }
+}
+
+:root.dark [data-service] {
+  --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
+  --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
+  --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
+  --accent-ink: #0d0f12;
 }
 
 * {
@@ -185,10 +216,6 @@ body {
 }
 @keyframes shimmer {
   100% { transform: translateX(100%); }
-}
-@keyframes sweep {
-  from { transform: translateX(-100%); }
-  to { transform: none; }
 }
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }

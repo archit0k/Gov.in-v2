@@ -76,9 +76,10 @@ Inbox → timeline → services grid.
 ### Shooting notes
 
 - Record at 1440×900 or wider. The rail collapses under 1024px and the two-column `/before` stacks.
-- Light theme reads better on compressed video; the toggle is bottom-left.
+- Light theme reads better on compressed video; the toggle is the labelled row in the rail, above the profile card.
 - **Reset demo** in the sidebar before each take — the passport action card must be unread and the counts fresh.
-- The intent bar auto-opens a confident match after ~1.2s with a visible progress line. Let it run; don't click.
+- The intent bar shows what it matched and waits. Read the badge aloud — it says whether the engine or the
+  model resolved it — then click through.
 - `/before` needs one scroll on the left column to show the *asked again, a page later* annotations in section D.
 
 ---
@@ -103,3 +104,8 @@ registry-grounded model behind it, the consent ledger, and genuine state across 
 Simulated: all citizen data is fictional, department processing is a triggered event rather than a real
 officer, payments and appointment inventory are mocked, and identity assurance is asserted rather than
 established. No live government system is touched, and none of their code or branding is used.
+
+Accessibility is claimed on the architecture page, so it is checked rather than asserted: every text element
+on the home, journey and comparison screens was measured against its composited background in both themes,
+and all of them meet WCAG AA. Department colours are derived from one hue per department against the current
+surface, so no department can ship an unreadable combination.

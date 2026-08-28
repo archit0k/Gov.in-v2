@@ -19,6 +19,10 @@ import { DraftField } from "@/components/journey/DraftField";
    government service adds a config entry, not a codebase.
    ============================================================ */
 
+function visibleFields(fields: FieldDef[], values: Record<string, string>) {
+  return fields.filter((f) => !f.revealOn || values[f.revealOn.field] === f.revealOn.value);
+}
+
 const SLOTS = [
   { day: "Tue 1 Sep", times: ["09:15", "11:30", "14:00"] },
   { day: "Wed 2 Sep", times: ["09:45", "12:15", "15:30"] },
@@ -42,7 +46,10 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
     dispatch({ type: "setField", journeyId: journey.id, fieldId, value });
   }
 
-  const blocking = step?.fields.filter((f) => f.required && !values[f.id]) ?? [];
+  // A field that has not been revealed is not on the screen, so it cannot be
+  // required, reviewed, or submitted.
+  const shown = step ? visibleFields(step.fields, values) : [];
+  const blocking = shown.filter((f) => f.required && !values[f.id]);
   const canAdvance = blocking.length === 0;
 
   const typedCount = Object.entries(values).filter(([, v]) => v && v.length > 0).length;
@@ -67,7 +74,7 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
     const id = newCaseId(journey.serviceId);
     // Consent granted during the journey is written to the ledger at submission.
     journey.steps
-      .flatMap((s) => s.fields)
+      .flatMap((s) => visibleFields(s.fields, values))
       .filter((f) => f.kind === "consent" && values[f.id] === "granted" && f.consent)
       .forEach((f) =>
         dispatch({
@@ -86,7 +93,7 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
     // Cases record what a person would recognise, not internal field ids.
     const readable: Record<string, string> = {};
     for (const s of journey.steps) {
-      for (const f of s.fields) {
+      for (const f of visibleFields(s.fields, values)) {
         if (f.kind === "review" || f.kind === "note" || f.kind === "consent") continue;
         const shown = displayValue(f, values);
         if (shown && shown !== "—") readable[f.label] = shown;
@@ -137,7 +144,7 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
             {isReview ? (
               <Review journey={journey} values={values} />
             ) : (
-              step.fields.map((f) => (
+              shown.map((f) => (
                 <Field
                   key={f.id}
                   f={f}
@@ -215,6 +222,55 @@ function Row({ children, className }: { children: React.ReactNode; className?: s
   return <div className={cn("px-5 py-4 sm:px-6", className)}>{children}</div>;
 }
 
+/**
+ * A value the infrastructure already holds. The citizen can still correct it —
+ * a read-only field they know is wrong is how bad data survives for years.
+ */
+function Prefilled({ f, value, onChange }: { f: FieldDef; value: string; onChange: (v: string) => void }) {
+  const [editing, setEditing] = useState(false);
+  const held = sourceValue(f);
+  const corrected = value.length > 0 && value !== held;
+
+  return (
+    <Row>
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1.5">
+        <div className="min-w-0 flex-1">
+          <p className="text-[12.5px] text-[var(--muted)]">{f.label}</p>
+          {editing ? (
+            <input
+              autoFocus
+              value={value || held}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={() => setEditing(false)}
+              onKeyDown={(e) => e.key === "Enter" && setEditing(false)}
+              className="mt-1 w-full rounded-[8px] border border-[var(--accent)] bg-[var(--panel)] px-2.5 py-1.5 text-[14.5px] outline-none"
+            />
+          ) : (
+            <p className="mt-0.5 text-[15px] leading-snug text-[var(--ink)]">{corrected ? value : held}</p>
+          )}
+          {corrected ? (
+            <p className="mt-1.5 text-[11.5px] text-[var(--warn)]">
+              Corrected by you. The department that owns this will be asked to update its record.
+            </p>
+          ) : (
+            f.sourceLabel && <SourceTag label={f.sourceLabel} className="mt-1.5" />
+          )}
+        </div>
+        {corrected ? (
+          <button onClick={() => onChange("")} className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">
+            Undo
+          </button>
+        ) : (
+          <button onClick={() => setEditing(true)} className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">
+            {editing ? "Done" : "Change"}
+          </button>
+        )}
+      </div>
+      {f.help && <p className="mt-2 text-[12.5px] text-[var(--muted)]">{f.help}</p>}
+    </Row>
+  );
+}
+
 function Field({
   f,
   value,
@@ -232,22 +288,8 @@ function Field({
     case "draft":
       return <DraftField f={f} value={value} onChange={onChange} journeyId={journeyId} stepId={stepId} />;
 
-    case "prefilled": {
-      const v = f.sourcePath && f.sourcePath !== "none" ? readProfile(f.sourcePath) : PLACEHOLDER[f.id] ?? "—";
-      return (
-        <Row>
-          <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1.5">
-            <div className="min-w-0">
-              <p className="text-[12.5px] text-[var(--muted)]">{f.label}</p>
-              <p className="mt-0.5 text-[15px] leading-snug text-[var(--ink)]">{v}</p>
-              {f.sourceLabel && <SourceTag label={f.sourceLabel} className="mt-1.5" />}
-            </div>
-            <button className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">Change</button>
-          </div>
-          {f.help && <p className="mt-2 text-[12.5px] text-[var(--muted)]">{f.help}</p>}
-        </Row>
-      );
-    }
+    case "prefilled":
+      return <Prefilled f={f} value={value} onChange={onChange} />;
 
     case "note":
       return (
@@ -481,6 +523,10 @@ function Field({
   }
 }
 
+function sourceValue(f: FieldDef) {
+  return f.sourcePath && f.sourcePath !== "none" ? readProfile(f.sourcePath) : PLACEHOLDER[f.id] ?? "—";
+}
+
 const PLACEHOLDER: Record<string, string> = {
   salary: "₹21,40,000",
   business: "₹38,60,000",
@@ -494,10 +540,11 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
   const svc = service(journey.serviceId);
   const rows = journey.steps
     .filter((s) => !s.fields.some((f) => f.kind === "review"))
-    .map((s) => ({ step: s, fields: s.fields.filter((f) => f.kind !== "note") }));
+    .map((s) => ({ step: s, fields: visibleFields(s.fields, values).filter((f) => f.kind !== "note") }))
+    .filter((r) => r.fields.length > 0);
 
   const total = journey.steps
-    .flatMap((s) => s.fields)
+    .flatMap((s) => visibleFields(s.fields, values))
     .filter((f) => f.kind === "payment")
     .reduce((n, f) => n + (f.amount ?? 0), 0);
 
@@ -544,9 +591,7 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
 
 function displayValue(f: FieldDef, values: Record<string, string>): string {
   const raw = values[f.id];
-  if (f.kind === "prefilled") {
-    return f.sourcePath && f.sourcePath !== "none" ? readProfile(f.sourcePath) : PLACEHOLDER[f.id] ?? "—";
-  }
+  if (f.kind === "prefilled") return raw && raw.length > 0 ? raw : sourceValue(f);
   if (f.kind === "consent") return raw === "granted" ? "Allowed" : "Not allowed";
   if (f.kind === "payment") return `₹${f.amount?.toLocaleString("en-IN")}`;
   if (!raw) return "—";

@@ -144,6 +144,8 @@ export interface FieldDef {
   options?: { value: string; label: string; hint?: string }[];
   placeholder?: string;
   required?: boolean;
+  /** Show this field only when an earlier answer on the journey matches. */
+  revealOn?: { field: string; value: string };
   /** For consent fields: what is being accessed, by whom, and why. */
   consent?: { attribute: string; requestedBy: ServiceId; purpose: string; retention: string };
   amount?: number;

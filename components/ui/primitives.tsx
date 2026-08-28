@@ -35,14 +35,12 @@ export function ServiceMark({
   const Icon = ICONS[s.icon] ?? Landmark;
   return (
     <span
-      className={cn("inline-grid shrink-0 place-items-center rounded-[10px] border", className)}
-      style={{
-        width: size,
-        height: size,
-        background: s.accentSoft,
-        borderColor: s.accentLine,
-        color: s.accent,
-      }}
+      data-service={s.id}
+      className={cn(
+        "inline-grid shrink-0 place-items-center rounded-[10px] border border-[var(--accent-line)] bg-[var(--accent-soft)] text-[var(--accent)]",
+        className,
+      )}
+      style={{ width: size, height: size, "--svc": s.accent } as React.CSSProperties}
       aria-hidden
     >
       <Icon size={Math.round(size * 0.48)} strokeWidth={1.7} />
@@ -50,21 +48,15 @@ export function ServiceMark({
   );
 }
 
-/** Scopes a department's accent to a subtree. Everything else stays shared. */
+/**
+ * Scopes a department's accent to a subtree. The department supplies one
+ * colour; the derived tokens in globals.css keep it readable in both themes,
+ * so a department cannot ship a combination the citizen cannot read.
+ */
 export function ServiceTheme({ id, children, className }: { id: ServiceId; children: ReactNode; className?: string }) {
   const s = service(id);
   return (
-    <div
-      className={className}
-      style={
-        {
-          "--accent": s.accent,
-          "--accent-soft": s.accentSoft,
-          "--accent-line": s.accentLine,
-          "--accent-ink": "#ffffff",
-        } as React.CSSProperties
-      }
-    >
+    <div data-service={s.id} className={className} style={{ "--svc": s.accent } as React.CSSProperties}>
       {children}
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CornerDownLeft, Layers, Search, Sparkles, Zap } from "lucide-react";
 import { Badge, Card, ServiceMark, cn } from "@/components/ui/primitives";
@@ -28,25 +27,14 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<NavResult | null>(null);
-  const [autoOpen, setAutoOpen] = useState<NavResult["primary"] | null>(null);
-  const router = useRouter();
   const { dispatch } = useSession();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // A confident match should not need a second click — but the citizen should
-  // still see what was matched, and be able to stop it.
-  useEffect(() => {
-    if (!autoOpen) return;
-    const t = setTimeout(() => router.push(autoOpen.href), 1250);
-    return () => clearTimeout(t);
-  }, [autoOpen, router]);
 
   async function run(text: string) {
     const query = text.trim();
     if (!query) return;
     setBusy(true);
     setRes(null);
-    setAutoOpen(null);
     dispatch({ type: "recordIntent", text: query });
     try {
       const r = await fetch("/api/navigate", {
@@ -57,9 +45,6 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
       const data: NavResult = await r.json();
       if (data.composed) dispatch({ type: "addComposed", journey: data.composed });
       setRes(data);
-      if (data.mode === "deterministic" && data.confidence >= 0.85 && data.primary) {
-        setAutoOpen(data.primary);
-      }
     } catch {
       setRes({
         mode: "clarify",
@@ -95,7 +80,7 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
           placeholder="What do you need to do?"
           aria-label="What do you need to do?"
           className={cn(
-            "min-w-0 flex-1 bg-transparent text-[var(--ink)] outline-none placeholder:text-[var(--faint)]",
+            "min-w-0 flex-1 bg-transparent text-[var(--ink)] outline-none focus-visible:outline-none placeholder:text-[var(--faint)]",
             compact ? "text-[14.5px]" : "text-[16.5px]",
           )}
         />
@@ -132,11 +117,8 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
       {res && (
         <Result
           res={res}
-          opening={!!autoOpen}
-          onStop={() => setAutoOpen(null)}
           onClear={() => {
             setRes(null);
-            setAutoOpen(null);
             setQ("");
             inputRef.current?.focus();
           }}
@@ -146,17 +128,7 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
   );
 }
 
-function Result({
-  res,
-  opening,
-  onStop,
-  onClear,
-}: {
-  res: NavResult;
-  opening: boolean;
-  onStop: () => void;
-  onClear: () => void;
-}) {
+function Result({ res, onClear }: { res: NavResult; onClear: () => void }) {
   return (
     <div className="rise mt-3">
       <Card className="overflow-hidden">
@@ -172,21 +144,10 @@ function Result({
           <span className="text-[12.5px] text-[var(--muted)]">
             {res.source === "model" ? "resolved by the AI layer" : "resolved by the navigation engine — no model call"}
           </span>
-          {opening ? (
-            <button onClick={onStop} className="ml-auto text-[12px] text-[var(--accent)] hover:underline">
-              Opening — stay here instead
-            </button>
-          ) : (
-            <button onClick={onClear} className="ml-auto text-[12px] text-[var(--faint)] hover:text-[var(--ink)]">
-              Clear
-            </button>
-          )}
+          <button onClick={onClear} className="ml-auto text-[12px] text-[var(--faint)] hover:text-[var(--ink)]">
+            Clear
+          </button>
         </div>
-        {opening && (
-          <div className="h-[2px] w-full overflow-hidden bg-[var(--accent-soft)]">
-            <div className="h-full bg-[var(--accent)]" style={{ animation: "sweep 1.25s linear forwards" }} />
-          </div>
-        )}
 
         <div className="p-4">
           <p className="mb-3.5 text-[14px] leading-relaxed text-[var(--ink-2)]">{res.reading}</p>

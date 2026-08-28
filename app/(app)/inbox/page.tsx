@@ -75,7 +75,7 @@ export default function InboxPage() {
             <article
               key={n.id}
               className={cn("flex gap-3.5 p-4 transition-colors", !n.read && "bg-[var(--panel-2)]")}
-              onMouseEnter={() => !n.read && dispatch({ type: "readInbox", id: n.id })}
+              onClick={() => !n.read && dispatch({ type: "readInbox", id: n.id })}
             >
               <div className="relative shrink-0">
                 <ServiceMark id={n.serviceId} size={36} />

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import {
-  Bell, Clock3, Home, LayoutGrid, Moon, Route, ShieldCheck, Sun, User, Network, RotateCcw,
+  Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Route, ShieldCheck, Sun, User, Network, RotateCcw,
 } from "lucide-react";
 import { Badge, cn } from "@/components/ui/primitives";
 import { useSession } from "@/lib/state/store";
@@ -30,28 +30,68 @@ const NAV = [
   { href: "/profile", label: "Profile", icon: User },
 ];
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+/* ------------------------------------------------------------
+   Theme. The DOM class is the source of truth, not React state,
+   because the stylesheet already honours the system preference
+   with no class at all. Reading it through an external store
+   keeps the two from disagreeing.
+   ------------------------------------------------------------ */
+
+const themeListeners = new Set<() => void>();
+
+function subscribeTheme(cb: () => void) {
+  themeListeners.add(cb);
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  mq.addEventListener("change", cb);
+  return () => {
+    themeListeners.delete(cb);
+    mq.removeEventListener("change", cb);
+  };
+}
+
+function isDark() {
+  const el = document.documentElement;
+  if (el.classList.contains("dark")) return true;
+  if (el.classList.contains("light")) return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function applyTheme(dark: boolean) {
+  const el = document.documentElement;
+  el.classList.toggle("dark", dark);
+  el.classList.toggle("light", !dark);
+  try {
+    localStorage.setItem("gov.in.theme", dark ? "dark" : "light");
+  } catch {
+    /* storage blocked — the choice still applies for this page */
+  }
+  themeListeners.forEach((cb) => cb());
+}
+
+function useTheme() {
+  const dark = useSyncExternalStore(subscribeTheme, isDark, () => false);
+
   useEffect(() => {
-    // The stylesheet already honours the system preference, so this only has to
-    // reflect an explicit choice — no theme flash, no blocking inline script.
-    const saved = localStorage.getItem("gov.in.theme");
-    const d = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setDark(d);
-    if (saved) {
-      document.documentElement.classList.toggle("dark", d);
-      document.documentElement.classList.toggle("light", !d);
+    // Re-apply a previous explicit choice. No preference means the stylesheet
+    // follows the system, which is the behaviour we want by default.
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem("gov.in.theme");
+    } catch {
+      /* ignore */
     }
+    if (saved) applyTheme(saved === "dark");
   }, []);
+
+  return { dark, toggle: () => applyTheme(!dark) };
+}
+
+/** Icon-only, for the landing header where there is no room for a label. */
+export function ThemeToggle() {
+  const { dark, toggle } = useTheme();
   return (
     <button
-      onClick={() => {
-        const d = !dark;
-        setDark(d);
-        document.documentElement.classList.toggle("dark", d);
-        document.documentElement.classList.toggle("light", !d);
-        localStorage.setItem("gov.in.theme", d ? "dark" : "light");
-      }}
+      onClick={toggle}
       className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)]"
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
     >
@@ -60,15 +100,24 @@ export function ThemeToggle() {
   );
 }
 
+/** Labelled, for the rail — a setting the citizen can find, not a mystery icon. */
+function ThemeRow() {
+  const { dark, toggle } = useTheme();
+  return (
+    <button
+      onClick={toggle}
+      className="flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] text-[var(--ink-2)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:w-full"
+    >
+      {dark ? <Sun size={17} strokeWidth={1.8} /> : <Moon size={17} strokeWidth={1.8} />}
+      <span className="hidden lg:inline">{dark ? "Light mode" : "Dark mode"}</span>
+    </button>
+  );
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const router = useRouter();
-  const { unread, dispatch, ready, state } = useSession();
-
-  // A judge landing deep in the app without a session still gets a working demo.
-  useEffect(() => {
-    if (ready && !state.signedIn) dispatch({ type: "signIn" });
-  }, [ready, state.signedIn, dispatch]);
+  const { unread, dispatch } = useSession();
 
   return (
     <div className="flex min-h-dvh flex-col lg:flex-row">
@@ -124,6 +173,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="hidden lg:inline">How this works</span>
           </Link>
 
+          <ThemeRow />
+
           <div className="hidden rounded-[12px] border border-[var(--line)] bg-[var(--panel-2)] p-3 lg:block">
             <div className="flex items-center gap-2.5">
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-[var(--accent-ink)]">
@@ -134,18 +185,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <p className="truncate text-[11px] text-[var(--muted)]">Demo citizen · fictional</p>
               </div>
             </div>
-            <button
-              onClick={() => {
-                dispatch({ type: "reset" });
-                router.push("/home");
-              }}
-              className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
-            >
-              <RotateCcw size={12} /> Reset demo
-            </button>
+            <div className="mt-2.5 grid grid-cols-2 gap-1.5">
+              <button
+                onClick={() => {
+                  dispatch({ type: "reset" });
+                  router.push("/home");
+                }}
+                title="Clear everything this session did and restore the seeded state"
+                className="flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+              >
+                <RotateCcw size={12} /> Reset
+              </button>
+              <button
+                onClick={() => {
+                  dispatch({ type: "signOut" });
+                  router.push("/");
+                }}
+                title="Return to the sign-in screen. Your journeys and cases are kept."
+                className="flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+              >
+                <LogOut size={12} /> Sign out
+              </button>
+            </div>
           </div>
 
-          <ThemeToggle />
+          {/* Mobile: the rail collapses, so these live as icons */}
+          <button
+            onClick={() => {
+              dispatch({ type: "signOut" });
+              router.push("/");
+            }}
+            aria-label="Sign out"
+            className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:hidden"
+          >
+            <LogOut size={17} strokeWidth={1.8} />
+          </button>
         </div>
       </aside>
 
