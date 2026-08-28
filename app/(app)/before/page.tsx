@@ -57,7 +57,7 @@ export default function BeforePage() {
         <button
           onClick={() => setAnnotate((a) => !a)}
           className={cn(
-            "flex items-center gap-2 rounded-[2px] border px-3.5 py-1.5 text-[13px] transition-colors",
+            "flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors",
             annotate
               ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
               : "border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--faint)]",
@@ -65,7 +65,7 @@ export default function BeforePage() {
         >
           <span
             className={cn(
-              "grid h-4 w-4 place-items-center rounded-[3px] border transition-colors",
+              "grid h-4 w-4 place-items-center rounded-[4px] border transition-colors",
               annotate ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--faint)]",
             )}
           >
@@ -103,11 +103,11 @@ export default function BeforePage() {
                           {f.label}
                           {f.required && <span className="text-[var(--danger)]"> *</span>}
                         </label>
-                        <div className="h-[26px] rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)]" />
+                        <div className="h-[26px] rounded-[4px] border border-[var(--line)] bg-[var(--panel-2)]" />
                         {annotate && f.flag && (
                           <span
                             className={cn(
-                              "fade w-fit rounded-[3px] px-1.5 py-0.5 text-[10.5px] leading-tight",
+                              "fade w-fit rounded-[4px] px-1.5 py-0.5 text-[10.5px] leading-tight",
                               f.flag === "known" && "bg-[var(--warn-soft)] text-[var(--warn)]",
                               f.flag === "repeat" && "bg-[var(--danger-soft)] text-[var(--danger)]",
                               f.flag === "jargon" && "bg-[var(--info-soft)] text-[var(--info)]",
@@ -152,7 +152,7 @@ export default function BeforePage() {
                     ["PAN and Aadhaar linkage", "credential.pan", "Income Tax record"],
                     ["Mobile and email", "citizen.phone", "Verified, OTP-confirmed"],
                   ].map(([label, path, src]) => (
-                    <div key={label} className="rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
+                    <div key={label} className="rounded-[8px] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
                       <p className="text-[12.5px] text-[var(--ink-2)]">{label}</p>
                       <p className="mt-0.5 truncate text-[13px] text-[var(--ink)]">{readProfile(path)}</p>
                       <SourceTag label={src} className="mt-1" />
@@ -176,7 +176,7 @@ export default function BeforePage() {
                     ["Which Seva Kendra and when?", "Three near you, with real slots."],
                     ["Who is your emergency contact?", "Picked from your citizen graph, not typed."],
                   ].map(([q, why]) => (
-                    <div key={q} className="rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-2">
+                    <div key={q} className="rounded-[8px] border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-2">
                       <p className="text-[13px] font-medium text-[var(--ink)]">{q}</p>
                       <p className="mt-0.5 text-[12px] leading-relaxed text-[var(--ink-2)]">{why}</p>
                     </div>

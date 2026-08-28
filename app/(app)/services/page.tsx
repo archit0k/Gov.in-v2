@@ -33,7 +33,7 @@ export default function ServicesPage() {
             key={c}
             onClick={() => setCat(c)}
             className={cn(
-              "rounded-[2px] border px-3 py-1.5 text-[12.5px] transition-colors",
+              "rounded-full border px-3 py-1.5 text-[12.5px] transition-colors",
               cat === c
                 ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                 : "border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--faint)]",

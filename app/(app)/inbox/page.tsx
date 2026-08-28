@@ -55,7 +55,7 @@ export default function InboxPage() {
               key={t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "rounded-[2px] border px-3 py-1.5 text-[12.5px] transition-colors",
+                "rounded-full border px-3 py-1.5 text-[12.5px] transition-colors",
                 tab === t.id
                   ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                   : "border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--faint)]",

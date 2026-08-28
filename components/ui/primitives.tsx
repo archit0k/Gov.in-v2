@@ -37,7 +37,7 @@ export function ServiceMark({
     <span
       data-service={s.id}
       className={cn(
-        "inline-grid shrink-0 place-items-center rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] text-[var(--accent)]",
+        "inline-grid shrink-0 place-items-center rounded-[10px] border border-[var(--accent-line)] bg-[var(--accent-soft)] text-[var(--accent)]",
         className,
       )}
       style={{ width: size, height: size, "--svc": s.accent } as React.CSSProperties}
@@ -76,10 +76,11 @@ type BtnProps = {
 };
 
 const BTN = {
-  base: "inline-flex items-center justify-center gap-2 rounded-[2px] font-medium transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none whitespace-nowrap",
-  primary: "bg-[var(--accent)] text-[var(--accent-ink)] hover:brightness-110 active:translate-y-px",
+  base: "inline-flex items-center justify-center gap-2 rounded-[10px] font-medium transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none whitespace-nowrap",
+  primary:
+    "bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-1)] hover:brightness-110 active:scale-[0.985]",
   secondary:
-    "bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--ink-2)] active:translate-y-px",
+    "bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--faint)] hover:bg-[var(--panel-2)] active:scale-[0.985]",
   ghost: "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
   danger: "bg-[var(--danger)] text-white hover:brightness-110",
   sm: "h-8 px-3 text-[13px]",
@@ -117,7 +118,7 @@ export function Card({
       {...rest}
       className={cn(
         "rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--panel)]",
-        interactive && "transition-colors duration-150 hover:border-[var(--ink-2)]",
+        interactive && "transition-all duration-150 hover:border-[var(--faint)] hover:shadow-[var(--shadow-2)]",
         className,
       )}
     >
@@ -128,107 +129,13 @@ export function Card({
 
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="mb-3.5 flex items-center gap-3 border-b border-[var(--line)] pb-2">
-      <h2 className="label shrink-0">{children}</h2>
-      <span className="h-px flex-1" />
-      {action && <div className="shrink-0">{action}</div>}
+    <div className="mb-3 flex items-end justify-between gap-4">
+      <h2 className="text-[13px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{children}</h2>
+      {/* The action is usually a small text link. On a phone it still has to be
+          tappable, so it gets height here rather than at every call site. */}
+      {action && <div className="-my-2 flex min-h-[36px] shrink-0 items-center py-2">{action}</div>}
     </div>
   );
-}
-
-/**
- * A titled sheet. Replaces the pattern of nesting a heading inside a bordered
- * card — the rule does the separating, so the box does not have to.
- */
-export function Panel({
-  title,
-  action,
-  children,
-  className,
-  footnote,
-}: {
-  title?: ReactNode;
-  action?: ReactNode;
-  children: ReactNode;
-  className?: string;
-  footnote?: ReactNode;
-}) {
-  return (
-    <section className={cn("border border-[var(--line)] bg-[var(--panel)]", className)}>
-      {title && (
-        <header className="flex items-center gap-3 border-b border-[var(--line)] bg-[var(--panel-2)] px-4 py-2.5">
-          <h2 className="label">{title}</h2>
-          {action && <div className="ml-auto">{action}</div>}
-        </header>
-      )}
-      <div className="px-4 py-4">{children}</div>
-      {footnote && (
-        <footer className="border-t border-[var(--line)] px-4 py-2.5 text-[12px] leading-relaxed text-[var(--muted)]">
-          {footnote}
-        </footer>
-      )}
-    </section>
-  );
-}
-
-/**
- * An entry that belongs to a department. The colour is a rule down the left
- * edge rather than a tint over the whole block — the way marginalia is marked
- * on a printed record, and it keeps ten departments from turning a page into
- * a swatch chart.
- */
-export function Record({
-  id,
-  children,
-  className,
-  as: As = "div",
-  ...rest
-}: {
-  id?: ServiceId;
-  children: ReactNode;
-  className?: string;
-  as?: React.ElementType;
-  [key: string]: unknown;
-}) {
-  const accent = id ? service(id).accent : undefined;
-  return (
-    <As
-      {...rest}
-      data-service={id}
-      style={accent ? ({ "--svc": accent } as React.CSSProperties) : undefined}
-      className={cn(
-        "border border-l-[3px] border-[var(--line)] bg-[var(--panel)] transition-colors",
-        id ? "border-l-[var(--accent)]" : "border-l-[var(--ink-2)]",
-        className,
-      )}
-    >
-      {children}
-    </As>
-  );
-}
-
-/** The one place the flag appears. A 3px rule, never a badge or a seal. */
-export function Tricolour({ className }: { className?: string }) {
-  return <div className={cn("tricolour", className)} aria-hidden />;
-}
-
-/** Page and record titles. Serif, because it names something. */
-export function Title({
-  children,
-  size = "lg",
-  className,
-}: {
-  children: ReactNode;
-  size?: "sm" | "md" | "lg" | "xl";
-  className?: string;
-}) {
-  const scale = {
-    sm: "text-[17px]",
-    md: "text-[21px]",
-    lg: "text-[27px]",
-    xl: "text-[38px] sm:text-[44px]",
-  }[size];
-  return <h1 className={cn("serif leading-[1.14] text-[var(--ink)]", scale, className)}>{children}</h1>;
 }
 
 /* ---------------- Status ---------------- */
@@ -254,7 +161,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-[2px] border px-2 py-[4px] text-[11px] font-semibold uppercase leading-none tracking-[0.045em]",
+        "inline-flex items-center gap-1 rounded-full border px-2 py-[3px] text-[11.5px] font-medium leading-none",
         TONE[tone],
         className,
       )}
@@ -286,7 +193,7 @@ export function ProgressRail({
   className?: string;
 }) {
   return (
-    <ol className={cn("flex items-stretch", className)} aria-label="Progress">
+    <ol className={cn("flex items-center gap-1.5", className)} aria-label="Progress">
       {steps.map((s, i) => {
         const done = i < current;
         const now = i === current;
@@ -294,28 +201,20 @@ export function ProgressRail({
           <li key={s + i} className="flex min-w-0 flex-1 flex-col gap-1.5" title={s}>
             <span
               className={cn(
-                "h-[3px] transition-colors duration-500",
-                done || now ? "bg-[var(--accent)]" : "bg-[var(--line)]",
-                i > 0 && "ml-px",
+                "h-[3px] rounded-full transition-all duration-500",
+                done && "bg-[var(--accent)]",
+                now && "bg-[var(--accent)]",
+                !done && !now && "bg-[var(--line)]",
               )}
+              style={now ? { boxShadow: "0 0 0 3px var(--accent-soft)" } : undefined}
             />
-            <span className="flex min-w-0 items-baseline gap-1.5">
-              <span
-                className={cn(
-                  "tnum shrink-0 text-[10px] font-semibold",
-                  now ? "text-[var(--accent)]" : done ? "text-[var(--muted)]" : "text-[var(--faint)]",
-                )}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span
-                className={cn(
-                  "truncate text-[11px] leading-tight transition-colors",
-                  now ? "font-semibold text-[var(--ink)]" : "text-[var(--faint)]",
-                )}
-              >
-                {s}
-              </span>
+            <span
+              className={cn(
+                "truncate text-[11px] leading-tight transition-colors",
+                now ? "font-medium text-[var(--ink)]" : "text-[var(--faint)]",
+              )}
+            >
+              {s}
             </span>
           </li>
         );
@@ -338,9 +237,9 @@ export function EmptyState({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 border border-dashed border-[var(--line)] px-6 py-14 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-6 py-14 text-center">
       {icon && <div className="text-[var(--faint)]">{icon}</div>}
-      <p className="serif text-[17px] text-[var(--ink)]">{title}</p>
+      <p className="text-[15px] font-medium text-[var(--ink)]">{title}</p>
       <p className="max-w-sm text-[13.5px] leading-relaxed text-[var(--muted)]">{body}</p>
       {action && <div className="mt-1">{action}</div>}
     </div>

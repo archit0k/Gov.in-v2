@@ -52,7 +52,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
               window.history.replaceState(null, "", t.href);
             }}
             className={cn(
-              "rounded-[2px] border px-3.5 py-1.5 text-[13px] transition-colors",
+              "rounded-full border px-3.5 py-1.5 text-[13px] transition-colors",
               tab === t.id
                 ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                 : "border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--faint)]",
@@ -87,7 +87,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
             <SectionTitle>Addresses</SectionTitle>
             <div className="grid gap-3 sm:grid-cols-2">
               {c.addresses.map((a) => (
-                <div key={a.id} className="rounded-[3px] border border-[var(--line)] p-3.5">
+                <div key={a.id} className="rounded-[12px] border border-[var(--line)] p-3.5">
                   <div className="mb-1.5 flex items-center gap-2">
                     <p className="text-[13px] font-medium capitalize">{a.label} address</p>
                     <Badge tone="ok">verified</Badge>
@@ -221,7 +221,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
                   {service(g.requestedBy as never).name} · granted {fmtDateTime(g.grantedAt)} · {g.retention}
                 </p>
               </div>
-              <button className="shrink-0 rounded-[3px] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]">
+              <button className="shrink-0 rounded-[8px] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]">
                 Withdraw
               </button>
             </Card>

@@ -28,7 +28,7 @@ export default function AppointmentsPage() {
                 key={c.name}
                 onClick={() => setPicked(c.name)}
                 className={cn(
-                  "flex flex-wrap items-center gap-3 rounded-[3px] border p-4 text-left transition-colors",
+                  "flex flex-wrap items-center gap-3 rounded-[11px] border p-4 text-left transition-colors",
                   picked === c.name
                     ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                     : "border-[var(--line)] hover:border-[var(--accent-line)]",

@@ -38,7 +38,7 @@ export default function PnrPage() {
             }}
             className="flex flex-wrap gap-2"
           >
-            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[3px] border border-[var(--line)] bg-[var(--panel)] px-3.5 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]">
+            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[11px] border border-[var(--line)] bg-[var(--panel)] px-3.5 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]">
               <Search size={16} className="shrink-0 text-[var(--faint)]" />
               <input
                 value={pnr}
@@ -64,14 +64,14 @@ export default function PnrPage() {
           </button>
 
           {result === "none" && (
-            <p className="fade mt-4 rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[13.5px] leading-relaxed text-[var(--muted)]">
+            <p className="fade mt-4 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[13.5px] leading-relaxed text-[var(--muted)]">
               No booking matches that number. Nothing was wrong with what you typed — this prototype only holds
               the fictional bookings for this demo citizen.
             </p>
           )}
 
           {result && result !== "none" && (
-            <div className="fade mt-4 rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-4">
+            <div className="fade mt-4 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-4">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <p className="min-w-0 flex-1 truncate text-[14.5px] font-medium">{result.train}</p>
                 <Badge tone={result.status === "confirmed" ? "ok" : result.status === "cancelled" ? "danger" : "neutral"}>

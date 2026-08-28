@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Check, Clock3, Sparkles } from "lucide-react";
 import { Page } from "@/components/shell/AppShell";
 import { IntentBar } from "@/components/shell/IntentBar";
-import { Badge, Button, Card, EmptyState, ProgressRail, Record, SectionTitle, ServiceMark, Title, timeAgo } from "@/components/ui/primitives";
+import { Badge, Button, Card, EmptyState, ProgressRail, SectionTitle, ServiceMark, timeAgo } from "@/components/ui/primitives";
 import { CITIZEN, daysUntil } from "@/lib/data/citizen";
 import { SERVICES, service, serviceHref } from "@/lib/data/services";
 import { useSession } from "@/lib/state/store";
@@ -23,42 +23,51 @@ export default function HomePage() {
     <Page wide>
       {/* The front door is the product. It gets the top of the page, the
           largest type on it, and nothing competing for the same glance. */}
-      <section className="mb-10">
-        <div className="mb-5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <Title size="xl" className="max-w-[18ch]">
-            What do you need to do?
-          </Title>
-          <span className="text-[13.5px] text-[var(--muted)]">{greeting}, {CITIZEN.shortName}</span>
-        </div>
+      <section className="mb-11 border-b border-[var(--line)] pb-9">
+        <p className="mb-1.5 text-[13.5px] text-[var(--muted)]">
+          {greeting}, {CITIZEN.shortName}.
+        </p>
+        <h1 className="mb-5 max-w-[20ch] text-[30px] font-semibold leading-[1.15] tracking-[-0.028em] text-[var(--ink)] sm:text-[34px]">
+          What do you need to do?
+        </h1>
 
         <IntentBar autoFocus size="hero" aiMode />
 
-        <p className="mt-4 max-w-[78ch] text-[13px] leading-relaxed text-[var(--muted)]">
-          Say it the way you would say it to a person. You do not need to know which department it belongs to.
-          A known task opens straight away; something spanning several departments is composed into one
-          journey; and anything that is not a task at all can be talked through in AI mode.
+        <p className="mt-3.5 max-w-[76ch] text-[13px] leading-relaxed text-[var(--muted)]">
+          Say it however you would say it to a person. You do not need to know which department it belongs to.
+          If it is a known task, it opens straight away. If it spans several departments, they get composed into
+          one journey. If it is not a task at all, switch to AI mode and talk it through.
         </p>
+
+        {actions.length > 0 && (
+          <p className="mt-4 text-[13.5px] text-[var(--ink-2)]">
+            <span className="font-medium">
+              {actions.length} {actions.length === 1 ? "thing needs" : "things need"} your attention
+            </span>{" "}
+            <span className="text-[var(--muted)]">— everything else is on track.</span>
+          </p>
+        )}
       </section>
 
       {/* Needs your attention — actions, not a notification count */}
       {actions.length > 0 && (
         <section className="mb-10">
           <SectionTitle>Needs your attention</SectionTitle>
-          <div className="grid gap-2">
+          <div className="grid gap-2.5">
             {actions.map((n, i) => (
-              <Record key={n.id} id={n.serviceId} className="rise p-4" style={{ animationDelay: `${i * 60}ms` }}>
-                <div className="flex flex-wrap items-start gap-3.5">
+              <Card key={n.id} interactive className="rise p-4" as="div">
+                <div className="flex flex-wrap items-start gap-3.5" style={{ animationDelay: `${i * 60}ms` }}>
                   <ServiceMark id={n.serviceId} size={38} />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="serif text-[17px] leading-snug">{n.title}</h3>
+                      <h3 className="text-[15px] font-medium leading-snug">{n.title}</h3>
                       {n.dueLabel && (
                         <Badge tone={n.dueLabel === "Overdue" ? "danger" : "warn"}>
                           <Clock3 size={11} /> {n.dueLabel}
                         </Badge>
                       )}
                     </div>
-                    <p className="mt-1 max-w-[74ch] text-[13.5px] leading-relaxed text-[var(--muted)]">{n.body}</p>
+                    <p className="mt-1 max-w-[70ch] text-[13.5px] leading-relaxed text-[var(--muted)]">{n.body}</p>
                   </div>
                   {n.action && (
                     <Button href={n.action.href} size="md" className="shrink-0">
@@ -66,7 +75,7 @@ export default function HomePage() {
                     </Button>
                   )}
                 </div>
-              </Record>
+              </Card>
             ))}
           </div>
         </section>

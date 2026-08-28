@@ -43,23 +43,8 @@
   --info: #1d5c78;
   --info-soft: #e5f1f6;
 
-  /* Institutional edges. Soft 18px corners read consumer-app; a record,
-     a certificate and a form are all square. */
-  --radius: 3px;
-  --radius-lg: 4px;
-
-  /* The masthead is the one heavy surface in the product, in both themes. */
-  --masthead: #10233f;
-  --masthead-ink: #f4f7fc;
-  --masthead-muted: #9fb3d1;
-  --masthead-line: #23395c;
-
-  /* Used only as a 3px rule beneath the masthead and on journey progress.
-     Never as decoration, and never with the State Emblem or the Chakra —
-     this is an independent prototype, not an official product. */
-  --saffron: #ff9933;
-  --india-white: #ffffff;
-  --india-green: #138808;
+  --radius: 12px;
+  --radius-lg: 18px;
 
   /* Tinted toward the accent hue. A neutral grey shadow on a cool surface is
      the other half of why light mode looked dirty. */
@@ -156,11 +141,6 @@
   --color-info-soft: var(--info-soft);
   --font-sans: var(--font-sans-stack);
   --font-mono: var(--font-mono-stack);
-  --font-serif: var(--font-serif-stack);
-  --color-masthead: var(--masthead);
-  --color-masthead-ink: var(--masthead-ink);
-  --color-masthead-muted: var(--masthead-muted);
-  --color-masthead-line: var(--masthead-line);
   --radius-card: var(--radius);
   --radius-panel: var(--radius-lg);
 }
@@ -233,43 +213,6 @@ body {
 /* Numerals align in tables/IDs */
 .tnum {
   font-variant-numeric: tabular-nums;
-}
-
-/* Display voice: names things, declares things, titles pages. */
-.serif {
-  font-family: var(--font-serif-stack), Georgia, "Times New Roman", serif;
-  font-weight: 600;
-  letter-spacing: -0.011em;
-}
-
-/* The label voice. Small, spaced, uppercase — the way a form field or a
-   column heading is labelled on an official document. */
-.label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* The tricolour rule. One element, used sparingly. */
-.tricolour {
-  height: 3px;
-  background: linear-gradient(
-    to right,
-    var(--saffron) 0 33.333%,
-    var(--india-white) 33.333% 66.666%,
-    var(--india-green) 66.666% 100%
-  );
-}
-.dark .tricolour,
-:root:not(.light) .tricolour {
-  background: linear-gradient(
-    to right,
-    var(--saffron) 0 33.333%,
-    #dfe6f2 33.333% 66.666%,
-    #1aa30a 66.666% 100%
-  );
 }
 
 .mono {

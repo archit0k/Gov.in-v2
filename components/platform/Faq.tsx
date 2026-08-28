@@ -27,7 +27,7 @@ export function Faq({
           {items.map((x) => {
             const isOpen = open === x.q;
             return (
-              <div key={x.q} className="rounded-[3px] border border-[var(--line)]">
+              <div key={x.q} className="rounded-[11px] border border-[var(--line)]">
                 <button
                   onClick={() => setOpen(isOpen ? null : x.q)}
                   aria-expanded={isOpen}
@@ -56,7 +56,7 @@ export function Faq({
           <p className="mb-3 text-[13.5px] leading-relaxed text-[var(--muted)]">{note}</p>
           <Link
             href="/journeys/cpgrams-grievance"
-            className="flex items-center gap-2 rounded-[3px] border border-[var(--line)] px-3.5 py-2.5 text-[13.5px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+            className="flex items-center gap-2 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5 text-[13.5px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
           >
             <MessageSquareWarning size={15} className="shrink-0 text-[var(--muted)]" />
             Raise a grievance

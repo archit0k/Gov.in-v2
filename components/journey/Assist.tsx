@@ -48,7 +48,7 @@ export function Assist({
   }
 
   return (
-    <section className="mt-5 rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] p-4">
+    <section className="mt-5 rounded-[14px] border border-[var(--line)] bg-[var(--panel-2)] p-4">
       <div className="mb-2.5 flex items-center gap-2">
         <Sparkles size={14} className="text-[var(--accent)]" strokeWidth={2} />
         <span className="text-[12.5px] font-medium text-[var(--ink-2)]">Not sure about this step?</span>
@@ -61,7 +61,7 @@ export function Assist({
             key={p}
             onClick={() => ask(p)}
             className={cn(
-              "rounded-[2px] border px-3 py-1.5 text-[12.5px] transition-colors",
+              "rounded-full border px-3 py-1.5 text-[12.5px] transition-colors",
               asked === p
                 ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                 : "border-[var(--line)] bg-[var(--panel)] text-[var(--ink-2)] hover:border-[var(--accent-line)] hover:text-[var(--accent)]",
@@ -83,12 +83,12 @@ export function Assist({
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="Or ask your own question about this step"
-          className="w-full rounded-[3px] border border-[var(--line)] bg-[var(--panel)] px-3 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
+          className="w-full rounded-[9px] border border-[var(--line)] bg-[var(--panel)] px-3 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
         />
       </form>
 
       {(busy || answer) && (
-        <div className="fade mt-3 rounded-[3px] border border-[var(--line)] bg-[var(--panel)] p-3.5">
+        <div className="fade mt-3 rounded-[10px] border border-[var(--line)] bg-[var(--panel)] p-3.5">
           {busy ? (
             <div className="flex items-center gap-2 text-[13px] text-[var(--muted)]">
               <span className="h-1.5 w-1.5 animate-[pulse-soft_0.9s_infinite] rounded-full bg-[var(--accent)]" />

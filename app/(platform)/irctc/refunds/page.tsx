@@ -20,7 +20,7 @@ export default function RefundsPage() {
           </p>
           <div className="grid gap-2">
             {REFUND_RULES.map((r) => (
-              <div key={r.window} className="rounded-[3px] border border-[var(--line)] p-3.5">
+              <div key={r.window} className="rounded-[11px] border border-[var(--line)] p-3.5">
                 <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                   <p className="text-[13.5px] font-medium">{r.window}</p>
                   <p className={cn("text-[13px]", r.pct === 0 ? "text-[var(--ok)]" : "text-[var(--ink-2)]")}>
@@ -53,7 +53,7 @@ export default function RefundsPage() {
           ) : (
             <div className="grid gap-3">
               {refunded.map((t) => (
-                <div key={t.pnr} className="rounded-[3px] border border-[var(--line)] p-3.5">
+                <div key={t.pnr} className="rounded-[11px] border border-[var(--line)] p-3.5">
                   <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3">
                     <p className="text-[13.5px] font-medium">₹{t.refund!.amount.toLocaleString("en-IN")}</p>
                     <span className="mono text-[11.5px] text-[var(--faint)]">{t.pnr}</span>

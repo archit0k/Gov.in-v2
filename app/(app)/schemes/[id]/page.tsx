@@ -56,7 +56,7 @@ export default function SchemePage() {
           </p>
           <ul className="mb-5 grid gap-2">
             {s.requires.map((r) => (
-              <li key={r.attribute} className="flex flex-wrap items-center gap-2 rounded-[3px] border border-[var(--line)] px-3.5 py-2.5">
+              <li key={r.attribute} className="flex flex-wrap items-center gap-2 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5">
                 <Eye size={14} className="shrink-0 text-[var(--muted)]" />
                 <span className="min-w-0 flex-1 text-[13.5px]">{r.attribute}</span>
                 <Badge tone="neutral">{r.source}</Badge>
