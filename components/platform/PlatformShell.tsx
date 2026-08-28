@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { Badge, ServiceMark, ServiceTheme, cn } from "@/components/ui/primitives";
+import { Badge, ServiceMark, ServiceTheme, Tricolour, cn } from "@/components/ui/primitives";
 import { IntentBar } from "@/components/shell/IntentBar";
 import { ThemeToggle } from "@/components/shell/AppShell";
 import { CITIZEN } from "@/lib/data/citizen";
@@ -48,37 +48,41 @@ export function PlatformShell({
 
   return (
     <ServiceTheme id={id} className="min-h-dvh bg-[var(--surface)]">
-      {/* The infrastructure strip. Different site, same citizen. */}
-      <div className="border-b border-[var(--line)] bg-[var(--panel-2)]">
-        <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-3 gap-y-1.5 px-5 py-2 sm:px-8">
+      {/* Gov.in above, the department below. The hierarchy is the argument,
+          so it is drawn rather than described: one navy band that is the same
+          on every department, then the department's own masthead in its own
+          colour underneath it. */}
+      <div className="bg-[var(--masthead)]">
+        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-3 gap-y-1 px-5 py-2 sm:px-8">
           <Link
             href="/home"
-            className="flex items-center gap-1.5 text-[12px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+            className="flex items-center gap-1.5 text-[12px] text-[var(--masthead-muted)] transition-colors hover:text-[var(--masthead-ink)]"
           >
             <ArrowLeft size={12} /> Gov.in
           </Link>
-          <span className="text-[var(--line)]">|</span>
-          <span className="mono text-[12px] text-[var(--muted)]">{s.subdomain}</span>
+          <span className="text-[var(--masthead-line)]">|</span>
+          <span className="mono text-[12px] text-[var(--masthead-muted)]">{s.subdomain}</span>
           <div className="ml-auto flex items-center gap-2.5">
-            <span className="hidden items-center gap-1.5 text-[12px] text-[var(--muted)] sm:flex">
-              <ShieldCheck size={12} className="text-[var(--ok)]" />
+            <span className="hidden items-center gap-1.5 text-[12px] text-[var(--masthead-muted)] sm:flex">
+              <ShieldCheck size={12} className="text-[var(--saffron)]" />
               Signed in as {CITIZEN.name} — no separate account for this department
             </span>
-            <span className="flex items-center gap-1.5 text-[12px] text-[var(--muted)] sm:hidden">
-              <ShieldCheck size={12} className="text-[var(--ok)]" /> {CITIZEN.photoInitials}
+            <span className="flex items-center gap-1.5 text-[12px] text-[var(--masthead-muted)] sm:hidden">
+              <ShieldCheck size={12} className="text-[var(--saffron)]" /> {CITIZEN.photoInitials}
             </span>
             <ThemeToggle />
           </div>
         </div>
       </div>
+      <Tricolour />
 
-      {/* The department's own masthead */}
+      {/* The department's own masthead, in the department's own colour */}
       <header className="border-b border-[var(--line)] bg-[var(--panel)]">
-        <div className="mx-auto max-w-[1180px] px-5 pt-5 sm:px-8">
+        <div className="mx-auto max-w-[1240px] px-5 pt-6 sm:px-8">
           <div className="flex flex-wrap items-start gap-3.5">
             <ServiceMark id={id} size={46} />
             <div className="min-w-0 flex-1">
-              <h1 className="text-[21px] font-semibold leading-tight tracking-[-0.02em]">{s.name}</h1>
+              <h1 className="serif text-[24px] leading-tight">{s.name}</h1>
               <p className="text-[12.5px] text-[var(--muted)]">{s.department}</p>
             </div>
             <Badge tone="accent" className="mt-1 hidden sm:inline-flex">
@@ -100,7 +104,7 @@ export function PlatformShell({
                   className={cn(
                     "shrink-0 border-b-2 px-3 pb-2.5 pt-1 text-[14px] transition-colors",
                     active
-                      ? "border-[var(--accent)] font-medium text-[var(--accent)]"
+                      ? "border-[var(--accent)] font-semibold text-[var(--accent)]"
                       : "border-transparent text-[var(--ink-2)] hover:text-[var(--ink)]",
                   )}
                 >
@@ -112,12 +116,12 @@ export function PlatformShell({
         </div>
       </header>
 
-      <main id="main" className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8">
+      <main id="main" className="mx-auto w-full max-w-[1240px] px-5 py-8 sm:px-8">
         {children}
       </main>
 
       <footer className="border-t border-[var(--line)]">
-        <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8">
+        <div className="mx-auto max-w-[1240px] px-5 py-6 sm:px-8">
           <p className="mb-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
             What this department did not have to build
           </p>
@@ -143,9 +147,10 @@ export function PlatformShell({
 
 export function PanelTitle({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-4">
-      <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink)]">{children}</h2>
-      {action}
+    <div className="mb-3.5 flex items-center gap-3 border-b border-[var(--line)] pb-2">
+      <h2 className="serif shrink-0 text-[16px]">{children}</h2>
+      <span className="h-px flex-1" />
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

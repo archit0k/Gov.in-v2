@@ -99,7 +99,7 @@ export function IntentBar({
         className={cn(
           // The container carries the whole focus treatment: its border plus a
           // soft halo. The input inside must draw nothing of its own.
-          "flex items-center gap-3 rounded-[14px] border bg-[var(--panel)] transition-all duration-150",
+          "flex items-center gap-3 rounded-[3px] border bg-[var(--panel)] transition-all duration-150",
           hero ? "h-[62px] px-5" : "h-12 px-4",
           busy
             ? "border-[var(--accent)] ring-4 ring-[var(--accent-soft)]"
@@ -127,7 +127,7 @@ export function IntentBar({
         ) : (
           <>
             {q && (
-              <kbd className="hidden shrink-0 items-center gap-1 rounded-[6px] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
+              <kbd className="hidden shrink-0 items-center gap-1 rounded-[2px] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
                 <CornerDownLeft size={11} /> Enter
               </kbd>
             )}
@@ -136,7 +136,7 @@ export function IntentBar({
                 type="button"
                 onClick={toAi}
                 title="Turn this page into a conversation. For when you cannot phrase it as a task."
-                className="flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 text-[12.5px] font-medium text-[var(--accent)] transition-[filter] hover:brightness-105 sm:h-10"
+                className="flex h-9 shrink-0 items-center gap-1.5 rounded-[2px] border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 text-[12.5px] font-medium text-[var(--accent)] transition-[filter] hover:brightness-105 sm:h-10"
               >
                 <Sparkles size={13} strokeWidth={2.1} /> AI mode
               </button>
@@ -154,7 +154,7 @@ export function IntentBar({
                 setQ(e);
                 run(e);
               }}
-              className="inline-flex min-h-[40px] items-center rounded-full border border-[var(--line)] bg-[var(--panel)] px-3.5 text-[12.5px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] sm:min-h-0 sm:py-1.5"
+              className="inline-flex min-h-[40px] items-center rounded-[2px] border border-[var(--line)] bg-[var(--panel)] px-3.5 text-[12.5px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] sm:min-h-0 sm:py-1.5"
             >
               {e}
             </button>
@@ -213,7 +213,7 @@ function Result({
           <p className="mb-3.5 text-[14px] leading-relaxed text-[var(--ink-2)]">{res.reading}</p>
 
           {res.answer && (
-            <p className="mb-3.5 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[14px] leading-relaxed">
+            <p className="mb-3.5 rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[14px] leading-relaxed">
               {res.answer}
             </p>
           )}
@@ -221,12 +221,12 @@ function Result({
           {res.primary && (
             <Link
               href={res.primary.href}
-              className="flex items-center gap-3 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5 transition-all hover:shadow-[var(--shadow-2)]"
+              className="flex items-center gap-3 rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5 transition-all hover:shadow-[var(--shadow-2)]"
             >
               {res.primary.serviceId ? (
                 <ServiceMark id={res.primary.serviceId} size={38} />
               ) : (
-                <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[10px] bg-[var(--accent)] text-[var(--accent-ink)]">
+                <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[3px] bg-[var(--accent)] text-[var(--accent-ink)]">
                   <Sparkles size={18} strokeWidth={1.9} />
                 </span>
               )}
@@ -241,7 +241,7 @@ function Result({
           {res.composed && (
             <ul className="mt-3 grid gap-1.5">
               {res.composed.steps.slice(0, -1).map((s, i) => (
-                <li key={s.id} className="flex items-center gap-2.5 rounded-[9px] border border-[var(--line)] px-3 py-2 text-[13px]">
+                <li key={s.id} className="flex items-center gap-2.5 rounded-[3px] border border-[var(--line)] px-3 py-2 text-[13px]">
                   <span className="tnum w-4 shrink-0 text-[11.5px] text-[var(--faint)]">{i + 1}</span>
                   <span className="truncate text-[var(--ink)]">{s.title}</span>
                   <span className="ml-auto truncate text-[11.5px] text-[var(--muted)]">{s.fields[0]?.label}</span>
@@ -257,7 +257,7 @@ function Result({
                 <Link
                   key={o.href + o.label}
                   href={o.href}
-                  className="flex items-center gap-2 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5 text-[14px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                  className="flex items-center gap-2 rounded-[3px] border border-[var(--line)] px-3.5 py-2.5 text-[14px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
                 >
                   {o.label}
                   <ArrowRight size={15} className="ml-auto text-[var(--faint)]" />
@@ -274,7 +274,7 @@ function Result({
                   <Link
                     key={a.href}
                     href={a.href}
-                    className="flex items-center gap-2.5 rounded-[9px] px-2 py-1.5 text-[13.5px] transition-colors hover:bg-[var(--line-2)]"
+                    className="flex items-center gap-2.5 rounded-[3px] px-2 py-1.5 text-[13.5px] transition-colors hover:bg-[var(--line-2)]"
                   >
                     <ServiceMark id={a.serviceId} size={24} />
                     <span className="truncate">{a.label}</span>
@@ -288,7 +288,7 @@ function Result({
           {aiMode && (res.mode === "clarify" || res.mode === "informational") && (
             <button
               onClick={onAsk}
-              className="mt-3 flex w-full items-center gap-2 rounded-[10px] border border-dashed border-[var(--line)] px-3.5 py-2.5 text-[13px] text-[var(--muted)] transition-colors hover:border-[var(--accent-line)] hover:text-[var(--accent)]"
+              className="mt-3 flex w-full items-center gap-2 rounded-[3px] border border-dashed border-[var(--line)] px-3.5 py-2.5 text-[13px] text-[var(--muted)] transition-colors hover:border-[var(--accent-line)] hover:text-[var(--accent)]"
             >
               <Sparkles size={14} /> Still not it? Talk it through in AI mode
               <ArrowRight size={14} className="ml-auto" />

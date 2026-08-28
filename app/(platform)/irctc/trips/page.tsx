@@ -48,7 +48,7 @@ export default function TripsPage() {
 
 function Trip({ t }: { t: (typeof TRIPS)[number] }) {
   return (
-    <div className="rounded-[11px] border border-[var(--line)] p-4">
+    <div className="rounded-[3px] border border-[var(--line)] p-4">
       <div className="mb-2.5 flex flex-wrap items-center gap-2">
         <p className="min-w-0 flex-1 truncate text-[14px] font-medium">{t.train}</p>
         <Badge tone={TONE[t.status]}>{t.status}</Badge>
@@ -68,7 +68,7 @@ function Trip({ t }: { t: (typeof TRIPS)[number] }) {
         <p className="mt-2 text-[12.5px] text-[var(--muted)]">{t.pax.join(", ")}</p>
       )}
       {t.refund && (
-        <p className="mt-2 rounded-[8px] bg-[var(--ok-soft)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--ok)]">
+        <p className="mt-2 rounded-[3px] bg-[var(--ok-soft)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--ok)]">
           ₹{t.refund.amount.toLocaleString("en-IN")} refunded automatically. {t.refund.note}
         </p>
       )}

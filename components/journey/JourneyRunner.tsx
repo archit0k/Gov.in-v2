@@ -196,7 +196,7 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
         )}
 
         {/* The comparison judges care about, stated as fact, not as a boast */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-[12px] border border-dashed border-[var(--line)] px-4 py-3 text-[12.5px] text-[var(--muted)]">
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-[3px] border border-dashed border-[var(--line)] px-4 py-3 text-[12.5px] text-[var(--muted)]">
           <span>
             Replaces <span className="text-[var(--ink-2)]">{journey.legacyEquivalent}</span>
           </span>
@@ -243,7 +243,7 @@ function Prefilled({ f, value, onChange }: { f: FieldDef; value: string; onChang
               onChange={(e) => onChange(e.target.value)}
               onBlur={() => setEditing(false)}
               onKeyDown={(e) => e.key === "Enter" && setEditing(false)}
-              className="mt-1 w-full rounded-[8px] border border-[var(--accent)] bg-[var(--panel)] px-2.5 py-1.5 text-[14.5px] outline-none"
+              className="mt-1 w-full rounded-[3px] border border-[var(--accent)] bg-[var(--panel)] px-2.5 py-1.5 text-[14.5px] outline-none"
             />
           ) : (
             <p className="mt-0.5 text-[15px] leading-snug text-[var(--ink)]">{corrected ? value : held}</p>
@@ -294,7 +294,7 @@ function Field({
     case "note":
       return (
         <Row>
-          <div className="flex gap-2.5 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5">
+          <div className="flex gap-2.5 rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5">
             <Info size={15} className="mt-0.5 shrink-0 text-[var(--muted)]" />
             <p className="text-[13.5px] leading-relaxed text-[var(--ink-2)]">{f.label}</p>
           </div>
@@ -306,7 +306,7 @@ function Field({
         <Row>
           <div
             className={cn(
-              "rounded-[12px] border p-4 transition-colors",
+              "rounded-[3px] border p-4 transition-colors",
               value === "granted" ? "border-[var(--ok)] bg-[var(--ok-soft)]" : "border-[var(--line)] bg-[var(--panel-2)]",
             )}
           >
@@ -353,7 +353,7 @@ function Field({
                 key={o.value}
                 onClick={() => onChange(o.value)}
                 className={cn(
-                  "flex items-center gap-3 rounded-[10px] border px-3.5 py-3 text-left transition-all",
+                  "flex items-center gap-3 rounded-[3px] border px-3.5 py-3 text-left transition-all",
                   value === o.value
                     ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_0_0_3px_var(--accent-soft)]"
                     : "border-[var(--line)] hover:border-[var(--faint)]",
@@ -389,7 +389,7 @@ function Field({
                 key={o.value}
                 onClick={() => onChange(o.value)}
                 className={cn(
-                  "flex items-center gap-3 rounded-[10px] border px-3.5 py-3 text-left transition-all",
+                  "flex items-center gap-3 rounded-[3px] border px-3.5 py-3 text-left transition-all",
                   value === o.value ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--line)] hover:border-[var(--faint)]",
                 )}
               >
@@ -417,7 +417,7 @@ function Field({
                 key={o.value}
                 onClick={() => onChange(o.value)}
                 className={cn(
-                  "flex items-center gap-3 rounded-[10px] border px-3.5 py-2.5 text-left transition-all",
+                  "flex items-center gap-3 rounded-[3px] border px-3.5 py-2.5 text-left transition-all",
                   value === o.value ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--line)] hover:border-[var(--faint)]",
                 )}
               >
@@ -438,7 +438,7 @@ function Field({
           <p className="mb-2.5 text-[13.5px] font-medium">{f.label}</p>
           <div className="grid gap-2.5 sm:grid-cols-3">
             {SLOTS.map((d) => (
-              <div key={d.day} className="rounded-[10px] border border-[var(--line)] p-2.5">
+              <div key={d.day} className="rounded-[3px] border border-[var(--line)] p-2.5">
                 <p className="mb-2 text-[12.5px] font-medium text-[var(--ink-2)]">{d.day}</p>
                 <div className="grid gap-1.5">
                   {d.times.map((t) => {
@@ -448,7 +448,7 @@ function Field({
                         key={t}
                         onClick={() => onChange(v)}
                         className={cn(
-                          "tnum rounded-[7px] border px-2 py-1.5 text-[13px] transition-all",
+                          "tnum rounded-[2px] border px-2 py-1.5 text-[13px] transition-all",
                           value === v
                             ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)]"
                             : "border-[var(--line)] hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]",
@@ -473,7 +473,7 @@ function Field({
     case "payment":
       return (
         <Row>
-          <div className="flex items-center gap-3.5 rounded-[12px] border border-[var(--line)] bg-[var(--panel-2)] p-4">
+          <div className="flex items-center gap-3.5 rounded-[3px] border border-[var(--line)] bg-[var(--panel-2)] p-4">
             <Wallet size={18} className="shrink-0 text-[var(--muted)]" />
             <div className="min-w-0 flex-1">
               <p className="text-[14px] font-medium">{f.label}</p>
@@ -498,7 +498,7 @@ function Field({
             value={value}
             placeholder={f.placeholder}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full resize-y rounded-[10px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] leading-relaxed outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
+            className="w-full resize-y rounded-[3px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] leading-relaxed outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
           />
         </Row>
       );
@@ -516,7 +516,7 @@ function Field({
             value={value}
             placeholder={f.placeholder}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full rounded-[10px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
+            className="w-full rounded-[3px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
           />
         </Row>
       );
@@ -577,7 +577,7 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
         </Row>
       )}
       <Row>
-        <div className="flex gap-2.5 rounded-[10px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">
+        <div className="flex gap-2.5 rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">
           <Sparkles size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
           <p className="text-[13px] leading-relaxed text-[var(--ink-2)]">
             After you submit, this becomes a case you can track from anywhere in Gov.in. Updates arrive in your

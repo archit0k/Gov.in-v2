@@ -59,7 +59,7 @@ export function DraftField({
         value={value}
         placeholder={f.placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full resize-y rounded-[10px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] leading-relaxed outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
+        className="w-full resize-y rounded-[3px] border border-[var(--line)] bg-[var(--panel)] px-3.5 py-2.5 text-[14px] leading-relaxed outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
       />
 
       <div className="mt-2 flex flex-wrap items-center gap-2.5">
@@ -81,7 +81,7 @@ export function DraftField({
       </div>
 
       {suggestion && (
-        <div className="fade mt-3 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">
+        <div className="fade mt-3 rounded-[3px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent)]">
               <PenLine size={12} /> Suggested wording

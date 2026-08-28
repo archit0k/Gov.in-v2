@@ -85,7 +85,7 @@ export default function PassportOverview() {
               <Link
                 key={x.href}
                 href={x.href}
-                className="rounded-[11px] border border-[var(--line)] p-3.5 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                className="rounded-[3px] border border-[var(--line)] p-3.5 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
               >
                 <p className="text-[14px] font-medium">{x.t}</p>
                 <p className="mt-0.5 text-[12.5px] text-[var(--muted)]">{x.d}</p>

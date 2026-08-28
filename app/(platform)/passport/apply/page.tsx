@@ -33,7 +33,7 @@ export default function ApplyPage() {
                 key={p.t}
                 href={p.href}
                 className={
-                  "flex items-center gap-3.5 rounded-[11px] border p-4 transition-colors " +
+                  "flex items-center gap-3.5 rounded-[3px] border p-4 transition-colors " +
                   (p.primary
                     ? "border-[var(--accent-line)] bg-[var(--accent-soft)]"
                     : "border-[var(--line)] hover:border-[var(--accent-line)]")
@@ -65,7 +65,7 @@ export default function ApplyPage() {
               ["Which centre and when?", "Real slots, held the moment you pick"],
               ["Who is your emergency contact?", "Chosen from your citizen graph"],
             ].map(([q, d]) => (
-              <div key={q} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5">
+              <div key={q} className="flex items-start gap-2.5 rounded-[3px] border border-[var(--line)] px-3.5 py-2.5">
                 <Check size={14} className="mt-0.5 shrink-0 text-[var(--ok)]" />
                 <div>
                   <p className="text-[13.5px] font-medium">{q}</p>
