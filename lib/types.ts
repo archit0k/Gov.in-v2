@@ -122,6 +122,7 @@ export type FieldKind =
   | "prefilled"
   | "text"
   | "textarea"
+  | "draft"
   | "select"
   | "date"
   | "radio"

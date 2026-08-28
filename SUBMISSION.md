@@ -29,44 +29,57 @@ last. Adapters are the mechanism, not the destination.
 
 ## 2-minute demo video script
 
-**0:00–0:15 — the problem, shown not stated**
+**0:00–0:14 — the problem, shown not stated**
 Landing page. Ten department tiles, each labelled *Separate login*, then the single Gov.in mark below them.
 > "India has ten excellent public services. It has ten of them. Ten logins, ten interfaces, ten places to be
 > told your application is pending. Why should a citizen have to understand government to use it?"
 
-**0:15–0:30 — one identity**
+**0:14–0:26 — one identity**
 Click **Continue as demo citizen**. Land on home.
 > "One identity. Government already knows this person — so it opens by telling them what needs attention,
-> instead of asking them to go and look."
+> instead of waiting to be searched."
 
-**0:30–0:58 — the killer journey**
-Click *Your passport expires in 46 days*.
-> "Nobody typed this. Every field shows where it came from and which department owns it."
-Show the consent card.
+**0:26–0:52 — the journey**
+Click *Your passport expires in 46 days*. Move fast through the steps.
+> "Nobody typed any of this. Every value shows where it came from and which department owns it."
+Pause on the consent card.
 > "Passport Seva asks for one thing, for one stated reason. Signing in didn't grant it."
-Appointment slot, review, **Submit** → case page.
-> "Sixty-eight fields on Passport Seva. Nine reused, zero typed here."
+Appointment slot → review → **Submit** → case page.
 
-**0:58–1:20 — no single service answers this**
+**0:52–1:04 — the comparison** *(the frame to hold on)*
+Cut to `/before`, annotations on.
+> "This is what it replaced. Seventy-eight fields, forty-one of which government already held about him. The
+> Ministry receives exactly what it received before. What changed is who does the work of assembling it."
+
+**1:04–1:26 — no single service answers this**
 Home, type *I am moving to Bangalore next month*.
 > "There is no government service called moving house. There are five, in four ministries. So the system
-> composes one — from capabilities that already exist. It may compose government. It may not invent it."
-Point at the badge: *Composed journey · resolved by the AI layer*.
-> "And when you just say 'renew my passport', no model runs at all. The interface tells you which happened."
+> composes one — out of capabilities that already exist. It may compose government. It may not invent it."
+Point at the badge.
+> "And when you just say 'renew my passport', no model runs at all. The interface tells you which happened,
+> every time."
 
-**1:20–1:38 — proactive, not autonomous**
-Open the scheme card → `/schemes/medcs`.
-> "Government noticed a scheme exists. It has *not* checked whether you qualify — that's your data, so it
-> asks first, and then shows all five conditions it judged you on. Rejections stop being mysterious."
+**1:26–1:42 — proactive, not autonomous**
+Open `/schemes/medcs`.
+> "Government noticed a scheme exists. It has *not* checked whether he qualifies — that's his data, so it asks
+> first, then shows all five conditions it judged him on. Rejections stop being mysterious."
 
-**1:38–1:52 — it's one system**
+**1:42–1:52 — it is one system**
 Inbox → timeline → services grid.
-> "Every department writes to one inbox, one history. Each keeps its own identity. None of them built a
+> "Every department writes to one inbox and one history. Each keeps its own identity. None of them built a
 > notification system."
 
 **1:52–2:00 — the argument**
 `/architecture`, on the stack diagram.
 > "We didn't redesign ten portals. We redesigned what they sit on. One government. One citizen experience."
+
+### Shooting notes
+
+- Record at 1440×900 or wider. The rail collapses under 1024px and the two-column `/before` stacks.
+- Light theme reads better on compressed video; the toggle is bottom-left.
+- **Reset demo** in the sidebar before each take — the passport action card must be unread and the counts fresh.
+- The intent bar auto-opens a confident match after ~1.2s with a visible progress line. Let it run; don't click.
+- `/before` needs one scroll on the left column to show the *asked again, a page later* annotations in section D.
 
 ---
 
@@ -74,7 +87,19 @@ Inbox → timeline → services grid.
 
 1. `/` → Continue as demo citizen
 2. Home → passport action card → complete the journey → submit
-3. Intent bar → type *I am moving to Bangalore next month*
-4. `/schemes/medcs` → Allow this check
-5. `/architecture`
-6. Sidebar → **Reset demo** to hand it to the next judge clean
+3. `/before` → toggle the annotations
+4. Intent bar → type *I am moving to Bangalore next month*
+5. `/schemes/medcs` → Allow this check
+6. `/architecture`
+7. Sidebar → **Reset demo** to hand it to the next judge clean
+
+---
+
+## Honest boundary (worth saying out loud if asked)
+
+Real in this build: the service registry, the journey engine, deterministic intent routing with a
+registry-grounded model behind it, the consent ledger, and genuine state across cases, inbox and timeline.
+
+Simulated: all citizen data is fictional, department processing is a triggered event rather than a real
+officer, payments and appointment inventory are mocked, and identity assurance is asserted rather than
+established. No live government system is touched, and none of their code or branding is used.

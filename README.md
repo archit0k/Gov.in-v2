@@ -34,6 +34,10 @@ Gov.in is not an eleventh portal. It is the layer underneath:
 - **Cases, inbox, timeline** — one event model. Submitting anything updates all three.
 - **Composed life-event journeys** — "I'm moving to Bangalore" assembles existing capabilities across four
   departments. The AI may compose government capabilities; it may not invent one.
+- **Drafting where it earns its place** — an RTI request is rewritten into statutory wording, showing both
+  versions, changing how you asked and never what you asked (`app/api/draft/route.ts`).
+- **`/before`** — the field burden of the existing passport application beside the same outcome here, with the
+  counts computed from one list (`lib/data/legacy.ts`) rather than typed into prose.
 
 ## Run it
 
@@ -58,12 +62,14 @@ ambiguous intents and in-journey questions are answered by the model, grounded i
 
 1. **`/`** — ten portals, ten logins. Continue as demo citizen.
 2. **Home** — "Your passport expires in 46 days." Proactive, from the credential the profile already holds.
-3. **Renew passport** — four minutes instead of 68 fields. Watch the source labels under every prefilled value,
-   and the consent card that asks for exactly one thing.
-4. **Type "I am moving to Bangalore next month"** — no single service answers this. It composes one.
-5. **`/schemes/medcs`** — government knows a scheme exists but has *not* checked your eligibility. It asks first,
+3. **Renew passport** — four minutes. Watch the source label under every prefilled value, and the consent card
+   that asks for exactly one thing.
+4. **`/before`** — the same application today: 78 fields, 41 of which government already holds. Toggle the
+   annotations on.
+5. **Type "I am moving to Bangalore next month"** — no single service answers this. It composes one.
+6. **`/schemes/medcs`** — government knows a scheme exists but has *not* checked your eligibility. It asks first,
    and shows all five conditions it judged you on.
-6. **`/architecture`** — the stack, the migration path, and an honest line between what is real here and what is simulated.
+7. **`/architecture`** — the stack, the migration path, and an honest line between what is real here and what is simulated.
 
 ## Stack
 

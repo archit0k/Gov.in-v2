@@ -55,8 +55,8 @@ export default function Landing() {
             <Button size="lg" onClick={enter}>
               <KeyRound size={16} /> Continue as demo citizen
             </Button>
-            <Button size="lg" variant="secondary" href="/architecture">
-              See the architecture
+            <Button size="lg" variant="secondary" href="/before">
+              See what it replaces
             </Button>
           </div>
 

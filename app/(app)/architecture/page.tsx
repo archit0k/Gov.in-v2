@@ -1,8 +1,9 @@
 "use client";
 
 import { Page, PageHead } from "@/components/shell/AppShell";
-import { Badge, Card, SectionTitle, ServiceMark } from "@/components/ui/primitives";
+import { Badge, Button, Card, SectionTitle, ServiceMark } from "@/components/ui/primitives";
 import { SERVICES } from "@/lib/data/services";
+import { LEGACY_DECISIONS, LEGACY_KNOWN, LEGACY_TOTAL } from "@/lib/data/legacy";
 
 const COMPARE: { axis: string; umang: string; govin: string }[] = [
   { axis: "Relationship", umang: "One app that links out to many services", govin: "One identity that every service is built on" },
@@ -29,6 +30,19 @@ export default function ArchitecturePage() {
         title="Gov.in is a layer, not a portal"
         sub="India's public services are not badly built. They are separately built. Every department independently solved identity, forms, status tracking, notifications and support — so a citizen has to solve integration by hand, eleven times."
       />
+
+      <Card className="mb-8 flex flex-wrap items-center gap-4 border-[var(--accent-line)] bg-[var(--accent-soft)] p-5">
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-medium">The argument in one screen</p>
+          <p className="mt-1 max-w-[74ch] text-[13.5px] leading-relaxed text-[var(--ink-2)]">
+            One passport renewal, side by side: {LEGACY_TOTAL} fields today, {LEGACY_KNOWN} of which government
+            already holds, against the {LEGACY_DECISIONS} decisions only the citizen can actually make.
+          </p>
+        </div>
+        <Button href="/before" className="shrink-0">
+          See the comparison
+        </Button>
+      </Card>
 
       <section className="mb-12">
         <SectionTitle>The stack</SectionTitle>

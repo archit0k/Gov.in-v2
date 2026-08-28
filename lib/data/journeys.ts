@@ -1,4 +1,5 @@
 import type { JourneyDef } from "@/lib/types";
+import { LEGACY_TOTAL } from "@/lib/data/legacy";
 
 /* ============================================================
    JOURNEY REGISTRY
@@ -17,7 +18,7 @@ export const JOURNEYS: JourneyDef[] = [
     composes: ["gov-core"],
     estMinutes: 4,
     legacyEquivalent: "Passport Seva — Fresh/Reissue application (Form 1)",
-    legacyFields: 68,
+    legacyFields: LEGACY_TOTAL,
     outcome: "Application submitted and an appointment held at your chosen Seva Kendra.",
     caseStates: ["Submitted", "Documents verified", "Appointment", "Police verification", "Printed & dispatched"],
     tags: ["passport", "renew", "reissue", "travel", "expiry", "psk", "visa"],
@@ -370,54 +371,117 @@ export const JOURNEYS: JourneyDef[] = [
   {
     id: "rti-file",
     title: "File an RTI request",
-    goal: "Ask a government body a question, sent to the right officer.",
+    goal: "Ask a government body a question, worded so it cannot be dismissed.",
     serviceId: "rti",
     estMinutes: 3,
-    legacyEquivalent: "RTI Online — public authority tree with 2,000+ nodes",
+    legacyEquivalent: "RTI Online — a public authority tree with 2,000+ nodes and no guidance",
     legacyFields: 19,
-    outcome: "Request filed with the correct PIO; 30-day statutory clock started.",
+    outcome: "Request filed with the correct PIO; the 30-day statutory clock has started.",
     caseStates: ["Filed", "With PIO", "Response due", "Responded"],
-    tags: ["rti", "right to information", "information", "pio", "appeal", "transparency"],
+    tags: ["rti", "right to information", "information", "pio", "appeal", "transparency", "ask", "stalled"],
     steps: [
       {
         id: "question",
         title: "What do you want to know?",
-        intent: "Write it plainly. Routing to the right public authority is our job, not yours.",
-        assistPrompts: ["Rewrite my question in RTI language", "What cannot be asked under RTI?"],
+        intent: "Write it the way you would say it out loud. Routing and wording are our job, not yours.",
+        assistPrompts: ["What cannot be asked under RTI?", "What happens if they do not reply?"],
         fields: [
           {
             id: "subject",
-            kind: "textarea",
+            kind: "draft",
             label: "Your question",
-            placeholder: "e.g. Why has the Baner Road stormwater drain work been stalled since March?",
+            placeholder: "Why has the Baner Road stormwater drain work been stalled since March?",
             required: true,
-            help: "The service registry maps your question to a public authority. You never pick from a ministry tree.",
+            help: "Most RTI requests fail on wording, not on substance. You can have this put into statutory form — you will see both versions and choose.",
+          },
+        ],
+      },
+      {
+        id: "scope",
+        title: "What RTI can actually get you",
+        intent: "The most common rejection is asking for the wrong kind of thing. Better to know now than in 30 days.",
+        assistPrompts: ["Explain Section 8 exemptions", "Can I ask why a decision was taken?"],
+        fields: [
+          {
+            id: "scope-note",
+            kind: "note",
+            label:
+              "RTI compels an authority to give you information it already holds — files, notings, reports, correspondence, figures. It does not compel it to give opinions, justify a policy, answer hypotheticals, or create new analysis for you.",
           },
           {
-            id: "authority",
-            kind: "select",
-            label: "Routed to",
+            id: "exempt",
+            kind: "radio",
+            label: "Does your request touch any of these?",
+            help: "Section 8 exemptions. Touching one does not mean automatic refusal, but it changes what the PIO is allowed to release.",
             required: true,
             options: [
-              { value: "pmc", label: "Pune Municipal Corporation — PIO, Stormwater Drainage", hint: "Matched from your question and location" },
-              { value: "mrtha", label: "MoRTH — PIO, Urban Roads" },
-              { value: "other", label: "Something else" },
+              { value: "none", label: "None of these", hint: "Straightforward request" },
+              { value: "personal", label: "Another person's personal information", hint: "Releasable only where there is a public interest" },
+              { value: "investigation", label: "An ongoing investigation or prosecution" },
+              { value: "commercial", label: "A third party's commercial confidence", hint: "Triggers third-party consultation, adds up to 40 days" },
+            ],
+          },
+          {
+            id: "format",
+            kind: "radio",
+            label: "How do you want the information?",
+            required: true,
+            options: [
+              { value: "electronic", label: "Electronic copies", hint: "No further charge beyond the application fee" },
+              { value: "certified", label: "Certified paper copies", hint: "₹2 per page, billed after the PIO responds" },
+              { value: "inspection", label: "Inspect the records in person", hint: "First hour free" },
             ],
           },
         ],
       },
       {
+        id: "route",
+        title: "Where this goes",
+        intent: "Choosing the wrong public authority is the second most common reason RTIs fail. The registry does it from your question.",
+        assistPrompts: ["Why this authority and not the state department?", "What if it is the wrong one?"],
+        fields: [
+          {
+            id: "authority",
+            kind: "select",
+            label: "Routed to",
+            required: true,
+            help: "Matched from the subject of your question and your verified location. You can override it.",
+            options: [
+              { value: "pmc", label: "Pune Municipal Corporation — PIO, Stormwater Drainage", hint: "Best match · holds the ward-level works files" },
+              { value: "pwd", label: "Maharashtra PWD — PIO, Urban Roads", hint: "If the road is a state highway" },
+              { value: "morth", label: "MoRTH — PIO, Urban Roads" },
+              { value: "other", label: "Something else — help me find it" },
+            ],
+          },
+          {
+            id: "transfer-note",
+            kind: "note",
+            label:
+              "If this PIO does not hold the information, Section 6(3) obliges them to transfer the request to the authority that does, within five days. That transfer is tracked on this case — you will not have to file again.",
+          },
+        ],
+      },
+      {
         id: "applicant",
-        title: "Applicant details",
+        title: "Applicant details and fee",
         intent: "Statutorily required. Already held, already verified.",
         fields: [
           { id: "name", kind: "prefilled", label: "Name", sourcePath: "citizen.name", sourceLabel: "Verified government profile" },
           { id: "address", kind: "prefilled", label: "Address for reply", sourcePath: "address.current", sourceLabel: "Verified government profile" },
-          { id: "bpl", kind: "radio", label: "Are you claiming a BPL fee exemption?", required: true, options: [{ value: "no", label: "No — pay ₹10 fee" }, { value: "yes", label: "Yes", hint: "Requires BPL card verification" }] },
-          { id: "fee", kind: "payment", label: "RTI application fee", amount: 10 },
+          {
+            id: "bpl",
+            kind: "radio",
+            label: "Are you claiming a BPL fee exemption?",
+            required: true,
+            options: [
+              { value: "no", label: "No — pay the ₹10 fee" },
+              { value: "yes", label: "Yes", hint: "Fee waived, verified against your BPL record. No card to upload." },
+            ],
+          },
+          { id: "fee", kind: "payment", label: "RTI application fee", amount: 10, help: "Statutory fee under the RTI Rules." },
         ],
       },
-      { id: "review", title: "Review and file", intent: "What the PIO will receive.", fields: [{ id: "review", kind: "review", label: "Review" }] },
+      { id: "review", title: "Review and file", intent: "What the PIO will receive, and the clock it starts.", fields: [{ id: "review", kind: "review", label: "Review" }] },
     ],
   },
 
@@ -533,27 +597,69 @@ export const JOURNEYS: JourneyDef[] = [
     title: "Book a train",
     goal: "Get seats for the people you actually travel with.",
     serviceId: "irctc",
-    estMinutes: 2,
-    legacyEquivalent: "IRCTC — passenger details retyped every booking",
+    estMinutes: 3,
+    legacyEquivalent: "IRCTC — passenger details retyped every booking, refund rules discovered afterwards",
     legacyFields: 26,
-    outcome: "Tickets booked; PNR tracked in your timeline.",
+    outcome: "Tickets booked and the PNR tracked in your timeline.",
     caseStates: ["Booked", "Chart prepared", "Journey complete"],
-    tags: ["train", "irctc", "ticket", "rail", "railway", "pnr", "booking", "travel"],
+    tags: ["train", "irctc", "ticket", "rail", "railway", "pnr", "booking", "travel", "seat", "tatkal"],
     steps: [
       {
         id: "trip",
         title: "Where to?",
-        intent: "Home station inferred from your verified address.",
+        intent: "Your home station comes from your verified address. You should not have to know station codes.",
+        assistPrompts: ["What is the difference between the quotas?", "How early can I book?"],
         fields: [
-          { id: "from", kind: "select", label: "From", required: true, options: [{ value: "pune", label: "Pune Jn (PUNE)", hint: "Nearest to your current address" }, { value: "mumbai", label: "Mumbai CSMT" }] },
+          {
+            id: "from",
+            kind: "select",
+            label: "From",
+            required: true,
+            options: [
+              { value: "pune", label: "Pune Jn (PUNE)", hint: "Nearest to your verified current address" },
+              { value: "shivajinagar", label: "Shivajinagar (SVJR)", hint: "4 km away · fewer services" },
+              { value: "mumbai", label: "Mumbai CSMT" },
+            ],
+          },
           { id: "to", kind: "text", label: "To", placeholder: "Nashik Road", required: true },
           { id: "date", kind: "date", label: "Date of journey", required: true },
         ],
       },
       {
+        id: "train",
+        title: "Which train?",
+        intent: "Availability is shown with an honest chance of confirmation, not a code you have to learn to read.",
+        assistPrompts: ["What does RAC actually mean for me?", "What happens if it stays waitlisted?"],
+        fields: [
+          {
+            id: "train",
+            kind: "select",
+            label: "Available services",
+            required: true,
+            options: [
+              { value: "12617", label: "12617 Mangala Lakshadweep Exp · 06:10 → 10:25", hint: "AC 3-tier · 14 available · confirmed" },
+              { value: "11026", label: "11026 Bhusaval Exp · 09:40 → 14:50", hint: "AC 3-tier · RAC 6 · confirms in about 9 of 10 comparable bookings" },
+              { value: "17617", label: "17617 Tapovan Exp · 14:15 → 18:30", hint: "Chair car · WL 22 · rarely confirms this close to the date" },
+            ],
+          },
+          {
+            id: "quota",
+            kind: "radio",
+            label: "Quota",
+            required: true,
+            options: [
+              { value: "general", label: "General", hint: "Standard fare" },
+              { value: "senior", label: "Senior citizen", hint: "Applied automatically to whichever passengers qualify" },
+              { value: "tatkal", label: "Tatkal", hint: "Opens 11:00 the previous day · higher fare, no refund once confirmed" },
+            ],
+          },
+        ],
+      },
+      {
         id: "who",
         title: "Who is travelling?",
-        intent: "From your citizen graph, with concessions already applied.",
+        intent: "From your citizen graph. Nobody retypes a spouse's date of birth for the eleventh time.",
+        assistPrompts: ["Do they need to carry ID?", "Can I add someone not in my family?"],
         fields: [
           {
             id: "pax",
@@ -561,13 +667,38 @@ export const JOURNEYS: JourneyDef[] = [
             label: "Passengers",
             required: true,
             options: [
-              { value: "self-spouse", label: "You and Meera Deshmukh (spouse)", hint: "Both verified — no ID entry at boarding" },
+              { value: "self-spouse", label: "You and Meera Deshmukh (spouse)", hint: "Both verified — no ID check needed at boarding" },
               { value: "self", label: "Just you" },
-              { value: "self-parents", label: "You, Ramesh and Sunanda Deshmukh", hint: "Senior citizen concession auto-applied" },
+              { value: "self-parents", label: "You, Ramesh and Sunanda Deshmukh", hint: "Senior citizen concession applied to both automatically" },
+              { value: "other", label: "Someone not in my citizen graph", hint: "Needs their name, age and ID — the old way" },
             ],
           },
-          { id: "class", kind: "radio", label: "Class", required: true, options: [{ value: "3a", label: "AC 3-tier", hint: "₹1,240 for 2" }, { value: "sl", label: "Sleeper", hint: "₹470 for 2" }] },
-          { id: "fare", kind: "payment", label: "Fare", amount: 1240 },
+          {
+            id: "berth",
+            kind: "radio",
+            label: "Berth preference",
+            help: "Remembered from your last four journeys. Change it whenever you like.",
+            required: true,
+            options: [
+              { value: "lower", label: "Lower berth", hint: "Your usual choice" },
+              { value: "side-lower", label: "Side lower" },
+              { value: "none", label: "No preference" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "pay",
+        title: "Before you pay",
+        intent: "The cancellation rules are shown now, not discovered later when you need the refund.",
+        fields: [
+          {
+            id: "refund-note",
+            kind: "note",
+            label:
+              "Cancel more than 48 hours before departure and ₹200 per passenger is retained. Between 48 and 12 hours, 25% of the fare. Under 12 hours, 50%. If the train is cancelled or runs more than three hours late, the full fare returns automatically to the account that paid — you will not have to claim it.",
+          },
+          { id: "fare", kind: "payment", label: "Total fare", amount: 1240, help: "AC 3-tier, 2 passengers, including reservation charge and GST." },
         ],
       },
       { id: "review", title: "Review and book", intent: "Confirm before the seats are held.", fields: [{ id: "review", kind: "review", label: "Review" }] },

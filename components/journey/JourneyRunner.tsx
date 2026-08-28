@@ -11,6 +11,7 @@ import { service } from "@/lib/data/services";
 import { newCaseId, useSession } from "@/lib/state/store";
 import type { FieldDef, JourneyDef, StepDef } from "@/lib/types";
 import { Assist } from "@/components/journey/Assist";
+import { DraftField } from "@/components/journey/DraftField";
 
 /* ============================================================
    JOURNEY RUNNER
@@ -137,7 +138,14 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
               <Review journey={journey} values={values} />
             ) : (
               step.fields.map((f) => (
-                <Field key={f.id} f={f} value={values[f.id] ?? ""} onChange={(v) => set(f.id, v)} />
+                <Field
+                  key={f.id}
+                  f={f}
+                  value={values[f.id] ?? ""}
+                  onChange={(v) => set(f.id, v)}
+                  journeyId={journey.id}
+                  stepId={step.id}
+                />
               ))
             )}
           </div>
@@ -190,6 +198,11 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
             <span className="text-[var(--ink-2)]">{reusedCount}</span> reused here ·{" "}
             <span className="text-[var(--ink-2)]">{typedCount}</span> answered by you
           </span>
+          {journey.serviceId === "passport" && (
+            <a href="/before" className="text-[var(--accent)] hover:underline">
+              See the form this replaces
+            </a>
+          )}
         </div>
       </div>
     </ServiceTheme>
@@ -202,8 +215,23 @@ function Row({ children, className }: { children: React.ReactNode; className?: s
   return <div className={cn("px-5 py-4 sm:px-6", className)}>{children}</div>;
 }
 
-function Field({ f, value, onChange }: { f: FieldDef; value: string; onChange: (v: string) => void }) {
+function Field({
+  f,
+  value,
+  onChange,
+  journeyId,
+  stepId,
+}: {
+  f: FieldDef;
+  value: string;
+  onChange: (v: string) => void;
+  journeyId: string;
+  stepId: string;
+}) {
   switch (f.kind) {
+    case "draft":
+      return <DraftField f={f} value={value} onChange={onChange} journeyId={journeyId} stepId={stepId} />;
+
     case "prefilled": {
       const v = f.sourcePath && f.sourcePath !== "none" ? readProfile(f.sourcePath) : PLACEHOLDER[f.id] ?? "—";
       return (
