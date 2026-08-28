@@ -7,12 +7,22 @@ import OpenAI from "openai";
    something each screen reimplements.
    ============================================================ */
 
-export const MODEL = process.env.OPENAI_MODEL ?? "gpt-4.1-mini";
+export const MODEL = process.env.OPENAI_MODEL ?? "openai/gpt-5.4-mini";
+
+/** Any OpenAI-compatible endpoint. Unset means OpenAI itself. */
+const BASE_URL = process.env.OPENAI_BASE_URL;
 
 let client: OpenAI | null = null;
 export function ai(): OpenAI | null {
   if (!process.env.OPENAI_API_KEY) return null;
-  client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 12_000, maxRetries: 1 });
+  client ??= new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    ...(BASE_URL ? { baseURL: BASE_URL } : {}),
+    // The citizen is waiting on this call, so it fails fast into the
+    // deterministic engine rather than holding the interface open.
+    timeout: 12_000,
+    maxRetries: 1,
+  });
   return client;
 }
 

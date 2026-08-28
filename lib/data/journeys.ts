@@ -330,7 +330,7 @@ export const JOURNEYS: JourneyDef[] = [
     legacyFields: 190,
     outcome: "Return filed and e-verified; refund tracked as a case.",
     caseStates: ["Filed", "E-verified", "Processed u/s 143(1)", "Refund issued"],
-    tags: ["itr", "income tax", "return", "refund", "tds", "26as", "filing", "tax"],
+    tags: ["itr", "income tax", "return", "refund", "tds", "26as", "tax", "assessment"],
     steps: [
       {
         id: "prefill",
@@ -716,7 +716,7 @@ export const JOURNEYS: JourneyDef[] = [
     legacyFields: 17,
     outcome: "DIR-3 KYC filed; DIN stays active.",
     caseStates: ["Filed", "Verified", "DIN active"],
-    tags: ["mca", "din", "director", "kyc", "dir-3", "company", "incorporation", "roc"],
+    tags: ["mca", "din", "director", "kyc", "dir-3", "company", "incorporation", "roc", "filing", "annual", "registrar"],
     steps: [
       {
         id: "confirm",

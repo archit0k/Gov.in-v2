@@ -55,7 +55,11 @@ export async function POST(req: Request) {
 You are answering one question asked from inside a government journey. Reply as JSON:
 { "answer": "<40-70 words, plain, specific to this step>", "certain": true|false }
 
-Set certain=false, and say so in the answer, if the question needs information you were not given.
+Set certain=true when the CONTEXT below fully supports your answer. That is the normal case, and hedging
+a well-supported answer is its own kind of unhelpfulness.
+Set certain=false, and say plainly what you do not know, only when the question asks for something the
+context does not contain. Do not pad a certain answer with speculation about what a department might also
+want — if it is not in the context, leave it out.
 
 CONTEXT
 Journey: ${j?.title ?? "unknown"} — ${j?.goal ?? ""}

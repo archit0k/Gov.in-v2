@@ -51,12 +51,18 @@ Open `http://localhost:3000` and press **Continue as demo citizen** — no accou
 ### Optional: the AI layer
 
 ```bash
-cp .env.example .env.local   # then paste your OpenAI key
+cp .env.example .env.local
 ```
 
-Without a key the deterministic engine handles everything and the product works end to end. With a key,
-ambiguous intents and in-journey questions are answered by the model, grounded in the registry
-(`lib/ai/model.ts`, `app/api/navigate/route.ts`, `app/api/assist/route.ts`).
+Set `OPENAI_API_KEY`. Any OpenAI-compatible endpoint works — set `OPENAI_BASE_URL` and name the model the
+way that endpoint names it (`OPENAI_MODEL`). All three routes go through one gateway in `lib/ai/model.ts`,
+so the provider is a config line rather than something threaded through the UI.
+
+Without a key the deterministic engine handles every request and the product still works end to end. With a
+key, three things get better: ambiguous intents route properly (`app/api/navigate/route.ts`), in-journey
+questions are answered in context (`app/api/assist/route.ts`), and RTI requests are redrafted into statutory
+wording (`app/api/draft/route.ts`). Every model response is validated against the registry before it is
+shown; anything outside it is discarded and the engine answers instead.
 
 ## Demo path (about 90 seconds)
 

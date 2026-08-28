@@ -20,8 +20,10 @@ export async function POST(req: Request) {
 
   const engine = navigate(q);
 
-  // Confident deterministic match — do not spend a model call or a second of the citizen's time.
-  if (engine.confidence >= 0.75 && engine.mode !== "clarify") {
+  // Confident deterministic match — do not spend a model call or a second of the
+  // citizen's time. The bar is deliberately high: a single weak keyword hit is
+  // not certainty, and being confidently wrong is worse than being a second slow.
+  if (engine.confidence >= 0.85 && engine.mode !== "clarify") {
     return NextResponse.json(engine);
   }
 
