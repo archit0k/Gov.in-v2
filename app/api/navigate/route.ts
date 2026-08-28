@@ -3,7 +3,7 @@ import { navigate, groundingCatalogue, lifeEventById } from "@/lib/ai/engine";
 import { GROUND_RULES, jsonCall } from "@/lib/ai/model";
 import { JOURNEY_MAP } from "@/lib/data/journeys";
 import { SERVICE_MAP, service } from "@/lib/data/services";
-import type { NavResult } from "@/lib/types";
+import type { NavResult, ServiceId } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -15,10 +15,10 @@ export const runtime = "nodejs";
    ============================================================ */
 
 export async function POST(req: Request) {
-  const { query } = (await req.json()) as { query?: string };
+  const { query, scope } = (await req.json()) as { query?: string; scope?: ServiceId };
   const q = (query ?? "").trim();
 
-  const engine = navigate(q);
+  const engine = navigate(q, scope);
 
   // Confident deterministic match — do not spend a model call or a second of the
   // citizen's time. The bar is deliberately high: a single weak keyword hit is
@@ -26,6 +26,9 @@ export async function POST(req: Request) {
   if (engine.confidence >= 0.85 && engine.mode !== "clarify") {
     return NextResponse.json(engine);
   }
+
+  // A department's own search must not hand the citizen off elsewhere.
+  if (scope) return NextResponse.json(engine);
 
   const cat = groundingCatalogue();
   const out = await jsonCall(

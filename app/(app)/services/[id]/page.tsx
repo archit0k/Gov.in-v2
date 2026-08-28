@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { ArrowRight, Clock3, Database, Layers, Puzzle } from "lucide-react";
 import { Page } from "@/components/shell/AppShell";
 import { Badge, Button, Card, EmptyState, ProgressRail, SectionTitle, ServiceMark, ServiceTheme } from "@/components/ui/primitives";
-import { SERVICE_MAP } from "@/lib/data/services";
+import { PLATFORMS, SERVICE_MAP } from "@/lib/data/services";
 import { journeysForService } from "@/lib/data/journeys";
 import { CITIZEN } from "@/lib/data/citizen";
 import { useSession } from "@/lib/state/store";
@@ -14,7 +15,14 @@ import type { ServiceId } from "@/lib/types";
 export default function ServicePage() {
   const { id } = useParams<{ id: string }>();
   const { state } = useSession();
+  const router = useRouter();
   const s = SERVICE_MAP[id];
+  const platform = PLATFORMS[id as keyof typeof PLATFORMS];
+
+  // Departments built out as their own platform own their URL.
+  useEffect(() => {
+    if (platform) router.replace(platform);
+  }, [platform, router]);
 
   if (!s) {
     return (

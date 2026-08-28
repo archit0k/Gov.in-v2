@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Page, PageHead } from "@/components/shell/AppShell";
 import { Badge, Card, ServiceMark, cn } from "@/components/ui/primitives";
-import { CATEGORY_LABEL, SERVICES } from "@/lib/data/services";
+import { CATEGORY_LABEL, PLATFORMS, SERVICES, serviceHref } from "@/lib/data/services";
 import { journeysForService } from "@/lib/data/journeys";
 import type { ServiceDef } from "@/lib/types";
 
@@ -51,7 +51,7 @@ export default function ServicesPage() {
             <Card
               key={s.id}
               as={Link}
-              href={`/services/${s.id}`}
+              href={serviceHref(s.id)}
               interactive
               className="rise flex flex-col p-4"
               style={{ animationDelay: `${i * 35}ms` }}
@@ -67,6 +67,7 @@ export default function ServicesPage() {
               <div className="flex flex-wrap items-center gap-1.5">
                 <Badge tone={INTEGRATION[s.integration].tone}>{INTEGRATION[s.integration].label}</Badge>
                 {js.length > 0 && <Badge tone="neutral">{js.length} {js.length === 1 ? "journey" : "journeys"}</Badge>}
+                {PLATFORMS[s.id] && <Badge tone="accent">Full platform</Badge>}
                 <span className="mono ml-auto truncate text-[10.5px] text-[var(--faint)]">{s.subdomain}</span>
               </div>
             </Card>

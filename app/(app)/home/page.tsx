@@ -6,7 +6,7 @@ import { Page } from "@/components/shell/AppShell";
 import { IntentBar } from "@/components/shell/IntentBar";
 import { Badge, Button, Card, EmptyState, ProgressRail, SectionTitle, ServiceMark, timeAgo } from "@/components/ui/primitives";
 import { CITIZEN, daysUntil } from "@/lib/data/citizen";
-import { SERVICES, service } from "@/lib/data/services";
+import { SERVICES, service, serviceHref } from "@/lib/data/services";
 import { useSession } from "@/lib/state/store";
 
 export default function HomePage() {
@@ -21,20 +21,33 @@ export default function HomePage() {
 
   return (
     <Page wide>
-      <header className="mb-7">
-        <h1 className="text-[28px] font-semibold tracking-[-0.025em] text-[var(--ink)]">
+      {/* The front door is the product. It gets the top of the page, the
+          largest type on it, and nothing competing for the same glance. */}
+      <section className="mb-11 border-b border-[var(--line)] pb-9">
+        <p className="mb-1.5 text-[13.5px] text-[var(--muted)]">
           {greeting}, {CITIZEN.shortName}.
-        </h1>
-        <p className="mt-1.5 text-[14.5px] text-[var(--muted)]">
-          {actions.length > 0
-            ? `${actions.length} ${actions.length === 1 ? "thing needs" : "things need"} your attention. Everything else is on track.`
-            : "Nothing needs your attention right now."}
         </p>
-      </header>
+        <h1 className="mb-5 max-w-[20ch] text-[30px] font-semibold leading-[1.15] tracking-[-0.028em] text-[var(--ink)] sm:text-[34px]">
+          What do you need to do?
+        </h1>
 
-      <div className="mb-10">
-        <IntentBar autoFocus />
-      </div>
+        <IntentBar autoFocus size="hero" aiMode />
+
+        <p className="mt-3.5 max-w-[76ch] text-[13px] leading-relaxed text-[var(--muted)]">
+          Say it however you would say it to a person. You do not need to know which department it belongs to.
+          If it is a known task, it opens straight away. If it spans several departments, they get composed into
+          one journey. If it is not a task at all, switch to AI mode and talk it through.
+        </p>
+
+        {actions.length > 0 && (
+          <p className="mt-4 text-[13.5px] text-[var(--ink-2)]">
+            <span className="font-medium">
+              {actions.length} {actions.length === 1 ? "thing needs" : "things need"} your attention
+            </span>{" "}
+            <span className="text-[var(--muted)]">— everything else is on track.</span>
+          </p>
+        )}
+      </section>
 
       {/* Needs your attention — actions, not a notification count */}
       {actions.length > 0 && (
@@ -150,7 +163,7 @@ export default function HomePage() {
         </SectionTitle>
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
           {SERVICES.slice(0, 10).map((s) => (
-            <Card key={s.id} interactive as={Link} className="block p-3.5" href={`/services/${s.id}`}>
+            <Card key={s.id} interactive as={Link} className="block p-3.5" href={serviceHref(s.id)}>
               <ServiceMark id={s.id} size={30} />
               <p className="mt-2.5 truncate text-[13.5px] font-medium leading-tight">{s.shortName}</p>
               <p className="mt-1 line-clamp-2 text-[11.5px] leading-snug text-[var(--muted)]">{s.citizenPurpose}</p>

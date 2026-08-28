@@ -34,6 +34,13 @@ Gov.in is not an eleventh portal. It is the layer underneath:
 - **Cases, inbox, timeline** — one event model. Submitting anything updates all three.
 - **Composed life-event journeys** — "I'm moving to Bangalore" assembles existing capabilities across four
   departments. The AI may compose government capabilities; it may not invent one.
+- **AI mode** (`/ai`) — the front door becomes a conversation for needs that will not fit a search box. It
+  opens knowing a first name and nothing else, and asks for each bundle of context separately, with a reason
+  and a decline option (`lib/ai/context.ts`). Permission is per conversation and never inherited. It routes
+  into journeys; it never submits, pays or cancels.
+- **Two departments built out as their own platforms** — `/passport` and `/irctc` have their own domain,
+  colour, navigation, sections and scoped search, on one shared shell. Same identity, no second login, and
+  deliberately no AI mode: conversation belongs to the layer that can see across departments.
 - **Drafting where it earns its place** — an RTI request is rewritten into statutory wording, showing both
   versions, changing how you asked and never what you asked (`app/api/draft/route.ts`).
 - **`/before`** — the field burden of the existing passport application beside the same outcome here, with the

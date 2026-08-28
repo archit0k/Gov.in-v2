@@ -1,11 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CornerDownLeft, Layers, Search, Sparkles, Zap } from "lucide-react";
 import { Badge, Card, ServiceMark, cn } from "@/components/ui/primitives";
 import { useSession } from "@/lib/state/store";
-import type { NavResult } from "@/lib/types";
+import type { NavResult, ServiceId } from "@/lib/types";
 
 /* ============================================================
    THE FRONT DOOR
@@ -13,6 +14,12 @@ import type { NavResult } from "@/lib/types";
    deterministically when it can, and only reaches the model when
    the request is genuinely ambiguous. The badge tells you which
    happened, every time.
+
+   AI mode sits beside it rather than replacing it: when a need
+   cannot be phrased as a task, the whole surface becomes a
+   conversation. It exists only on the infrastructure's own front
+   door — a department inherits the navigation surface, not a
+   chat product.
    ============================================================ */
 
 const EXAMPLES = [
@@ -23,12 +30,31 @@ const EXAMPLES = [
   "I want to ask why a road project stalled",
 ];
 
-export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact?: boolean }) {
+export function IntentBar({
+  autoFocus,
+  size = "md",
+  aiMode = false,
+  scope,
+  examples,
+  placeholder,
+}: {
+  autoFocus?: boolean;
+  size?: "md" | "hero";
+  /** Only the infrastructure front door offers AI mode. */
+  aiMode?: boolean;
+  /** Restrict results to one department's journeys. */
+  scope?: ServiceId;
+  examples?: string[];
+  placeholder?: string;
+}) {
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<NavResult | null>(null);
   const { dispatch } = useSession();
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const hero = size === "hero";
+  const chips = examples ?? EXAMPLES;
 
   async function run(text: string) {
     const query = text.trim();
@@ -40,7 +66,7 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
       const r = await fetch("/api/navigate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, scope }),
       });
       const data: NavResult = await r.json();
       if (data.composed) dispatch({ type: "addComposed", journey: data.composed });
@@ -58,6 +84,11 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
     }
   }
 
+  function toAi() {
+    const seed = q.trim();
+    router.push(seed ? `/ai?q=${encodeURIComponent(seed)}` : "/ai");
+  }
+
   return (
     <div className="w-full">
       <form
@@ -66,40 +97,54 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
           run(q);
         }}
         className={cn(
-          "group relative flex items-center gap-3 rounded-[14px] border bg-[var(--panel)] px-4 transition-all duration-200",
-          compact ? "h-12" : "h-[58px]",
-          busy ? "border-[var(--accent)] shadow-[0_0_0_4px_var(--accent-soft)]" : "border-[var(--line)] focus-within:border-[var(--accent)] focus-within:shadow-[0_0_0_4px_var(--accent-soft)]",
+          // One ring, not two: the border is the entire focus treatment.
+          "flex items-center gap-3 rounded-[14px] border-2 bg-[var(--panel)] transition-colors duration-150",
+          hero ? "h-[62px] px-5" : "h-12 px-4",
+          busy ? "border-[var(--accent)]" : "border-[var(--line)] focus-within:border-[var(--accent)]",
         )}
       >
-        <Search size={compact ? 17 : 19} className="shrink-0 text-[var(--faint)]" strokeWidth={1.9} />
+        <Search size={hero ? 20 : 17} className="shrink-0 text-[var(--faint)]" strokeWidth={1.9} />
         <input
           ref={inputRef}
           value={q}
           autoFocus={autoFocus}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="What do you need to do?"
-          aria-label="What do you need to do?"
+          placeholder={placeholder ?? "What do you need to do?"}
+          aria-label={placeholder ?? "What do you need to do?"}
           className={cn(
-            "min-w-0 flex-1 bg-transparent text-[var(--ink)] outline-none focus-visible:outline-none placeholder:text-[var(--faint)]",
-            compact ? "text-[14.5px]" : "text-[16.5px]",
+            "min-w-0 flex-1 border-0 bg-transparent text-[var(--ink)] outline-none focus:outline-none focus-visible:outline-none placeholder:text-[var(--faint)]",
+            hero ? "text-[17.5px]" : "text-[14.5px]",
           )}
         />
-        {q && !busy && (
-          <kbd className="hidden shrink-0 items-center gap-1 rounded-[6px] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
-            <CornerDownLeft size={11} /> Enter
-          </kbd>
-        )}
-        {busy && (
+        {busy ? (
           <span className="flex shrink-0 items-center gap-2 text-[12.5px] text-[var(--muted)]">
             <span className="h-1.5 w-1.5 animate-[pulse-soft_1s_infinite] rounded-full bg-[var(--accent)]" />
-            Understanding your request
+            Understanding
           </span>
+        ) : (
+          <>
+            {q && (
+              <kbd className="hidden shrink-0 items-center gap-1 rounded-[6px] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
+                <CornerDownLeft size={11} /> Enter
+              </kbd>
+            )}
+            {aiMode && (
+              <button
+                type="button"
+                onClick={toAi}
+                title="Turn this page into a conversation. For when you cannot phrase it as a task."
+                className="flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-1.5 text-[12.5px] font-medium text-[var(--accent)] transition-[filter] hover:brightness-105"
+              >
+                <Sparkles size={13} strokeWidth={2.1} /> AI mode
+              </button>
+            )}
+          </>
         )}
       </form>
 
       {!res && !busy && (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {EXAMPLES.map((e) => (
+          {chips.map((e) => (
             <button
               key={e}
               onClick={() => {
@@ -117,6 +162,8 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
       {res && (
         <Result
           res={res}
+          aiMode={aiMode}
+          onAsk={toAi}
           onClear={() => {
             setRes(null);
             setQ("");
@@ -128,7 +175,17 @@ export function IntentBar({ autoFocus, compact }: { autoFocus?: boolean; compact
   );
 }
 
-function Result({ res, onClear }: { res: NavResult; onClear: () => void }) {
+function Result({
+  res,
+  aiMode,
+  onAsk,
+  onClear,
+}: {
+  res: NavResult;
+  aiMode: boolean;
+  onAsk: () => void;
+  onClear: () => void;
+}) {
   return (
     <div className="rise mt-3">
       <Card className="overflow-hidden">
@@ -180,7 +237,7 @@ function Result({ res, onClear }: { res: NavResult; onClear: () => void }) {
 
           {res.composed && (
             <ul className="mt-3 grid gap-1.5">
-              {res.composed.steps.map((s, i) => (
+              {res.composed.steps.slice(0, -1).map((s, i) => (
                 <li key={s.id} className="flex items-center gap-2.5 rounded-[9px] border border-[var(--line)] px-3 py-2 text-[13px]">
                   <span className="tnum w-4 shrink-0 text-[11.5px] text-[var(--faint)]">{i + 1}</span>
                   <span className="truncate text-[var(--ink)]">{s.title}</span>
@@ -223,6 +280,16 @@ function Result({ res, onClear }: { res: NavResult; onClear: () => void }) {
                 ))}
               </div>
             </div>
+          )}
+
+          {aiMode && (res.mode === "clarify" || res.mode === "informational") && (
+            <button
+              onClick={onAsk}
+              className="mt-3 flex w-full items-center gap-2 rounded-[10px] border border-dashed border-[var(--line)] px-3.5 py-2.5 text-[13px] text-[var(--muted)] transition-colors hover:border-[var(--accent-line)] hover:text-[var(--accent)]"
+            >
+              <Sparkles size={14} /> Still not it? Talk it through in AI mode
+              <ArrowRight size={14} className="ml-auto" />
+            </button>
           )}
         </div>
       </Card>

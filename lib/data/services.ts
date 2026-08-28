@@ -237,6 +237,20 @@ export function service(id: ServiceId): ServiceDef {
   return SERVICE_MAP[id] ?? CORE;
 }
 
+/**
+ * Departments that have been built out as their own platform, on their own
+ * path, with their own navigation. The rest still render from the registry as
+ * a single page — which is the honest state of a migration, not an oversight.
+ */
+export const PLATFORMS: Partial<Record<ServiceId, string>> = {
+  passport: "/passport",
+  irctc: "/irctc",
+};
+
+export function serviceHref(id: ServiceId) {
+  return PLATFORMS[id] ?? `/services/${id}`;
+}
+
 export const CATEGORY_LABEL: Record<ServiceDef["category"], string> = {
   identity: "Identity & travel",
   finance: "Money & tax",

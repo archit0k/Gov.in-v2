@@ -34,6 +34,36 @@ export interface ConsentGrant {
   journeyId: string;
 }
 
+export interface Suggestion {
+  kind: "journey" | "service";
+  id: string;
+  label: string;
+  sublabel: string;
+  href: string;
+  serviceId: string;
+}
+
+export interface ChatTurn {
+  id: string;
+  role: "citizen" | "gov";
+  text: string;
+  at: string;
+  /** Context the AI asked for on this turn, and has not been answered yet. */
+  needs?: { key: string; why: string }[];
+  suggests?: Suggestion[];
+  source?: "model" | "engine";
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  turns: ChatTurn[];
+  /** Context keys the citizen has released to this conversation only. */
+  granted: string[];
+}
+
 export interface Draft {
   journeyId: string;
   stepIndex: number;
@@ -50,6 +80,7 @@ export interface SessionState {
   composed: JourneyDef[];
   consents: ConsentGrant[];
   recentIntents: string[];
+  conversations: Conversation[];
 }
 
 const initial: SessionState = {
@@ -80,6 +111,7 @@ const initial: SessionState = {
     },
   ],
   recentIntents: [],
+  conversations: [],
 };
 
 type Action =
@@ -96,7 +128,13 @@ type Action =
   | { type: "readInbox"; id: string }
   | { type: "readAll" }
   | { type: "addComposed"; journey: JourneyDef }
-  | { type: "recordIntent"; text: string };
+  | { type: "recordIntent"; text: string }
+  | { type: "newConversation"; id: string; seed?: string }
+  | { type: "addTurn"; conversationId: string; turn: ChatTurn }
+  | { type: "titleConversation"; conversationId: string; title: string }
+  | { type: "grantContext"; conversationId: string; key: string }
+  | { type: "clearNeeds"; conversationId: string; turnId: string }
+  | { type: "deleteConversation"; conversationId: string };
 
 function reducer(s: SessionState, a: Action): SessionState {
   switch (a.type) {
@@ -220,6 +258,57 @@ function reducer(s: SessionState, a: Action): SessionState {
       return { ...s, composed: [a.journey, ...s.composed] };
     case "recordIntent":
       return { ...s, recentIntents: [a.text, ...s.recentIntents.filter((t) => t !== a.text)].slice(0, 6) };
+    case "newConversation": {
+      if (s.conversations.some((c) => c.id === a.id)) return s;
+      const now = new Date().toISOString();
+      const conv: Conversation = {
+        id: a.id,
+        title: a.seed ? a.seed.slice(0, 46) : "New conversation",
+        createdAt: now,
+        updatedAt: now,
+        turns: [],
+        // Every conversation starts from zero. Permission is not inherited
+        // from the last one, because the reason for it was specific to that one.
+        granted: [],
+      };
+      return { ...s, conversations: [conv, ...s.conversations].slice(0, 30) };
+    }
+    case "addTurn":
+      return {
+        ...s,
+        conversations: s.conversations.map((c) =>
+          c.id === a.conversationId
+            ? { ...c, turns: [...c.turns, a.turn], updatedAt: new Date().toISOString() }
+            : c,
+        ),
+      };
+    case "titleConversation":
+      return {
+        ...s,
+        conversations: s.conversations.map((c) =>
+          c.id === a.conversationId ? { ...c, title: a.title } : c,
+        ),
+      };
+    case "grantContext":
+      return {
+        ...s,
+        conversations: s.conversations.map((c) =>
+          c.id === a.conversationId && !c.granted.includes(a.key)
+            ? { ...c, granted: [...c.granted, a.key] }
+            : c,
+        ),
+      };
+    case "clearNeeds":
+      return {
+        ...s,
+        conversations: s.conversations.map((c) =>
+          c.id === a.conversationId
+            ? { ...c, turns: c.turns.map((t) => (t.id === a.turnId ? { ...t, needs: [] } : t)) }
+            : c,
+        ),
+      };
+    case "deleteConversation":
+      return { ...s, conversations: s.conversations.filter((c) => c.id !== a.conversationId) };
     default:
       return s;
   }
@@ -303,6 +392,10 @@ const CASE_PREFIX: Record<string, string> = {
   umang: "SCH",
   "gov-core": "GOV",
 };
+
+export function newId(prefix = "c") {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+}
 
 export function newCaseId(serviceId: string) {
   const prefix = CASE_PREFIX[serviceId] ?? serviceId.slice(0, 3).toUpperCase();

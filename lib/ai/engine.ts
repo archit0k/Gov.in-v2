@@ -1,5 +1,5 @@
 import { JOURNEYS, JOURNEY_MAP } from "@/lib/data/journeys";
-import { SERVICES, service } from "@/lib/data/services";
+import { SERVICES, service, serviceHref } from "@/lib/data/services";
 import type { JourneyDef, NavResult, ServiceId } from "@/lib/types";
 
 /* ============================================================
@@ -165,7 +165,7 @@ function scoreJourney(j: JourneyDef, ts: string[], raw: string) {
   return score;
 }
 
-export function navigate(query: string): NavResult {
+export function navigate(query: string, scope?: ServiceId): NavResult {
   const raw = query.trim().toLowerCase();
   const ts = tokens(query);
 
@@ -173,8 +173,9 @@ export function navigate(query: string): NavResult {
     return { mode: "clarify", reading: "Tell us what you need in your own words.", confidence: 0, source: "engine" };
   }
 
-  /* 1 — life event? These are the requests no single portal answers. */
-  const ev = LIFE_EVENTS.find((e) => e.match.test(query));
+  /* 1 — life event? These are the requests no single portal answers, so a
+     department-scoped search never composes one. */
+  const ev = scope ? undefined : LIFE_EVENTS.find((e) => e.match.test(query));
   if (ev) {
     const composed = composeLifeEvent(ev);
     return {
@@ -193,7 +194,9 @@ export function navigate(query: string): NavResult {
   }
 
   /* 2 — direct journey match. Deterministic wins, always. */
-  const ranked = JOURNEYS.map((j) => ({ j, s: scoreJourney(j, ts, raw) }))
+  // Inside a department, only that department's journeys are on offer.
+  const pool = scope ? JOURNEYS.filter((j) => j.serviceId === scope) : JOURNEYS;
+  const ranked = pool.map((j) => ({ j, s: scoreJourney(j, ts, raw) }))
     .filter((r) => r.s > 0)
     .sort((a, b) => b.s - a.s);
 
@@ -225,7 +228,7 @@ export function navigate(query: string): NavResult {
   }
 
   /* 3 — service-level match */
-  const svc = SERVICES.find(
+  const svc = scope ? undefined : SERVICES.find(
     (s) =>
       ts.some((t) => s.name.toLowerCase().includes(t) || s.shortName.toLowerCase() === t || s.id === t) ||
       s.name.toLowerCase().includes(raw),
@@ -257,6 +260,24 @@ export function navigate(query: string): NavResult {
       clarify: {
         question: "Which is closest to what you need?",
         options: guesses.map((r) => ({ label: r.j.title, href: `/journeys/${r.j.id}` })),
+      },
+      source: "engine",
+    };
+  }
+
+  // Inside a department, saying "not here" and pointing at the front door is
+  // more honest than quietly routing the citizen to another ministry.
+  if (scope) {
+    return {
+      mode: "clarify",
+      reading: `${service(scope).name} has no journey for that. It may well be another department's — the Gov.in front door searches all of them at once.`,
+      confidence: 0.1,
+      clarify: {
+        question: "Where would you like to go?",
+        options: [
+          { label: "Search across all of government", href: "/home" },
+          { label: `Everything ${service(scope).shortName} can do`, href: serviceHref(scope) },
+        ],
       },
       source: "engine",
     };

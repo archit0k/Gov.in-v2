@@ -64,10 +64,10 @@ Open `/schemes/medcs`.
 > "Government noticed a scheme exists. It has *not* checked whether he qualifies — that's his data, so it asks
 > first, then shows all five conditions it judged him on. Rejections stop being mysterious."
 
-**1:42–1:52 — it is one system**
-Inbox → timeline → services grid.
-> "Every department writes to one inbox and one history. Each keeps its own identity. None of them built a
-> notification system."
+**1:42–1:52 — a department is its own site, on the same floor**
+Open `/passport`. Point at the strip along the top.
+> "Different domain, different colour, its own navigation and its own search. No second login — it already
+> knows who he is. That is the whole proposal in one screen."
 
 **1:52–2:00 — the argument**
 `/architecture`, on the stack diagram.

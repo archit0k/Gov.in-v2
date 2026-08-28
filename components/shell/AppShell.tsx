@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useSyncExternalStore } from "react";
 import {
-  Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Route, ShieldCheck, Sun, User, Network, RotateCcw,
+  Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Plus, Route, ShieldCheck, Sparkles, Sun, Trash2, User, Network, RotateCcw,
 } from "lucide-react";
 import { Badge, cn } from "@/components/ui/primitives";
 import { useSession } from "@/lib/state/store";
@@ -117,7 +117,8 @@ function ThemeRow() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const router = useRouter();
-  const { unread, dispatch } = useSession();
+  const { unread, dispatch, state } = useSession();
+  const conversations = state.conversations.slice(0, 12);
 
   return (
     <div className="flex min-h-dvh flex-col lg:flex-row">
@@ -159,7 +160,66 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
+        {/* AI mode and its history. Conversations are per-citizen and never
+            carry permissions from one to the next. */}
+        <div className="hidden min-h-0 flex-1 flex-col lg:mt-5 lg:flex">
+          <Link
+            href="/ai"
+            className={cn(
+              "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
+              path.startsWith("/ai")
+                ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
+            )}
+          >
+            <Sparkles size={17} strokeWidth={path.startsWith("/ai") ? 2.1 : 1.8} />
+            AI mode
+            <Plus size={14} className="ml-auto text-[var(--faint)]" />
+          </Link>
+
+          {conversations.length > 0 && (
+            <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
+              <p className="px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[var(--faint)]">
+                Conversations
+              </p>
+              <div className="grid gap-0.5">
+                {conversations.map((c) => (
+                  <div key={c.id} className="group/conv relative">
+                    <Link
+                      href={`/ai/${c.id}`}
+                      className={cn(
+                        "block truncate rounded-[8px] py-1.5 pl-2.5 pr-7 text-[13px] transition-colors",
+                        path === `/ai/${c.id}`
+                          ? "bg-[var(--line-2)] text-[var(--ink)]"
+                          : "text-[var(--muted)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
+                      )}
+                      title={c.title}
+                    >
+                      {c.title}
+                    </Link>
+                    <button
+                      onClick={() => dispatch({ type: "deleteConversation", conversationId: c.id })}
+                      aria-label={`Delete conversation: ${c.title}`}
+                      className="absolute right-1 top-1/2 hidden -translate-y-1/2 rounded-[6px] p-1 text-[var(--faint)] hover:text-[var(--danger)] group-hover/conv:block"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="ml-auto flex items-center gap-1 lg:ml-0 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-2">
+          <Link
+            href="/ai"
+            aria-label="AI mode"
+            className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:hidden"
+          >
+            <Sparkles size={17} strokeWidth={1.8} />
+          </Link>
+
           <Link
             href="/architecture"
             className={cn(
