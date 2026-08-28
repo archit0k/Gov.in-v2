@@ -97,10 +97,13 @@ export function IntentBar({
           run(q);
         }}
         className={cn(
-          // One ring, not two: the border is the entire focus treatment.
-          "flex items-center gap-3 rounded-[14px] border-2 bg-[var(--panel)] transition-colors duration-150",
+          // The container carries the whole focus treatment: its border plus a
+          // soft halo. The input inside must draw nothing of its own.
+          "flex items-center gap-3 rounded-[14px] border bg-[var(--panel)] transition-all duration-150",
           hero ? "h-[62px] px-5" : "h-12 px-4",
-          busy ? "border-[var(--accent)]" : "border-[var(--line)] focus-within:border-[var(--accent)]",
+          busy
+            ? "border-[var(--accent)] ring-4 ring-[var(--accent-soft)]"
+            : "border-[var(--line)] focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]",
         )}
       >
         <Search size={hero ? 20 : 17} className="shrink-0 text-[var(--faint)]" strokeWidth={1.9} />

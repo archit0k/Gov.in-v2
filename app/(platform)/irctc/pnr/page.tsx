@@ -38,7 +38,7 @@ export default function PnrPage() {
             }}
             className="flex flex-wrap gap-2"
           >
-            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[11px] border-2 border-[var(--line)] px-3.5 transition-colors focus-within:border-[var(--accent)]">
+            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[11px] border border-[var(--line)] bg-[var(--panel)] px-3.5 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]">
               <Search size={16} className="shrink-0 text-[var(--faint)]" />
               <input
                 value={pnr}

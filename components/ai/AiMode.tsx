@@ -196,7 +196,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
           e.preventDefault();
           send(input);
         }}
-        className="sticky bottom-4 mt-4 flex items-end gap-2 rounded-[14px] border-2 border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-colors focus-within:border-[var(--accent)]"
+        className="sticky bottom-4 mt-4 flex items-end gap-2 rounded-[14px] border border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"
       >
         <textarea
           rows={1}

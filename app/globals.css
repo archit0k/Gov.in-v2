@@ -7,50 +7,66 @@
    ============================================================ */
 
 :root {
-  --surface: #f7f7f5;
+  /* Neutrals carry a slight cool tint toward the accent hue rather than being
+     warm or pure grey. Warm neutrals under a navy accent are what made this
+     look muddy. The tint is kept low-chroma on purpose: eleven departments
+     bring their own hues, and a heavily tinted grey fights the warm ones.
+
+     Roles follow the familiar 12-step model — surface and panel are the
+     backgrounds, line and line-2 are the borders, accent is the solid, and
+     ink through faint is a four-step text ramp at 18 / 9.9 / 7.0 / 5.2 on
+     white so de-emphasis never costs legibility. */
+
+  --surface: #eef1f6;
   --panel: #ffffff;
-  --panel-2: #fbfbfa;
-  --ink: #14161a;
-  --ink-2: #3d434d;
-  --muted: #5c6472;
-  --faint: #6b7280;
-  --line: #e5e4df;
-  --line-2: #eeede9;
+  --panel-2: #f7f9fc;
 
-  --accent: #21458c;
+  --ink: #101723;
+  --ink-2: #394454;
+  --muted: #4e5a6d;
+  --faint: #636e81;
+
+  --line: #dde3ec;
+  --line-2: #eaeef4;
+
+  --accent: #1b4b8f;
   --accent-ink: #ffffff;
-  --accent-soft: #eaf0fb;
-  --accent-line: #c9d8f2;
+  --accent-soft: #e8effa;
+  --accent-line: #c2d4ee;
 
-  --ok: #12704a;
-  --ok-soft: #e6f4ed;
-  --warn: #9a5a10;
-  --warn-soft: #fdf1e0;
-  --danger: #a32a24;
-  --danger-soft: #fceceb;
-  --info: #1f5f7a;
-  --info-soft: #e7f2f6;
+  --ok: #11704a;
+  --ok-soft: #e4f3ec;
+  --warn: #8f5410;
+  --warn-soft: #fbf0df;
+  --danger: #a02722;
+  --danger-soft: #fbebea;
+  --info: #1d5c78;
+  --info-soft: #e5f1f6;
 
   --radius: 12px;
   --radius-lg: 18px;
-  --shadow-1: 0 1px 2px rgba(20, 22, 26, 0.05), 0 1px 1px rgba(20, 22, 26, 0.04);
-  --shadow-2: 0 4px 16px -4px rgba(20, 22, 26, 0.10), 0 1px 3px rgba(20, 22, 26, 0.05);
-  --shadow-3: 0 24px 60px -20px rgba(20, 22, 26, 0.28);
+
+  /* Tinted toward the accent hue. A neutral grey shadow on a cool surface is
+     the other half of why light mode looked dirty. */
+  --shadow-1: 0 1px 2px rgba(16, 24, 48, 0.05), 0 1px 1px rgba(16, 24, 48, 0.04);
+  --shadow-2: 0 4px 16px -4px rgba(16, 24, 48, 0.10), 0 1px 3px rgba(16, 24, 48, 0.06);
+  --shadow-3: 0 24px 60px -20px rgba(16, 24, 48, 0.28);
 }
 
+
 .dark {
-  --surface: #0d0f12;
-  --panel: #15181d;
-  --panel-2: #1a1e24;
-  --ink: #f2f3f5;
-  --ink-2: #c3c8d1;
-  --muted: #949cab;
-  --faint: #8a93a1;
-  --line: #262b33;
-  --line-2: #1e232a;
+  --surface: #0c0f14;
+  --panel: #141821;
+  --panel-2: #1a1f29;
+  --ink: #eef1f6;
+  --ink-2: #c0c8d4;
+  --muted: #929cab;
+  --faint: #8893a2;
+  --line: #262c38;
+  --line-2: #1d222c;
 
   --accent: #7ba2ec;
-  --accent-ink: #0d0f12;
+  --accent-ink: #0c0f14;
   --accent-soft: #16233c;
   --accent-line: #2b3f66;
 
@@ -71,18 +87,18 @@
 /* System preference, unless the citizen has explicitly chosen light. */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-  --surface: #0d0f12;
-  --panel: #15181d;
-  --panel-2: #1a1e24;
-  --ink: #f2f3f5;
-  --ink-2: #c3c8d1;
-  --muted: #949cab;
-  --faint: #8a93a1;
-  --line: #262b33;
-  --line-2: #1e232a;
+  --surface: #0c0f14;
+  --panel: #141821;
+  --panel-2: #1a1f29;
+  --ink: #eef1f6;
+  --ink-2: #c0c8d4;
+  --muted: #929cab;
+  --faint: #8893a2;
+  --line: #262c38;
+  --line-2: #1d222c;
 
   --accent: #7ba2ec;
-  --accent-ink: #0d0f12;
+  --accent-ink: #0c0f14;
   --accent-soft: #16233c;
   --accent-line: #2b3f66;
 
@@ -149,7 +165,7 @@
     --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
     --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
     --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
-    --accent-ink: #0d0f12;
+    --accent-ink: #0c0f14;
   }
 }
 
@@ -157,7 +173,7 @@
   --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
   --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
   --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
-  --accent-ink: #0d0f12;
+  --accent-ink: #0c0f14;
 }
 
 * {
@@ -182,11 +198,16 @@ body {
   color: var(--ink);
 }
 
-/* Focus — infrastructure-level accessibility, not per-department */
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 6px;
+/* Focus — infrastructure-level accessibility, not per-department.
+   Inside @layer base so a component can opt out with a utility. Unlayered,
+   this rule beat every Tailwind utility regardless of specificity, which is
+   why outline-none on an input did nothing. */
+@layer base {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 }
 
 /* Numerals align in tables/IDs */
