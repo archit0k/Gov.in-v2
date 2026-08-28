@@ -136,7 +136,7 @@ export function IntentBar({
                 type="button"
                 onClick={toAi}
                 title="Turn this page into a conversation. For when you cannot phrase it as a task."
-                className="flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-1.5 text-[12.5px] font-medium text-[var(--accent)] transition-[filter] hover:brightness-105"
+                className="flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 text-[12.5px] font-medium text-[var(--accent)] transition-[filter] hover:brightness-105 sm:h-10"
               >
                 <Sparkles size={13} strokeWidth={2.1} /> AI mode
               </button>
@@ -154,7 +154,7 @@ export function IntentBar({
                 setQ(e);
                 run(e);
               }}
-              className="rounded-full border border-[var(--line)] bg-[var(--panel)] px-3 py-1.5 text-[12.5px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
+              className="inline-flex min-h-[40px] items-center rounded-full border border-[var(--line)] bg-[var(--panel)] px-3.5 text-[12.5px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] sm:min-h-0 sm:py-1.5"
             >
               {e}
             </button>

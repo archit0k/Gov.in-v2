@@ -30,6 +30,14 @@ const NAV = [
   { href: "/profile", label: "Profile", icon: User },
 ];
 
+const MOBILE_NAV = [
+  { href: "/home", label: "Home", icon: Home },
+  { href: "/services", label: "Services", icon: LayoutGrid },
+  { href: "/ai", label: "AI mode", icon: Sparkles },
+  { href: "/inbox", label: "Inbox", icon: Bell, badge: true },
+  { href: "/profile", label: "Profile", icon: User },
+];
+
 /* ------------------------------------------------------------
    Theme. The DOM class is the source of truth, not React state,
    because the stylesheet already honours the system preference
@@ -120,40 +128,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { unread, dispatch, state } = useSession();
   const conversations = state.conversations.slice(0, 12);
 
+  const isActive = (href: string) => path === href || path.startsWith(href + "/");
+
+  function signOut() {
+    dispatch({ type: "signOut" });
+    router.push("/");
+  }
+
   return (
     <div className="flex min-h-dvh flex-col lg:flex-row">
-      {/* ---- Rail ---- */}
-      <aside className="sticky top-0 z-30 flex shrink-0 items-center gap-2 border-b border-[var(--line)] bg-[var(--panel)]/90 px-4 py-2.5 backdrop-blur-md lg:h-dvh lg:w-[236px] lg:flex-col lg:items-stretch lg:gap-0 lg:border-r lg:border-b-0 lg:px-4 lg:py-5">
-        <Link href="/home" className="mr-auto flex items-center gap-2 lg:mr-0 lg:mb-7 lg:px-2">
+      {/* ================= Desktop rail ================= */}
+      <aside className="sticky top-0 z-30 hidden h-dvh w-[236px] shrink-0 flex-col border-r border-[var(--line)] bg-[var(--panel)] px-4 py-5 lg:flex">
+        <Link href="/home" className="mb-7 flex items-center gap-2 px-2">
           <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)]">
             <ShieldCheck size={17} strokeWidth={2.2} />
           </span>
           <Wordmark />
         </Link>
 
-        <nav className="flex items-center gap-0.5 lg:flex-col lg:items-stretch lg:gap-0.5">
+        <nav className="flex flex-col gap-0.5">
           {NAV.map(({ href, label, icon: Icon, badge }) => {
-            const active = path === href || path.startsWith(href + "/");
+            const active = isActive(href);
             return (
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "group relative flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
+                  "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
                   active
                     ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                     : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
                 )}
               >
                 <Icon size={17} strokeWidth={active ? 2.1 : 1.8} />
-                <span className="hidden lg:inline">{label}</span>
+                {label}
                 {badge && unread > 0 && (
-                  <span className="ml-auto hidden lg:inline">
+                  <span className="ml-auto">
                     <Badge tone="danger">{unread}</Badge>
                   </span>
-                )}
-                {badge && unread > 0 && (
-                  <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--danger)] lg:hidden" />
                 )}
               </Link>
             );
@@ -162,7 +175,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* AI mode and its history. Conversations are per-citizen and never
             carry permissions from one to the next. */}
-        <div className="hidden min-h-0 flex-1 flex-col lg:mt-5 lg:flex">
+        <div className="mt-5 flex min-h-0 flex-1 flex-col">
           <Link
             href="/ai"
             className={cn(
@@ -211,15 +224,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </div>
 
-        <div className="ml-auto flex items-center gap-1 lg:ml-0 lg:mt-auto lg:flex-col lg:items-stretch lg:gap-2">
-          <Link
-            href="/ai"
-            aria-label="AI mode"
-            className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:hidden"
-          >
-            <Sparkles size={17} strokeWidth={1.8} />
-          </Link>
-
+        <div className="mt-auto flex flex-col gap-2">
           <Link
             href="/architecture"
             className={cn(
@@ -230,12 +235,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Network size={17} strokeWidth={1.8} />
-            <span className="hidden lg:inline">How this works</span>
+            How this works
           </Link>
 
           <ThemeRow />
 
-          <div className="hidden rounded-[12px] border border-[var(--line)] bg-[var(--panel-2)] p-3 lg:block">
+          <div className="rounded-[12px] border border-[var(--line)] bg-[var(--panel-2)] p-3">
             <div className="flex items-center gap-2.5">
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-[var(--accent-ink)]">
                 {CITIZEN.photoInitials}
@@ -257,10 +262,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <RotateCcw size={12} /> Reset
               </button>
               <button
-                onClick={() => {
-                  dispatch({ type: "signOut" });
-                  router.push("/");
-                }}
+                onClick={signOut}
                 title="Return to the sign-in screen. Your journeys and cases are kept."
                 className="flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
               >
@@ -268,23 +270,106 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </div>
-
-          {/* Mobile: the rail collapses, so these live as icons */}
-          <button
-            onClick={() => {
-              dispatch({ type: "signOut" });
-              router.push("/");
-            }}
-            aria-label="Sign out"
-            className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:hidden"
-          >
-            <LogOut size={17} strokeWidth={1.8} />
-          </button>
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1">{children}</main>
+      {/* ================= Mobile top bar ================= */}
+      <header className="sticky top-0 z-30 flex items-center gap-1 border-b border-[var(--line)] bg-[var(--panel)] px-3 py-2 lg:hidden">
+        <Link href="/home" className="mr-auto flex items-center gap-2 px-1 py-1.5">
+          <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)]">
+            <ShieldCheck size={17} strokeWidth={2.2} />
+          </span>
+          <Wordmark />
+        </Link>
+        <IconLink href="/timeline" label="Timeline" active={isActive("/timeline")}>
+          <Clock3 size={19} strokeWidth={1.8} />
+        </IconLink>
+        <IconLink href="/architecture" label="How this works" active={path === "/architecture"}>
+          <Network size={19} strokeWidth={1.8} />
+        </IconLink>
+        <ThemeIconButton />
+        <button
+          onClick={signOut}
+          aria-label="Sign out"
+          className="grid h-11 w-11 place-items-center rounded-[10px] text-[var(--muted)] active:bg-[var(--line-2)]"
+        >
+          <LogOut size={19} strokeWidth={1.8} />
+        </button>
+      </header>
+
+      <main className="min-w-0 flex-1 pb-[76px] lg:pb-0">{children}</main>
+
+      {/* ================= Mobile bottom bar =================
+          Thumb-reachable, labelled, and every target is at least 44px.
+          A phone is the only device most citizens will ever use for this. */}
+      <nav
+        aria-label="Primary"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[var(--line)] bg-[var(--panel)] pb-[env(safe-area-inset-bottom)] lg:hidden"
+      >
+        {MOBILE_NAV.map(({ href, label, icon: Icon, badge }) => {
+          const active = isActive(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "relative flex min-h-[56px] flex-col items-center justify-center gap-1 px-1 py-1.5 text-[10.5px] transition-colors",
+                active ? "font-medium text-[var(--accent)]" : "text-[var(--muted)]",
+              )}
+            >
+              <span className="relative">
+                <Icon size={21} strokeWidth={active ? 2.1 : 1.8} />
+                {badge && unread > 0 && (
+                  <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--danger)] px-1 text-[9.5px] font-semibold text-white">
+                    {unread}
+                  </span>
+                )}
+              </span>
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
+  );
+}
+
+function IconLink({
+  href,
+  label,
+  active,
+  children,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      className={cn(
+        "grid h-11 w-11 place-items-center rounded-[10px] transition-colors active:bg-[var(--line-2)]",
+        active ? "text-[var(--accent)]" : "text-[var(--muted)]",
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function ThemeIconButton() {
+  const { dark, toggle } = useTheme();
+  return (
+    <button
+      onClick={toggle}
+      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+      className="grid h-11 w-11 place-items-center rounded-[10px] text-[var(--muted)] active:bg-[var(--line-2)]"
+    >
+      {dark ? <Sun size={19} strokeWidth={1.8} /> : <Moon size={19} strokeWidth={1.8} />}
+    </button>
   );
 }
 

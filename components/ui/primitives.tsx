@@ -131,7 +131,9 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
   return (
     <div className="mb-3 flex items-end justify-between gap-4">
       <h2 className="text-[13px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{children}</h2>
-      {action}
+      {/* The action is usually a small text link. On a phone it still has to be
+          tappable, so it gets height here rather than at every call site. */}
+      {action && <div className="-my-2 flex min-h-[36px] shrink-0 items-center py-2">{action}</div>}
     </div>
   );
 }

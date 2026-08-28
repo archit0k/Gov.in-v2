@@ -130,7 +130,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
   const empty = !conv || conv.turns.length === 0;
 
   return (
-    <div className="mx-auto flex min-h-[calc(100dvh-56px)] w-full max-w-[820px] flex-col px-5 pb-6 pt-8 sm:px-8 lg:min-h-dvh lg:pt-10">
+    <div className="mx-auto flex min-h-[calc(100dvh-140px)] w-full max-w-[820px] flex-col px-5 pb-2 pt-6 sm:px-8 lg:min-h-dvh lg:pb-6 lg:pt-10">
       <header className="mb-6 flex flex-wrap items-center gap-2.5">
         <Badge tone="accent">
           <Sparkles size={11} strokeWidth={2.3} /> AI mode
@@ -196,7 +196,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
           e.preventDefault();
           send(input);
         }}
-        className="sticky bottom-4 mt-4 flex items-end gap-2 rounded-[14px] border border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"
+        className="sticky bottom-[84px] mt-4 flex items-end gap-2 lg:bottom-4 rounded-[14px] border border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"
       >
         <textarea
           rows={1}
