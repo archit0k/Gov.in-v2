@@ -53,13 +53,13 @@ export default function DocumentsPage() {
           <table className="w-full min-w-[420px] text-left">
             <thead>
               <tr className="border-y border-[var(--line-2)] bg-[var(--panel-2)]">
-                <th className="px-5 py-2.5 text-[11.5px] font-semibold uppercase tracking-[0.07em] text-[var(--muted)]">
+                <th className="px-5 py-2.5 text-[12.5px] font-semibold text-[var(--ink-2)]">
                   Service
                 </th>
-                <th className="px-3 py-2.5 text-right text-[11.5px] font-semibold uppercase tracking-[0.07em] text-[var(--muted)]">
+                <th className="px-3 py-2.5 text-right text-[12.5px] font-semibold text-[var(--ink-2)]">
                   Fee
                 </th>
-                <th className="px-5 py-2.5 text-right text-[11.5px] font-semibold uppercase tracking-[0.07em] text-[var(--muted)]">
+                <th className="px-5 py-2.5 text-right text-[12.5px] font-semibold text-[var(--ink-2)]">
                   Time
                 </th>
               </tr>

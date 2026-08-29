@@ -557,7 +557,7 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
       </Row>
       {rows.map(({ step, fields }) => (
         <Row key={step.id}>
-          <p className="mb-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[var(--faint)]">{step.title}</p>
+          <p className="mb-2.5 text-[13px] font-semibold text-[var(--ink-2)]">{step.title}</p>
           <dl className="grid gap-2.5">
             {fields.map((f) => (
               <div key={f.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-0.5">

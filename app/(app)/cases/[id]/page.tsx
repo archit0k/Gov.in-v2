@@ -106,7 +106,7 @@ function CaseView() {
 
           <aside className="grid content-start gap-3">
             <Card className="p-4">
-              <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p className="mb-3 text-[13.5px] font-semibold text-[var(--ink)]">
                 What was submitted
               </p>
               <dl className="grid gap-2.5">
@@ -127,7 +127,7 @@ function CaseView() {
 
             {j && (
               <Card className="p-4">
-                <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">Journey</p>
+                <p className="mb-2 text-[13.5px] font-semibold text-[var(--ink)]">Journey</p>
                 <Link href={`/journeys/${j.id}`} className="text-[14px] text-[var(--accent)] hover:underline">
                   {j.title}
                 </Link>
@@ -138,7 +138,7 @@ function CaseView() {
             )}
 
             <Card className="p-4">
-              <p className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p className="mb-2 flex items-center gap-1.5 text-[13.5px] font-semibold text-[var(--ink)]">
                 <LifeBuoy size={13} /> If this stalls
               </p>
               <p className="mb-3 text-[13px] leading-relaxed text-[var(--muted)]">

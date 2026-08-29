@@ -126,7 +126,7 @@ export default function ServicePage() {
           {/* The infrastructure argument, per department */}
           <aside className="grid content-start gap-3">
             <Card className="p-4">
-              <p className="mb-2.5 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p className="mb-2.5 flex items-center gap-1.5 text-[13.5px] font-semibold text-[var(--ink)]">
                 <Database size={13} /> Owned by this department
               </p>
               <ul className="grid gap-1.5">
@@ -140,7 +140,7 @@ export default function ServicePage() {
             </Card>
 
             <Card className="p-4">
-              <p className="mb-2.5 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p className="mb-2.5 flex items-center gap-1.5 text-[13.5px] font-semibold text-[var(--ink)]">
                 <Puzzle size={13} /> Shared infrastructure it uses
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -151,7 +151,7 @@ export default function ServicePage() {
             </Card>
 
             <Card className="p-4">
-              <p className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p className="mb-2 flex items-center gap-1.5 text-[13.5px] font-semibold text-[var(--ink)]">
                 <Layers size={13} /> Migration position
               </p>
               <Badge tone={s.integration === "native" ? "ok" : s.integration === "adapter" ? "info" : "warn"}>
@@ -162,7 +162,7 @@ export default function ServicePage() {
 
             {creds.length > 0 && (
               <Card className="p-4">
-                <p className="mb-2.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+                <p className="mb-2.5 text-[13.5px] font-semibold text-[var(--ink)]">
                   Your credentials here
                 </p>
                 <div className="grid gap-2.5">

@@ -70,7 +70,7 @@ export default function JourneyPage() {
       {j.ephemeral && (
         <div className="mx-auto w-full max-w-[760px] px-5 pb-12 sm:px-8">
           <Card className="p-4">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">Journey learning loop</p>
+            <p className="text-[13.5px] font-semibold text-[var(--ink)]">Journey learning loop</p>
             <p className="mt-2 max-w-[76ch] text-[13px] leading-relaxed text-[var(--ink-2)]">
               Composed journeys are counted, never published automatically. When the same composition recurs across
               many citizens, it appears in a department dashboard as evidence that a service is missing. The AI

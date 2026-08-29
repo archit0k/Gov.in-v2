@@ -140,9 +140,7 @@ export default function BeforePage() {
 
             <div className="divide-y divide-[var(--line-2)]">
               <div className="px-4 py-3.5">
-                <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
-                  Retrieved, not requested
-                </p>
+                <h3 className="mb-2.5 text-[15px] font-semibold text-[var(--ink)]">Retrieved, not requested</h3>
                 <div className="grid gap-2.5">
                   {[
                     ["Name, date of birth, gender, place of birth", "citizen.name", "Verified government profile"],
@@ -166,9 +164,7 @@ export default function BeforePage() {
               </div>
 
               <div className="px-4 py-3.5">
-                <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
-                  Asked, because only you can answer
-                </p>
+                <h3 className="mb-2.5 text-[15px] font-semibold text-[var(--ink)]">Asked, because only you can answer</h3>
                 <div className="grid gap-2">
                   {[
                     ["Why are you reapplying?", "Expiry, pages exhausted, or damage - this changes the process."],
@@ -185,9 +181,7 @@ export default function BeforePage() {
               </div>
 
               <div className="px-4 py-3.5">
-                <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
-                  Gone, and why that is safe
-                </p>
+                <h3 className="mb-2.5 text-[15px] font-semibold text-[var(--ink)]">Gone, and why that is safe</h3>
                 <ul className="grid gap-2 text-[12.5px] leading-relaxed text-[var(--muted)]">
                   <li>
                     <span className="text-[var(--ink-2)]">Two local references.</span> They existed to help police

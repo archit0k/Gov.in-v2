@@ -66,7 +66,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
       {tab === "identity" && (
         <div className="grid gap-3">
           <Card className="p-5">
-            <p className="mb-1 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+            <p className="mb-1 flex items-center gap-2 text-[13.5px] font-semibold text-[var(--ink)]">
               <Fingerprint size={13} /> Verified identity
             </p>
             <dl className="grid gap-x-8 divide-y divide-[var(--line-2)] sm:grid-cols-2 sm:divide-y-0">
@@ -105,7 +105,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
           </Card>
 
           <Card className="p-5">
-            <p className="mb-2 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+            <p className="mb-2 flex items-center gap-2 text-[13.5px] font-semibold text-[var(--ink)]">
               <Languages size={13} /> Preferences
             </p>
             <div className="flex flex-wrap items-center gap-2">
@@ -203,7 +203,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
       {tab === "permissions" && (
         <div className="grid gap-3">
           <Card className="p-5">
-            <p className="mb-1.5 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+            <p className="mb-1.5 flex items-center gap-2 text-[13.5px] font-semibold text-[var(--ink)]">
               <KeyRound size={13} /> Consent ledger
             </p>
             <p className="max-w-[76ch] text-[13.5px] leading-relaxed text-[var(--muted)]">

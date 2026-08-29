@@ -91,8 +91,8 @@ export default function ArchitecturePage() {
           <table className="w-full min-w-[640px] border-collapse text-left">
             <thead>
               <tr className="border-b border-[var(--line)]">
-                <th className="w-[130px] px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]"> </th>
-                <th className="px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">Aggregation</th>
+                <th className="w-[130px] px-4 py-3 text-[13.5px] font-semibold text-[var(--ink)]"> </th>
+                <th className="px-4 py-3 text-[13.5px] font-semibold text-[var(--ink)]">Aggregation</th>
                 <th className="px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--accent)]">Shared infrastructure</th>
               </tr>
             </thead>

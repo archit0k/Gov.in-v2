@@ -35,7 +35,7 @@ export default function Landing() {
 
       <main id="main" className="mx-auto grid max-w-[1180px] gap-14 px-5 pb-20 pt-6 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pt-16">
         <div className="rise">
-          <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.13em] text-[var(--muted)]">
+          <p className="mb-4 text-[13px] font-medium text-[var(--accent)]">
             Shared citizen infrastructure
           </p>
           <h1 className="max-w-[16ch] text-[40px] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--ink)] sm:text-[52px]">
@@ -74,7 +74,7 @@ export default function Landing() {
 
         {/* The problem, shown rather than described */}
         <div className="rise" style={{ animationDelay: "90ms" }}>
-          <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--faint)]">
+          <p className="mb-3 text-[12.5px] text-[var(--muted)]">
             Today - ten services, ten relationships
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">

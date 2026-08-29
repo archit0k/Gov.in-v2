@@ -47,7 +47,7 @@ export default function TimelinePage() {
       <div className="grid gap-8">
         {groups.map((g) => (
           <section key={g.label}>
-            <h2 className="mb-3 text-[12px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{g.label}</h2>
+            <h2 className="mb-3 text-[15px] font-semibold text-[var(--ink)]">{g.label}</h2>
             <Card className="divide-y divide-[var(--line-2)] overflow-hidden">
               {g.items.map((it) => (
                 <div key={it.id} className="flex gap-3.5 p-4">

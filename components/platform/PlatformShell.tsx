@@ -118,7 +118,7 @@ export function PlatformShell({
 
       <footer className="border-t border-[var(--line)]">
         <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8">
-          <p className="mb-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+          <p className="mb-2.5 text-[13.5px] font-semibold text-[var(--ink)]">
             What this department did not have to build
           </p>
           <div className="flex flex-wrap gap-1.5">

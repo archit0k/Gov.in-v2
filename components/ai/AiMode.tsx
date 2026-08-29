@@ -302,7 +302,7 @@ function Turn({
 
       {turn.suggests && turn.suggests.length > 0 && (
         <div className="mt-3 grid gap-1.5">
-          <p className="text-[11.5px] uppercase tracking-wider text-[var(--faint)]">Where this actually happens</p>
+          <p className="text-[12.5px] text-[var(--muted)]">Where this actually happens</p>
           {turn.suggests.map((sg: Suggestion) => (
             <Link
               key={sg.id}

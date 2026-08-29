@@ -191,7 +191,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {conversations.length > 0 && (
             <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
-              <p className="px-2.5 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[var(--faint)]">
+              <p className="px-2.5 pb-1.5 text-[12px] font-medium text-[var(--muted)]">
                 Conversations
               </p>
               <div className="grid gap-0.5">

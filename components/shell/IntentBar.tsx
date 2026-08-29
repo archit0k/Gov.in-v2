@@ -268,7 +268,7 @@ function Result({
 
           {res.alternatives && res.alternatives.length > 0 && (
             <div className="mt-3 border-t border-[var(--line-2)] pt-3">
-              <p className="mb-2 text-[11.5px] uppercase tracking-wider text-[var(--faint)]">Or did you mean</p>
+              <p className="mb-2 text-[12.5px] text-[var(--muted)]">Or did you mean</p>
               <div className="grid gap-1">
                 {res.alternatives.map((a) => (
                   <Link

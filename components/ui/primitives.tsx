@@ -118,7 +118,8 @@ export function Card({
       {...rest}
       className={cn(
         "rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--panel)]",
-        interactive && "transition-all duration-150 hover:border-[var(--faint)] hover:shadow-[var(--shadow-2)]",
+        interactive &&
+          "transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-px hover:border-[var(--accent-line)] hover:shadow-[var(--shadow-2)] active:translate-y-0",
         className,
       )}
     >
@@ -127,13 +128,111 @@ export function Card({
   );
 }
 
-export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
+/**
+ * A section heading. Sentence case, real size, no uppercase tracking.
+ *
+ * The uppercase micro-label above every single section is the most reliable
+ * tell that a page was generated rather than designed: it produces identical
+ * rhythm on every screen. This app had 65 of them. An eyebrow is now opt-in
+ * and rationed to roughly one per three sections.
+ */
+export function SectionTitle({
+  children,
+  action,
+  eyebrow,
+  sub,
+}: {
+  children: ReactNode;
+  action?: ReactNode;
+  eyebrow?: string;
+  sub?: string;
+}) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-4">
-      <h2 className="text-[13px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{children}</h2>
-      {/* The action is usually a small text link. On a phone it still has to be
-          tappable, so it gets height here rather than at every call site. */}
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <div className="min-w-0">
+        {eyebrow && <p className="mb-1.5 text-[11.5px] font-medium text-[var(--accent)]">{eyebrow}</p>}
+        <h2 className="text-[19px] font-semibold leading-tight tracking-[-0.015em] text-[var(--ink)]">
+          {children}
+        </h2>
+        {sub && <p className="mt-1 max-w-[62ch] text-[13.5px] leading-relaxed text-[var(--muted)]">{sub}</p>}
+      </div>
       {action && <div className="-my-2 flex min-h-[36px] shrink-0 items-center py-2">{action}</div>}
+    </div>
+  );
+}
+
+/**
+ * A group of related rows with no box around it. Cards are for when elevation
+ * communicates hierarchy; most lists just need separation, which a rule gives
+ * more cheaply and with far less visual noise.
+ */
+export function Rows({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cn("divide-y divide-[var(--line)] border-y border-[var(--line)]", className)}>
+      {children}
+    </div>
+  );
+}
+
+/** A number that carries an argument. Large, tabular, with its unit beneath. */
+export function Stat({
+  value,
+  label,
+  tone = "ink",
+  className,
+}: {
+  value: ReactNode;
+  label: string;
+  tone?: "ink" | "accent" | "warn" | "ok";
+  className?: string;
+}) {
+  const color = {
+    ink: "text-[var(--ink)]",
+    accent: "text-[var(--accent)]",
+    warn: "text-[var(--warn)]",
+    ok: "text-[var(--ok)]",
+  }[tone];
+  return (
+    <div className={className}>
+      <p className={cn("tnum text-[40px] font-semibold leading-none tracking-[-0.03em]", color)}>{value}</p>
+      <p className="mt-2 max-w-[28ch] text-[13px] leading-snug text-[var(--muted)]">{label}</p>
+    </div>
+  );
+}
+
+/**
+ * Label above the control, helper below it, error below that. Placeholder is
+ * never the label - a placeholder disappears the moment someone starts typing,
+ * which is exactly when a person with low digital confidence needs it most.
+ */
+export function Field({
+  label,
+  htmlFor,
+  help,
+  error,
+  optional,
+  children,
+}: {
+  label: string;
+  htmlFor?: string;
+  help?: string;
+  error?: string;
+  optional?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="grid gap-2">
+      <label htmlFor={htmlFor} className="text-[14px] font-medium leading-snug text-[var(--ink)]">
+        {label}
+        {optional && <span className="ml-1.5 font-normal text-[var(--muted)]">(optional)</span>}
+      </label>
+      {help && <p className="max-w-[64ch] text-[13px] leading-relaxed text-[var(--muted)]">{help}</p>}
+      {children}
+      {error && (
+        <p role="alert" className="text-[13px] font-medium text-[var(--danger)]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

@@ -39,7 +39,7 @@ export default function SchemePage() {
 
       <Card className="mb-6 flex flex-wrap items-center gap-4 p-5">
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">Benefit</p>
+          <p className="text-[13.5px] font-semibold text-[var(--ink)]">Benefit</p>
           <p className="mt-1 text-[16px] font-medium">{s.benefit}</p>
         </div>
       </Card>
