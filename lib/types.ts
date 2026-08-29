@@ -131,6 +131,7 @@ export type FieldKind =
   | "appointment"
   | "payment"
   | "review"
+  | "handoff"
   | "note";
 
 export interface FieldDef {
@@ -146,6 +147,12 @@ export interface FieldDef {
   required?: boolean;
   /** Show this field only when an earlier answer on the journey matches. */
   revealOn?: { field: string; value: string };
+  /**
+   * Where the work actually happens. The journey carries context and the case;
+   * the department runs its own application, because a reservation system or an
+   * appointment inventory is not something a form engine can stand in for.
+   */
+  handoff?: { serviceId: ServiceId; href: string; action: string; does: string[] };
   /** For consent fields: what is being accessed, by whom, and why. */
   consent?: { attribute: string; requestedBy: ServiceId; purpose: string; retention: string };
   amount?: number;

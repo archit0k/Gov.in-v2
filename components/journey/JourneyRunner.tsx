@@ -288,6 +288,9 @@ function Field({
     case "draft":
       return <DraftField f={f} value={value} onChange={onChange} journeyId={journeyId} stepId={stepId} />;
 
+    case "handoff":
+      return <Handoff f={f} value={value} journeyId={journeyId} />;
+
     case "prefilled":
       return <Prefilled f={f} value={value} onChange={onChange} />;
 
@@ -533,6 +536,60 @@ const PLACEHOLDER: Record<string, string> = {
   tds: "₹2,84,120",
   nodal: "Shri A. Kulkarni, Assistant Commissioner (Grievances), GSTN Maharashtra",
 };
+
+/**
+ * The point where a journey stops pretending it can do a department's job.
+ *
+ * A reservation system, an appointment inventory or an assessment engine is
+ * real software with real state. The journey carries identity, consent and the
+ * case; the department runs its own application and hands the result back. That
+ * boundary is the whole architecture, so it is drawn on screen rather than
+ * hidden behind another form step.
+ */
+function Handoff({ f, value, journeyId }: { f: FieldDef; value: string; journeyId: string }) {
+  const h = f.handoff;
+  if (!h) return null;
+  const svc = service(h.serviceId);
+  const done = value === "done";
+  const href = `${h.href}?journey=${encodeURIComponent(journeyId)}&return=${encodeURIComponent(`/journeys/${journeyId}`)}`;
+
+  return (
+    <Row>
+      <div className="overflow-hidden rounded-[var(--r-md)] border border-[var(--accent-line)]">
+        <div className="flex flex-wrap items-center gap-3 bg-[var(--accent-soft)] px-4 py-3">
+          <ServiceMark id={h.serviceId} size={34} />
+          <div className="min-w-0 flex-1">
+            <p className="text-[14.5px] font-medium leading-snug">{f.label}</p>
+            <p className="mono text-[11.5px] text-[var(--muted)]">{svc.subdomain}</p>
+          </div>
+          {done && <Badge tone="ok"><Check size={11} strokeWidth={2.6} /> Completed</Badge>}
+        </div>
+
+        <div className="px-4 py-3.5">
+          <p className="mb-2.5 text-[13px] leading-relaxed text-[var(--muted)]">
+            This part runs on {svc.name}, because it is their system and their inventory. You stay signed in,
+            and the result comes back to this journey as a case.
+          </p>
+          <ul className="mb-3.5 grid gap-1.5">
+            {h.does.map((d) => (
+              <li key={d} className="flex gap-2 text-[13px] text-[var(--ink-2)]">
+                <Check size={13} className="mt-0.5 shrink-0 text-[var(--ok)]" />
+                {d}
+              </li>
+            ))}
+          </ul>
+          <Button href={href} size="md">
+            {h.action} <ArrowRight size={15} />
+          </Button>
+          <p className="mt-2.5 text-[12px] text-[var(--muted)]">
+            Nothing to sign in to. {svc.department} receives a scoped assertion of who you are, not a copy of
+            your profile.
+          </p>
+        </div>
+      </div>
+    </Row>
+  );
+}
 
 /* ---------------- Review ---------------- */
 
