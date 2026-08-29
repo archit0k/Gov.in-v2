@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Badge, ServiceMark, ServiceTheme, cn } from "@/components/ui/primitives";
 import { IntentBar } from "@/components/shell/IntentBar";
-import { JourneyRail } from "@/components/journey/JourneyRail";
+import { JourneyRail, useCarryingJourney } from "@/components/journey/JourneyRail";
 import { ThemeToggle } from "@/components/shell/AppShell";
 import { CITIZEN } from "@/lib/data/citizen";
 import { service } from "@/lib/data/services";
@@ -46,13 +46,11 @@ export function PlatformShell({
 }) {
   const s = service(id);
   const path = usePathname();
+  // Make room for the journey column only when one is actually being carried.
+  const carrying = useCarryingJourney();
 
   return (
     <ServiceTheme id={id} className="min-h-dvh bg-[var(--surface)]">
-      {/* Handed down by the infrastructure. A department does not implement
-          this, restyle it, or opt out of it. */}
-      <JourneyRail inService />
-
       {/* The infrastructure strip. Different site, same citizen. */}
       <div className="border-b border-[var(--line)] bg-[var(--panel-2)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-3 gap-y-1.5 px-5 py-2 sm:px-8">
@@ -117,9 +115,17 @@ export function PlatformShell({
         </div>
       </header>
 
-      <main id="main" className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8">
-        {children}
-      </main>
+      <div
+        className={cn(
+          "mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8",
+          carrying && "lg:grid lg:grid-cols-[248px_minmax(0,1fr)] lg:gap-8",
+        )}
+      >
+        {/* Handed down by the infrastructure. A department does not implement
+            this, restyle it, or opt out of it. */}
+        <JourneyRail variant="side" />
+        <main id="main" className="min-w-0">{children}</main>
+      </div>
 
       <footer className="border-t border-[var(--line)]">
         <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8">
