@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useSyncExternalStore } from "react";
 import {
-  Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Plus, Route, ShieldCheck, Sparkles, Sun, Trash2, User, Network, RotateCcw,
+  Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Plus, Route, ScrollText, ShieldCheck, Sparkles, Sun, Trash2, User, Network, RotateCcw,
 } from "lucide-react";
 import { Badge, cn } from "@/components/ui/primitives";
 import { useSession } from "@/lib/state/store";
@@ -226,6 +226,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
+          <Link
+            href="/case"
+            className={cn(
+              "flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] transition-colors",
+              path.startsWith("/case")
+                ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
+            )}
+          >
+            <ScrollText size={17} strokeWidth={1.8} />
+            The case
+          </Link>
+
           <Link
             href="/architecture"
             className={cn(

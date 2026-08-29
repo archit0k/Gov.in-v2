@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { Page, PageHead } from "@/components/shell/AppShell";
 import { Badge, Button, Card, SectionTitle, ServiceMark } from "@/components/ui/primitives";
 import { SERVICES } from "@/lib/data/services";
@@ -41,6 +42,19 @@ export default function ArchitecturePage() {
         </div>
         <Button href="/before" className="shrink-0">
           See the comparison
+        </Button>
+      </Card>
+
+      <Card className="mb-8 flex flex-wrap items-center gap-4 p-5">
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-medium">This page is the how. The why is next door.</p>
+          <p className="mt-1 max-w-[76ch] text-[13.5px] leading-relaxed text-[var(--muted)]">
+            The reasoning, the objections a sceptical official would raise, the phased migration, what it costs
+            to run at national scale, and an honest list of what this does not solve.
+          </p>
+        </div>
+        <Button href="/case" className="shrink-0">
+          Read the case <ArrowRight size={15} />
         </Button>
       </Card>
 

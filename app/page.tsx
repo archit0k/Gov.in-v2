@@ -58,6 +58,9 @@ export default function Landing() {
             <Button size="lg" variant="secondary" href="/before">
               See what it replaces
             </Button>
+            <Button size="lg" variant="ghost" href="/case">
+              Read the case
+            </Button>
           </div>
 
           <div className="mt-5 flex items-center gap-3 rounded-[12px] border border-[var(--line)] bg-[var(--panel)] p-3.5">

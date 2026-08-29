@@ -127,12 +127,22 @@ export function Card({
   );
 }
 
-export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
+export function SectionTitle({
+  children,
+  action,
+  sub,
+}: {
+  children: ReactNode;
+  action?: ReactNode;
+  /** One line of framing under the heading, where the section needs it. */
+  sub?: string;
+}) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-4">
-      <h2 className="text-[13px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{children}</h2>
-      {/* The action is usually a small text link. On a phone it still has to be
-          tappable, so it gets height here rather than at every call site. */}
+    <div className="mb-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <div className="min-w-0">
+        <h2 className="text-[13px] font-semibold uppercase tracking-[0.09em] text-[var(--muted)]">{children}</h2>
+        {sub && <p className="mt-1.5 max-w-[74ch] text-[13.5px] leading-relaxed text-[var(--muted)]">{sub}</p>}
+      </div>
       {action && <div className="-my-2 flex min-h-[36px] shrink-0 items-center py-2">{action}</div>}
     </div>
   );
