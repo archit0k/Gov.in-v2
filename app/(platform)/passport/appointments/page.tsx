@@ -20,7 +20,7 @@ export default function AppointmentsPage() {
           <PanelTitle>Passport Seva Kendras near you</PanelTitle>
           <p className="mb-4 max-w-[70ch] text-[13.5px] leading-relaxed text-[var(--muted)]">
             Ordered by distance from your verified current address. Slot counts come from this department&apos;s
-            own inventory — the one thing on this page that could never live anywhere else.
+            own inventory - the one thing on this page that could never live anywhere else.
           </p>
           <div className="grid gap-2">
             {PSK_CENTRES.map((c) => (
@@ -28,7 +28,7 @@ export default function AppointmentsPage() {
                 key={c.name}
                 onClick={() => setPicked(c.name)}
                 className={cn(
-                  "flex flex-wrap items-center gap-3 rounded-[11px] border p-4 text-left transition-colors",
+                  "flex flex-wrap items-center gap-3 rounded-[var(--r-md)] border p-4 text-left transition-colors",
                   picked === c.name
                     ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                     : "border-[var(--line)] hover:border-[var(--accent-line)]",
@@ -71,12 +71,12 @@ export default function AppointmentsPage() {
                 <Link href={`/cases/${booked.id}`} className="mono text-[var(--accent)] hover:underline">
                   {booked.id}
                 </Link>
-                . Rescheduling moves the case with it — you are never asked to withdraw and reapply.
+                . Rescheduling moves the case with it - you are never asked to withdraw and reapply.
               </p>
             </div>
           ) : (
             <p className="text-[13.5px] leading-relaxed text-[var(--muted)]">
-              You have no appointment yet. One is held the moment you pick a slot inside the renewal journey —
+              You have no appointment yet. One is held the moment you pick a slot inside the renewal journey -
               before payment clears, rather than after it.
             </p>
           )}

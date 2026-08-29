@@ -59,7 +59,7 @@ export const SEED_CASES: GovCase[] = [
     data: { PAN: "AB••••4419F", Refund: "₹18,420", Regime: "New" },
     events: [
       { at: "2026-07-14T19:02:00+05:30", label: "Return filed", detail: "ITR-3 filed for AY 2026-27.", actor: "citizen" },
-      { at: "2026-07-14T19:04:00+05:30", label: "E-verified", detail: "Verified through Gov.in identity — no separate OTP.", actor: "system" },
+      { at: "2026-07-14T19:04:00+05:30", label: "E-verified", detail: "Verified through Gov.in identity - no separate OTP.", actor: "system" },
       { at: "2026-08-01T10:00:00+05:30", label: "Processed", detail: "Intimation under section 143(1) issued.", actor: "department" },
       { at: "2026-08-06T08:15:00+05:30", label: "Refund credited", detail: "₹18,420 to account ending 4471.", actor: "department" },
     ],
@@ -106,7 +106,7 @@ export const SEED_INBOX: InboxItem[] = [
     category: "important",
     serviceId: "umang",
     title: "A new scheme may apply to your business",
-    body: "The Micro Enterprise Digital Credit Scheme opened on 20 August. We have not checked your eligibility — that needs your permission.",
+    body: "The Micro Enterprise Digital Credit Scheme opened on 20 August. We have not checked your eligibility - that needs your permission.",
     at: "2026-08-22T11:00:00+05:30",
     read: false,
     action: { label: "Check eligibility", href: "/schemes/medcs" },
@@ -181,15 +181,15 @@ export const SCHEMES: Scheme[] = [
       { attribute: "Existing government credit lines", source: "Ministry of MSME" },
     ],
     rules: [
-      { label: "GST registration active for 12+ months", pass: true, detail: "Registered 18 Apr 2022 — 4 years 4 months." },
+      { label: "GST registration active for 12+ months", pass: true, detail: "Registered 18 Apr 2022 - 4 years 4 months." },
       { label: "Turnover under ₹5 crore", pass: true, detail: "Your turnover band is ₹1–2 crore." },
       { label: "Enterprise incorporated in India", pass: true, detail: "Deshmukh Design Studio Pvt Ltd, incorporated 9 Mar 2022." },
       { label: "No existing subvented credit line", pass: true, detail: "No active subvented facility found." },
-      { label: "Udyam registration on record", pass: false, detail: "Not found. You can register during the application — it adds one step." },
+      { label: "Udyam registration on record", pass: false, detail: "Not found. You can register during the application - it adds one step." },
     ],
     verdict: "partial",
     verdictLine:
-      "You meet 4 of 5 conditions. The fifth — Udyam registration — can be completed inside the application itself.",
+      "You meet 4 of 5 conditions. The fifth - Udyam registration - can be completed inside the application itself.",
   },
 ];
 

@@ -5,7 +5,7 @@ import type { ServiceDef, ServiceId } from "@/lib/types";
    Departments keep their identity, their data and their rules.
    They share identity, journeys, cases, consent and design.
    Adding a department here makes it navigable, searchable and
-   composable everywhere — no new frontend is built.
+   composable everywhere - no new frontend is built.
    ============================================================ */
 
 export const SERVICES: ServiceDef[] = [
@@ -240,7 +240,7 @@ export function service(id: ServiceId): ServiceDef {
 /**
  * Departments that have been built out as their own platform, on their own
  * path, with their own navigation. The rest still render from the registry as
- * a single page — which is the honest state of a migration, not an oversight.
+ * a single page - which is the honest state of a migration, not an oversight.
  */
 export const PLATFORMS: Partial<Record<ServiceId, string>> = {
   passport: "/passport",

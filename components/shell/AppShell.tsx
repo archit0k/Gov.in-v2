@@ -58,10 +58,9 @@ function subscribeTheme(cb: () => void) {
 }
 
 function isDark() {
-  const el = document.documentElement;
-  if (el.classList.contains("dark")) return true;
-  if (el.classList.contains("light")) return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // Light unless explicitly chosen. Government services default light, and a
+  // citizen who has never touched the setting should get the expected one.
+  return document.documentElement.classList.contains("dark");
 }
 
 function applyTheme(dark: boolean) {
@@ -71,7 +70,7 @@ function applyTheme(dark: boolean) {
   try {
     localStorage.setItem("gov.in.theme", dark ? "dark" : "light");
   } catch {
-    /* storage blocked — the choice still applies for this page */
+    /* storage blocked - the choice still applies for this page */
   }
   themeListeners.forEach((cb) => cb());
 }
@@ -100,7 +99,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="grid h-9 w-9 place-items-center rounded-[10px] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)]"
+      className="grid h-9 w-9 place-items-center rounded-[var(--r-md)] text-[var(--muted)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)]"
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
     >
       {dark ? <Sun size={17} strokeWidth={1.8} /> : <Moon size={17} strokeWidth={1.8} />}
@@ -108,13 +107,13 @@ export function ThemeToggle() {
   );
 }
 
-/** Labelled, for the rail — a setting the citizen can find, not a mystery icon. */
+/** Labelled, for the rail - a setting the citizen can find, not a mystery icon. */
 function ThemeRow() {
   const { dark, toggle } = useTheme();
   return (
     <button
       onClick={toggle}
-      className="flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] text-[var(--ink-2)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:w-full"
+      className="flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] text-[var(--ink-2)] transition-colors hover:bg-[var(--line-2)] hover:text-[var(--ink)] lg:w-full"
     >
       {dark ? <Sun size={17} strokeWidth={1.8} /> : <Moon size={17} strokeWidth={1.8} />}
       <span className="hidden lg:inline">{dark ? "Light mode" : "Dark mode"}</span>
@@ -140,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ================= Desktop rail ================= */}
       <aside className="sticky top-0 z-30 hidden h-dvh w-[236px] shrink-0 flex-col border-r border-[var(--line)] bg-[var(--panel)] px-4 py-5 lg:flex">
         <Link href="/home" className="mb-7 flex items-center gap-2 px-2">
-          <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)]">
+          <span className="grid h-8 w-8 place-items-center rounded-[var(--r-sm)] bg-[var(--accent)] text-[var(--accent-ink)]">
             <ShieldCheck size={17} strokeWidth={2.2} />
           </span>
           <Wordmark />
@@ -155,7 +154,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
+                  "flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] transition-colors",
                   active
                     ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                     : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
@@ -179,7 +178,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/ai"
             className={cn(
-              "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
+              "flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] transition-colors",
               path.startsWith("/ai")
                 ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                 : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
@@ -201,7 +200,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href={`/ai/${c.id}`}
                       className={cn(
-                        "block truncate rounded-[8px] py-1.5 pl-2.5 pr-7 text-[13px] transition-colors",
+                        "block truncate rounded-[var(--r-sm)] py-1.5 pl-2.5 pr-7 text-[13px] transition-colors",
                         path === `/ai/${c.id}`
                           ? "bg-[var(--line-2)] text-[var(--ink)]"
                           : "text-[var(--muted)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
@@ -213,7 +212,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <button
                       onClick={() => dispatch({ type: "deleteConversation", conversationId: c.id })}
                       aria-label={`Delete conversation: ${c.title}`}
-                      className="absolute right-1 top-1/2 hidden -translate-y-1/2 rounded-[6px] p-1 text-[var(--faint)] hover:text-[var(--danger)] group-hover/conv:block"
+                      className="absolute right-1 top-1/2 hidden -translate-y-1/2 rounded-[var(--r-sm)] p-1 text-[var(--faint)] hover:text-[var(--danger)] group-hover/conv:block"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -228,7 +227,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/architecture"
             className={cn(
-              "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[14px] transition-colors",
+              "flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] transition-colors",
               path === "/architecture"
                 ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                 : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
@@ -240,7 +239,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <ThemeRow />
 
-          <div className="rounded-[12px] border border-[var(--line)] bg-[var(--panel-2)] p-3">
+          <div className="rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel-2)] p-3">
             <div className="flex items-center gap-2.5">
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-[var(--accent-ink)]">
                 {CITIZEN.photoInitials}
@@ -257,14 +256,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   router.push("/home");
                 }}
                 title="Clear everything this session did and restore the seeded state"
-                className="flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+                className="flex items-center justify-center gap-1.5 rounded-[var(--r-sm)] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
               >
                 <RotateCcw size={12} /> Reset
               </button>
               <button
                 onClick={signOut}
                 title="Return to the sign-in screen. Your journeys and cases are kept."
-                className="flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
+                className="flex items-center justify-center gap-1.5 rounded-[var(--r-sm)] border border-[var(--line)] py-1.5 text-[11.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
               >
                 <LogOut size={12} /> Sign out
               </button>
@@ -276,7 +275,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ================= Mobile top bar ================= */}
       <header className="sticky top-0 z-30 flex items-center gap-1 border-b border-[var(--line)] bg-[var(--panel)] px-3 py-2 lg:hidden">
         <Link href="/home" className="mr-auto flex items-center gap-2 px-1 py-1.5">
-          <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)]">
+          <span className="grid h-8 w-8 place-items-center rounded-[var(--r-sm)] bg-[var(--accent)] text-[var(--accent-ink)]">
             <ShieldCheck size={17} strokeWidth={2.2} />
           </span>
           <Wordmark />
@@ -291,7 +290,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <button
           onClick={signOut}
           aria-label="Sign out"
-          className="grid h-11 w-11 place-items-center rounded-[10px] text-[var(--muted)] active:bg-[var(--line-2)]"
+          className="grid h-11 w-11 place-items-center rounded-[var(--r-md)] text-[var(--muted)] active:bg-[var(--line-2)]"
         >
           <LogOut size={19} strokeWidth={1.8} />
         </button>
@@ -351,7 +350,7 @@ function IconLink({
       href={href}
       aria-label={label}
       className={cn(
-        "grid h-11 w-11 place-items-center rounded-[10px] transition-colors active:bg-[var(--line-2)]",
+        "grid h-11 w-11 place-items-center rounded-[var(--r-md)] transition-colors active:bg-[var(--line-2)]",
         active ? "text-[var(--accent)]" : "text-[var(--muted)]",
       )}
     >
@@ -366,7 +365,7 @@ function ThemeIconButton() {
     <button
       onClick={toggle}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      className="grid h-11 w-11 place-items-center rounded-[10px] text-[var(--muted)] active:bg-[var(--line-2)]"
+      className="grid h-11 w-11 place-items-center rounded-[var(--r-md)] text-[var(--muted)] active:bg-[var(--line-2)]"
     >
       {dark ? <Sun size={19} strokeWidth={1.8} /> : <Moon size={19} strokeWidth={1.8} />}
     </button>

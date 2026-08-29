@@ -1,7 +1,7 @@
 import type { Citizen } from "@/lib/types";
 
 /* ============================================================
-   DEMO CITIZEN — entirely fictional.
+   DEMO CITIZEN - entirely fictional.
    Rich enough that the infrastructure has something real to do:
    verified addresses, credentials with expiry, a citizen graph,
    an employer, and a business relationship.
@@ -204,16 +204,16 @@ export function readProfile(path: string, c: Citizen = CITIZEN): string {
     "business.name": () => "Deshmukh Design Studio Pvt Ltd",
     "business.address": () => addressLine(0, c),
   };
-  return map[path]?.() ?? "—";
+  return map[path]?.() ?? "-";
 }
 
 function cred(id: string, c: Citizen) {
   const x = c.credentials.find((k) => k.id === id);
-  return x ? `${x.number}` : "—";
+  return x ? `${x.number}` : "-";
 }
 function rel(id: string, c: Citizen) {
   const x = c.relationships.find((k) => k.id === id);
-  return x ? x.name : "—";
+  return x ? x.name : "-";
 }
 function addressLine(i: number, c: Citizen) {
   const a = c.addresses[i];

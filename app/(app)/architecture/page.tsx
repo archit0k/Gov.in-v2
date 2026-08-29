@@ -17,9 +17,9 @@ const COMPARE: { axis: string; umang: string; govin: string }[] = [
 
 const PHASES = [
   { n: 1, title: "Adapters", body: "Legacy portals stay running. Gov.in reads and writes through adapters, so citizens get one front door before any department rewrites anything.", state: "Where every service starts" },
-  { n: 2, title: "Native journeys", body: "New citizen journeys are authored on shared primitives — identity, consent, cases, notifications. The legacy system becomes a data store, not a website.", state: "Passport, Transport, RTI, Cyber Crime here" },
+  { n: 2, title: "Native journeys", body: "New citizen journeys are authored on shared primitives - identity, consent, cases, notifications. The legacy system becomes a data store, not a website.", state: "Passport, Transport, RTI, Cyber Crime here" },
   { n: 3, title: "Primitive migration", body: "Departments retire their own auth, their own form engine, their own status page. They keep their register, their rules and their officers.", state: "Income Tax, GST, EPFO, MCA in progress" },
-  { n: 4, title: "Portal retirement", body: "The old citizen-facing portal is switched off. The department did not disappear — its front door did.", state: "The point of the exercise" },
+  { n: 4, title: "Portal retirement", body: "The old citizen-facing portal is switched off. The department did not disappear - its front door did.", state: "The point of the exercise" },
 ];
 
 export default function ArchitecturePage() {
@@ -28,7 +28,7 @@ export default function ArchitecturePage() {
       <PageHead
         eyebrow={<Badge tone="accent">For anyone asking how this would actually work</Badge>}
         title="Gov.in is a layer, not a portal"
-        sub="India's public services are not badly built. They are separately built. Every department independently solved identity, forms, status tracking, notifications and support — so a citizen has to solve integration by hand, eleven times."
+        sub="India's public services are not badly built. They are separately built. Every department independently solved identity, forms, status tracking, notifications and support - so a citizen has to solve integration by hand, eleven times."
       />
 
       <Card className="mb-8 flex flex-wrap items-center gap-4 border-[var(--accent-line)] bg-[var(--accent-soft)] p-5">
@@ -53,7 +53,7 @@ export default function ArchitecturePage() {
           Reading downward: the citizen meets one surface. Intent resolves deterministically when possible and through
           the AI layer only when genuinely ambiguous. Journeys are configuration, executed by one engine, which calls
           into department domains that keep owning their data. Everything a department does emits an event, and events
-          become cases, inbox items and timeline entries — automatically, for every department, without any of them
+          become cases, inbox items and timeline entries - automatically, for every department, without any of them
           building a notification system.
         </p>
       </section>
@@ -62,7 +62,7 @@ export default function ArchitecturePage() {
         {[
           {
             t: "Deterministic first",
-            b: "If you name a service, no model is involved. The AI layer exists for ambiguity, composition and explanation — not as a toll booth in front of navigation. The interface tells you which one happened, every time.",
+            b: "If you name a service, no model is involved. The AI layer exists for ambiguity, composition and explanation - not as a toll booth in front of navigation. The interface tells you which one happened, every time.",
           },
           {
             t: "Grounded, never generative about government",
@@ -157,7 +157,7 @@ export default function ArchitecturePage() {
                 <li>One journey engine rendering every journey from configuration</li>
                 <li>A service registry that drives navigation, search and theming</li>
                 <li>Deterministic intent routing, with a grounded model layer behind it</li>
-                <li>Real state — submit something and the case, inbox and timeline all change</li>
+                <li>Real state - submit something and the case, inbox and timeline all change</li>
                 <li>A consent ledger written to by journeys and readable in the profile</li>
               </ul>
             </div>
@@ -216,7 +216,7 @@ function Diagram() {
       {box(370, 8, 160, 34, "Citizen", undefined, "core")}
       {arrow(450, 42, 62)}
 
-      {box(250, 62, 400, 44, "One surface", "intent · search · inbox · timeline · profile", "core")}
+      {box(250, 62, 400, 44, "One surface", "intent, search, inbox, timeline, profile", "core")}
       {arrow(450, 106, 126)}
 
       {box(250, 126, 400, 44, "Navigation engine", "deterministic match first, AI layer only for ambiguity", "core")}
@@ -243,7 +243,7 @@ function Diagram() {
 
       {box(60, 408, 780, 46, "", undefined, "sub")}
       <text x="450" y="428" textAnchor="middle" fontSize="11" fontWeight="500" fill="var(--ink-2)">
-        Identity · Authorization · Consent ledger · Policy · Audit · Service registry · Journey registry · AI gateway
+        Identity, Authorization, Consent ledger, Policy, Audit, Service registry, Journey registry, AI gateway
       </text>
       <text x="450" y="444" textAnchor="middle" fontSize="10" fill="var(--muted)">
         Built once, at the infrastructure level. Accessibility and language live here too.

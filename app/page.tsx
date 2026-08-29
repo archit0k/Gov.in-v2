@@ -20,7 +20,7 @@ export default function Landing() {
   return (
     <div className="min-h-dvh">
       <header className="mx-auto flex max-w-[1180px] items-center gap-3 px-5 py-5 sm:px-8">
-        <span className="grid h-8 w-8 place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)]">
+        <span className="grid h-8 w-8 place-items-center rounded-[var(--r-sm)] bg-[var(--accent)] text-[var(--accent-ink)]">
           <ShieldCheck size={17} strokeWidth={2.2} />
         </span>
         <Wordmark />
@@ -48,7 +48,7 @@ export default function Landing() {
           </p>
           <p className="mt-4 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-2)]">
             Gov.in is not an eleventh portal. It is the layer underneath: one verified identity, one front door, one
-            case history — while every department keeps owning its own data, rules and brand.
+            case history - while every department keeps owning its own data, rules and brand.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -60,12 +60,12 @@ export default function Landing() {
             </Button>
           </div>
 
-          <div className="mt-5 flex items-center gap-3 rounded-[12px] border border-[var(--line)] bg-[var(--panel)] p-3.5">
+          <div className="mt-5 flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] p-3.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-[var(--accent-ink)]">
               {CITIZEN.photoInitials}
             </span>
             <p className="text-[13px] leading-relaxed text-[var(--muted)]">
-              You will sign in as <span className="text-[var(--ink)]">{CITIZEN.name}</span> — an entirely fictional
+              You will sign in as <span className="text-[var(--ink)]">{CITIZEN.name}</span> - an entirely fictional
               citizen with a passport expiring in 46 days, a stuck GST amendment and PF sitting with an old employer.
               No account, no OTP.
             </p>
@@ -75,14 +75,14 @@ export default function Landing() {
         {/* The problem, shown rather than described */}
         <div className="rise" style={{ animationDelay: "90ms" }}>
           <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--faint)]">
-            Today — ten services, ten relationships
+            Today - ten services, ten relationships
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">
             {SERVICES.map((s, i) => (
               <div
                 key={s.id}
                 className={cn(
-                  "rise rounded-[11px] border border-[var(--line)] bg-[var(--panel)] p-3 opacity-[0.86]",
+                  "rise rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] p-3 opacity-[0.86]",
                   i % 3 === 0 && "translate-y-1",
                   i % 4 === 1 && "-translate-y-1",
                 )}
@@ -102,11 +102,11 @@ export default function Landing() {
           </div>
 
           <div
-            className="rise rounded-[14px] border p-4"
+            className="rise rounded-[var(--r-lg)] border p-4"
             style={{ animationDelay: "560ms", background: "var(--accent-soft)", borderColor: "var(--accent-line)" }}
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-[10px] bg-[var(--accent)] text-[var(--accent-ink)]">
+              <span className="grid h-10 w-10 place-items-center rounded-[var(--r-md)] bg-[var(--accent)] text-[var(--accent-ink)]">
                 <ShieldCheck size={20} strokeWidth={2.1} />
               </span>
               <div>

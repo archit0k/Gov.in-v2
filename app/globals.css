@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ============================================================
-   GOV.IN — Design tokens
+   GOV.IN - Design tokens
    Shared infrastructure-level visual language.
    Departments may override --accent-* only.
    ============================================================ */
@@ -12,7 +12,7 @@
      look muddy. The tint is kept low-chroma on purpose: eleven departments
      bring their own hues, and a heavily tinted grey fights the warm ones.
 
-     Roles follow the familiar 12-step model — surface and panel are the
+     Roles follow the familiar 12-step model - surface and panel are the
      backgrounds, line and line-2 are the borders, accent is the solid, and
      ink through faint is a four-step text ramp at 18 / 9.9 / 7.0 / 5.2 on
      white so de-emphasis never costs legibility. */
@@ -43,8 +43,14 @@
   --info: #1d5c78;
   --info-soft: #e5f1f6;
 
-  --radius: 12px;
-  --radius-lg: 18px;
+  /* One radius system. Three steps, tighter inside softer, so a control
+     nested in a card is visibly a child of it rather than a sibling. */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+
+  --radius: var(--r-md);
+  --radius-lg: var(--r-lg);
 
   /* Tinted toward the accent hue. A neutral grey shadow on a cool surface is
      the other half of why light mode looked dirty. */
@@ -84,38 +90,6 @@
   --shadow-3: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
 }
 
-/* System preference, unless the citizen has explicitly chosen light. */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-  --surface: #0c0f14;
-  --panel: #141821;
-  --panel-2: #1a1f29;
-  --ink: #eef1f6;
-  --ink-2: #c0c8d4;
-  --muted: #929cab;
-  --faint: #8893a2;
-  --line: #262c38;
-  --line-2: #1d222c;
-
-  --accent: #7ba2ec;
-  --accent-ink: #0c0f14;
-  --accent-soft: #16233c;
-  --accent-line: #2b3f66;
-
-  --ok: #4fc48d;
-  --ok-soft: #10261d;
-  --warn: #e0a458;
-  --warn-soft: #2a1f10;
-  --danger: #ef8a83;
-  --danger-soft: #2b1512;
-  --info: #6fb8d3;
-  --info-soft: #10242c;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-2: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
-  --shadow-3: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-  }
-}
 
 @theme inline {
   --color-surface: var(--surface);
@@ -198,7 +172,7 @@ body {
   color: var(--ink);
 }
 
-/* Focus — infrastructure-level accessibility, not per-department.
+/* Focus - infrastructure-level accessibility, not per-department.
    Inside @layer base so a component can opt out with a utility. Unlayered,
    this rule beat every Tailwind utility regardless of specificity, which is
    why outline-none on an input did nothing. */

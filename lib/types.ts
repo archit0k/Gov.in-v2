@@ -1,5 +1,5 @@
 /* ============================================================
-   GOV.IN — Core infrastructure types
+   GOV.IN - Core infrastructure types
    These are the shared primitives every department builds on.
    Departments own their DOMAIN data; the infrastructure owns
    identity, journeys, cases, events and consent.
@@ -241,7 +241,7 @@ export interface Scheme {
   serviceId: ServiceId;
   summary: string;
   benefit: string;
-  /** Attributes the eligibility check needs — shown before it runs. */
+  /** Attributes the eligibility check needs - shown before it runs. */
   requires: { attribute: string; source: string }[];
   rules: { label: string; pass: boolean; detail: string }[];
   verdict: "eligible" | "not-eligible" | "partial";

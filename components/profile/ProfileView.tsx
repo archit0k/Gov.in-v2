@@ -87,7 +87,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
             <SectionTitle>Addresses</SectionTitle>
             <div className="grid gap-3 sm:grid-cols-2">
               {c.addresses.map((a) => (
-                <div key={a.id} className="rounded-[12px] border border-[var(--line)] p-3.5">
+                <div key={a.id} className="rounded-[var(--r-md)] border border-[var(--line)] p-3.5">
                   <div className="mb-1.5 flex items-center gap-2">
                     <p className="text-[13px] font-medium capitalize">{a.label} address</p>
                     <Badge tone="ok">verified</Badge>
@@ -218,10 +218,10 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
                 <p className="text-[14px] font-medium leading-snug">{g.attribute}</p>
                 <p className="mt-1 text-[13px] leading-relaxed text-[var(--muted)]">{g.purpose}</p>
                 <p className="mt-1.5 text-[11.5px] text-[var(--faint)]">
-                  {service(g.requestedBy as never).name} · granted {fmtDateTime(g.grantedAt)} · {g.retention}
+                  {service(g.requestedBy as never).name}, granted {fmtDateTime(g.grantedAt)}. {g.retention}
                 </p>
               </div>
-              <button className="shrink-0 rounded-[8px] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]">
+              <button className="shrink-0 rounded-[var(--r-sm)] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]">
                 Withdraw
               </button>
             </Card>

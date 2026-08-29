@@ -35,7 +35,7 @@ export default function BeforePage() {
       <PageHead
         eyebrow={<Badge tone="accent">Same citizen, same outcome, same day</Badge>}
         title="What this actually replaces"
-        sub="Renewing one passport. On the left, the field burden the citizen carries today. On the right, the same application on shared infrastructure. Nothing was removed from what the Ministry receives — it is asked for differently."
+        sub="Renewing one passport. On the left, the field burden the citizen carries today. On the right, the same application on shared infrastructure. Nothing was removed from what the Ministry receives - it is asked for differently."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -65,7 +65,7 @@ export default function BeforePage() {
         >
           <span
             className={cn(
-              "grid h-4 w-4 place-items-center rounded-[4px] border transition-colors",
+              "grid h-4 w-4 place-items-center rounded-[var(--r-sm)] border transition-colors",
               annotate ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--faint)]",
             )}
           >
@@ -87,7 +87,7 @@ export default function BeforePage() {
               <p className="text-[13.5px] font-medium">Application for reissue of passport</p>
               <p className="mt-0.5 text-[11.5px] text-[var(--muted)]">
                 All fields marked <span className="text-[var(--danger)]">*</span> are mandatory. Reconstruction for
-                comparison — not affiliated with any government site.
+                comparison - not affiliated with any government site.
               </p>
             </div>
             <div className="divide-y divide-[var(--line-2)]">
@@ -103,11 +103,11 @@ export default function BeforePage() {
                           {f.label}
                           {f.required && <span className="text-[var(--danger)]"> *</span>}
                         </label>
-                        <div className="h-[26px] rounded-[4px] border border-[var(--line)] bg-[var(--panel-2)]" />
+                        <div className="h-[26px] rounded-[var(--r-sm)] border border-[var(--line)] bg-[var(--panel-2)]" />
                         {annotate && f.flag && (
                           <span
                             className={cn(
-                              "fade w-fit rounded-[4px] px-1.5 py-0.5 text-[10.5px] leading-tight",
+                              "fade w-fit rounded-[var(--r-sm)] px-1.5 py-0.5 text-[10.5px] leading-tight",
                               f.flag === "known" && "bg-[var(--warn-soft)] text-[var(--warn)]",
                               f.flag === "repeat" && "bg-[var(--danger-soft)] text-[var(--danger)]",
                               f.flag === "jargon" && "bg-[var(--info-soft)] text-[var(--info)]",
@@ -152,7 +152,7 @@ export default function BeforePage() {
                     ["PAN and Aadhaar linkage", "credential.pan", "Income Tax record"],
                     ["Mobile and email", "citizen.phone", "Verified, OTP-confirmed"],
                   ].map(([label, path, src]) => (
-                    <div key={label} className="rounded-[8px] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
+                    <div key={label} className="rounded-[var(--r-sm)] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
                       <p className="text-[12.5px] text-[var(--ink-2)]">{label}</p>
                       <p className="mt-0.5 truncate text-[13px] text-[var(--ink)]">{readProfile(path)}</p>
                       <SourceTag label={src} className="mt-1" />
@@ -171,12 +171,12 @@ export default function BeforePage() {
                 </p>
                 <div className="grid gap-2">
                   {[
-                    ["Why are you reapplying?", "Expiry, pages exhausted, or damage — this changes the process."],
+                    ["Why are you reapplying?", "Expiry, pages exhausted, or damage - this changes the process."],
                     ["36 or 60 pages?", "A preference, not a fact about you."],
                     ["Which Seva Kendra and when?", "Three near you, with real slots."],
                     ["Who is your emergency contact?", "Picked from your citizen graph, not typed."],
                   ].map(([q, why]) => (
-                    <div key={q} className="rounded-[8px] border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-2">
+                    <div key={q} className="rounded-[var(--r-sm)] border border-[var(--accent-line)] bg-[var(--accent-soft)] px-3 py-2">
                       <p className="text-[13px] font-medium text-[var(--ink)]">{q}</p>
                       <p className="mt-0.5 text-[12px] leading-relaxed text-[var(--ink-2)]">{why}</p>
                     </div>
@@ -199,7 +199,7 @@ export default function BeforePage() {
                   </li>
                   <li>
                     <span className="text-[var(--ink-2)]">Ten criminal-history declarations.</span> Still legally
-                    required, and still asked — as one grouped declaration, in plain words, at the review step.
+                    required, and still asked - as one grouped declaration, in plain words, at the review step.
                   </li>
                   <li>
                     <span className="text-[var(--ink-2)]">Educational qualification, police station, ECR status.</span>{" "}

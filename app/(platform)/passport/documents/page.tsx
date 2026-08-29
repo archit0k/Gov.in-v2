@@ -25,7 +25,7 @@ export default function DocumentsPage() {
             const m = MARK[c.status];
             const Icon = m.icon;
             return (
-              <div key={c.item} className="flex gap-3 rounded-[11px] border border-[var(--line)] p-3.5">
+              <div key={c.item} className="flex gap-3 rounded-[var(--r-md)] border border-[var(--line)] p-3.5">
                 <span
                   className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full"
                   style={{ background: m.bg, color: m.fg }}

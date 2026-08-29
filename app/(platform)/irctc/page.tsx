@@ -43,7 +43,7 @@ export default function IrctcOverview() {
                 <DataRow k="PNR" v={<span className="mono">{upcoming.pnr}</span>} />
                 <DataRow k="Class" v={upcoming.cls} />
                 <DataRow k="Berths" v={upcoming.berths.join(" · ")} />
-                <DataRow k="Passengers" v={upcoming.pax.join(", ")} hint="Both verified — no ID check at boarding" />
+                <DataRow k="Passengers" v={upcoming.pax.join(", ")} hint="Both verified - no ID check at boarding" />
               </dl>
               <SourceTag label="Seat inventory and PNR owned by Indian Railways" className="mt-3" />
             </div>
@@ -62,7 +62,7 @@ export default function IrctcOverview() {
               <Link
                 key={r.to}
                 href="/journeys/irctc-book"
-                className="flex flex-wrap items-center gap-3 rounded-[11px] border border-[var(--line)] px-4 py-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                className="flex flex-wrap items-center gap-3 rounded-[var(--r-md)] border border-[var(--line)] px-4 py-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
               >
                 <span className="min-w-0 flex-1 text-[14px]">
                   {r.from} <span className="text-[var(--faint)]">→</span> {r.to}

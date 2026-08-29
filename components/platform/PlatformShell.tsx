@@ -15,7 +15,7 @@ import type { ServiceId } from "@/lib/types";
    A department gets its own site: its own domain, its own
    colour, its own navigation, its own vocabulary. What it does
    not get is its own login, its own idea of a case, or its own
-   search box built from scratch — the strip along the top is the
+   search box built from scratch - the strip along the top is the
    proof, and it is deliberately impossible to miss.
 
    Note what is absent: no AI mode. A department inherits the
@@ -62,7 +62,7 @@ export function PlatformShell({
           <div className="ml-auto flex items-center gap-2.5">
             <span className="hidden items-center gap-1.5 text-[12px] text-[var(--muted)] sm:flex">
               <ShieldCheck size={12} className="text-[var(--ok)]" />
-              Signed in as {CITIZEN.name} — no separate account for this department
+              Signed in as {CITIZEN.name} - no separate account for this department
             </span>
             <span className="flex items-center gap-1.5 text-[12px] text-[var(--muted)] sm:hidden">
               <ShieldCheck size={12} className="text-[var(--ok)]" /> {CITIZEN.photoInitials}

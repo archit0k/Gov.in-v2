@@ -10,12 +10,12 @@ import type { GovCase } from "@/lib/types";
 export const runtime = "nodejs";
 
 /* ============================================================
-   POST /api/chat — AI mode
+   POST /api/chat - AI mode
    A conversation that can act, bounded three ways:
    it may only name services and journeys from the registry, it
    may only read citizen data the citizen has explicitly granted
    in this conversation, and it never performs a consequential
-   action — it hands over to a journey where confirmation lives.
+   action - it hands over to a journey where confirmation lives.
    ============================================================ */
 
 interface Turn {
@@ -48,7 +48,7 @@ Reply as JSON:
   "title": "<only on the first reply: 3-5 words naming this conversation>"
 }
 
-ABOUT CITIZEN DATA — this matters more than being helpful:
+ABOUT CITIZEN DATA - this matters more than being helpful:
 - You know nothing about this person except their first name unless it appears under GRANTED CONTEXT below.
 - Never guess, assume or invent a fact about them. Not their address, not their documents, not their family.
 - If a fact would materially change your answer, ask for it through "needs" and answer as best you can without it.
@@ -58,7 +58,7 @@ ABOUT CITIZEN DATA — this matters more than being helpful:
 ABOUT ACTING:
 - You do not submit, pay, cancel or file anything. You hand over to a journey through "suggests", and the
   citizen confirms there. Say so plainly when it matters.
-- When a situation spans several departments — a death, a marriage, a move, a new business, a job change —
+- When a situation spans several departments - a death, a marriage, a move, a new business, a job change -
   suggest the matching lifeEvent rather than listing its parts separately. That is what it is for.
 - At most 2 suggestions, and every one must be something you would defend if asked why. Do not pad the list
   to look useful. An empty "suggests" is a perfectly good answer.
@@ -66,7 +66,7 @@ ABOUT ACTING:
   bereavement is worse than offering nothing.
 
 AVAILABLE CONTEXT KEYS (request via "needs"):
-${CONTEXT_KEYS.map((k) => `${k.key} — ${k.label}: ${k.detail} (held by ${k.holder})`).join("\n")}
+${CONTEXT_KEYS.map((k) => `${k.key} - ${k.label}: ${k.detail} (held by ${k.holder})`).join("\n")}
 
 GRANTED CONTEXT (everything you are allowed to know right now):
 ${buildContext(ok, cases ?? [])}
@@ -171,7 +171,7 @@ function fallback(last: string, granted: string[]) {
 
   return {
     reply:
-      "I could not match that to an existing government service, and I would rather say so than guess. It is logged as an unmet need — repeated unmet needs are how a missing service gets noticed. If something has already gone wrong with a department, a grievance carries the whole case history with it.",
+      "I could not match that to an existing government service, and I would rather say so than guess. It is logged as an unmet need - repeated unmet needs are how a missing service gets noticed. If something has already gone wrong with a department, a grievance carries the whole case history with it.",
     needs,
     suggests: [toSuggestion("cpgrams-grievance"), toSuggestion("rti-file")].filter(Boolean),
     source: "engine",

@@ -21,7 +21,7 @@ export default function BookPage() {
           </p>
           <div className="mb-4 grid gap-2">
             {j.steps.slice(0, -1).map((s, i) => (
-              <div key={s.id} className="flex items-start gap-3 rounded-[11px] border border-[var(--line)] px-4 py-3">
+              <div key={s.id} className="flex items-start gap-3 rounded-[var(--r-md)] border border-[var(--line)] px-4 py-3">
                 <span className="tnum mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[var(--line-2)] text-[11px] text-[var(--muted)]">
                   {i + 1}
                 </span>
@@ -49,7 +49,7 @@ export default function BookPage() {
               <Link
                 key={r.to}
                 href="/journeys/irctc-book"
-                className="flex flex-wrap items-center gap-3 rounded-[11px] border border-[var(--line)] px-4 py-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                className="flex flex-wrap items-center gap-3 rounded-[var(--r-md)] border border-[var(--line)] px-4 py-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
               >
                 <span className="min-w-0 flex-1 text-[14px]">
                   {r.from} <span className="text-[var(--faint)]">→</span> {r.to}
@@ -68,7 +68,7 @@ export default function BookPage() {
           <div className="grid gap-3">
             {[
               [Users, "Passengers come from your citizen graph, already verified, with concessions applied by default."],
-              [ShieldCheck, "A verified co-passenger needs no ID check at boarding — Railways receives an assertion, not their records."],
+              [ShieldCheck, "A verified co-passenger needs no ID check at boarding - Railways receives an assertion, not their records."],
               [Clock3, "Cancellation rules appear before payment, so a refund is never a surprise."],
             ].map(([Icon, text], i) => {
               const I = Icon as typeof Users;

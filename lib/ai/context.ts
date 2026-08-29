@@ -5,7 +5,7 @@ import type { GovCase } from "@/lib/types";
    PERMISSIONED CONTEXT
    The AI starts a conversation knowing nothing about the citizen
    beyond their first name. Every additional fact has to be asked
-   for, one bundle at a time, with a reason — and the citizen can
+   for, one bundle at a time, with a reason - and the citizen can
    say no and still get an answer.
 
    This is the whole difference between an assistant that is
@@ -44,7 +44,7 @@ export const CONTEXT_KEYS: ContextKeyDef[] = [
     key: "credentials",
     label: "Your government credentials",
     holder: "Seven issuing departments",
-    detail: "Passport, licence, vehicle, PAN, GSTIN, UAN and DIN — numbers masked, with expiry dates.",
+    detail: "Passport, licence, vehicle, PAN, GSTIN, UAN and DIN - numbers masked, with expiry dates.",
   },
   {
     key: "relationships",
@@ -96,7 +96,7 @@ export function buildContext(granted: string[], cases: GovCase[] = []): string {
         c.addresses
           .map(
             (a) =>
-              `${a.label} — ${a.line1}, ${a.line2 ?? ""} ${a.city}, ${a.state} ${a.pin} (${a.verification}, updated ${formatDate(a.updatedAt)})`,
+              `${a.label} - ${a.line1}, ${a.line2 ?? ""} ${a.city}, ${a.state} ${a.pin} (${a.verification}, updated ${formatDate(a.updatedAt)})`,
           )
           .join(" | "),
     );
@@ -134,7 +134,7 @@ export function buildContext(granted: string[], cases: GovCase[] = []): string {
     out.push(
       "OPEN CASES: " +
         cases
-          .map((k) => `${k.id} (${k.title}) — currently "${k.states[k.stateIndex]}". ${k.statusLine}`)
+          .map((k) => `${k.id} (${k.title}) - currently "${k.states[k.stateIndex]}". ${k.statusLine}`)
           .join(" | "),
     );
   }

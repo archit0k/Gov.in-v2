@@ -52,11 +52,11 @@ export default function SchemePage() {
           </div>
           <p className="mb-4 max-w-[74ch] text-[13.5px] leading-relaxed text-[var(--muted)]">
             Running an eligibility check means reading data from four departments. That is your data, so it needs your
-            permission — not a checkbox you agreed to when you signed in. Here is exactly what would be read:
+            permission - not a checkbox you agreed to when you signed in. Here is exactly what would be read:
           </p>
           <ul className="mb-5 grid gap-2">
             {s.requires.map((r) => (
-              <li key={r.attribute} className="flex flex-wrap items-center gap-2 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5">
+              <li key={r.attribute} className="flex flex-wrap items-center gap-2 rounded-[var(--r-md)] border border-[var(--line)] px-3.5 py-2.5">
                 <Eye size={14} className="shrink-0 text-[var(--muted)]" />
                 <span className="min-w-0 flex-1 text-[13.5px]">{r.attribute}</span>
                 <Badge tone="neutral">{r.source}</Badge>
@@ -87,7 +87,7 @@ export default function SchemePage() {
             {s.requires.map((r, i) => (
               <div key={r.attribute} className="rise flex items-center gap-3" style={{ animationDelay: `${i * 260}ms` }}>
                 <Check size={14} className="text-[var(--ok)]" />
-                <span className="text-[13px] text-[var(--muted)]">{r.source} — {r.attribute}</span>
+                <span className="text-[13px] text-[var(--muted)]">{r.source} - {r.attribute}</span>
               </div>
             ))}
           </div>

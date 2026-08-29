@@ -195,7 +195,7 @@ function reducer(s: SessionState, a: Action): SessionState {
           {
             at: now,
             label: "Acknowledged",
-            detail: `${service(j.serviceId).name} received it over the shared case interface — no separate acknowledgement email, no reference number to keep safe.`,
+            detail: `${service(j.serviceId).name} received it over the shared case interface - no separate acknowledgement email, no reference number to keep safe.`,
             actor: "system",
           },
         ],
@@ -204,7 +204,7 @@ function reducer(s: SessionState, a: Action): SessionState {
         id: `n-${a.caseId}`,
         category: "update",
         serviceId: j.serviceId,
-        title: `${j.title} — submitted`,
+        title: `${j.title} - submitted`,
         body: j.outcome,
         at: now,
         read: false,
@@ -241,7 +241,7 @@ function reducer(s: SessionState, a: Action): SessionState {
             stateIndex: idx,
             updatedAt: now,
             status: idx >= c.states.length - 1 ? "approved" : "submitted",
-            statusLine: `${c.states[idx]} — updated just now by the department.`,
+            statusLine: `${c.states[idx]} - updated just now by the department.`,
             events: [
               ...c.events,
               { at: now, label: c.states[idx], detail: "Department updated the case state.", actor: "department" as const },
@@ -338,7 +338,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(KEY);
       if (raw) dispatch({ type: "hydrate", state: { ...initial, ...JSON.parse(raw) } });
     } catch {
-      /* private mode, blocked storage — the demo still works, just not across reloads */
+      /* private mode, blocked storage - the demo still works, just not across reloads */
     }
     setReady();
   }, []);

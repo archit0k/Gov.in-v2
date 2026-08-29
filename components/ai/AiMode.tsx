@@ -13,7 +13,7 @@ import type { ServiceId } from "@/lib/types";
 /* ============================================================
    AI MODE
    The same front door, turned into a conversation. It is here
-   for needs that cannot be phrased as a task — and the point of
+   for needs that cannot be phrased as a task - and the point of
    the screen is what it does NOT know: it opens knowing a first
    name, and asks for anything more, one bundle at a time.
    ============================================================ */
@@ -150,7 +150,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
           </h1>
           <p className="mt-2.5 max-w-[62ch] text-[14.5px] leading-relaxed text-[var(--muted)]">
             Describe it however it makes sense to you. Right now this conversation knows your first name and
-            nothing else — not your address, not your documents, not your family. It will ask before it reads
+            nothing else - not your address, not your documents, not your family. It will ask before it reads
             anything, and tell you why.
           </p>
           <div className="mt-6 grid gap-2">
@@ -158,7 +158,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
               <button
                 key={o}
                 onClick={() => send(o)}
-                className="flex items-center gap-3 rounded-[11px] border border-[var(--line)] bg-[var(--panel)] px-4 py-3 text-left text-[14px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                className="flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] px-4 py-3 text-left text-[14px] text-[var(--ink-2)] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
               >
                 <span className="min-w-0 flex-1">{o}</span>
                 <ArrowRight size={15} className="shrink-0 text-[var(--faint)]" />
@@ -182,7 +182,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
       )}
 
       {conv && conv.granted.length > 0 && (
-        <div className="mb-3 flex flex-wrap items-center gap-1.5 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel-2)] px-3 py-2">
           <ShieldCheck size={13} className="text-[var(--ok)]" />
           <span className="text-[11.5px] text-[var(--muted)]">Shared with this conversation only:</span>
           {conv.granted.map((k) => (
@@ -196,7 +196,7 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
           e.preventDefault();
           send(input);
         }}
-        className="sticky bottom-[84px] mt-4 flex items-end gap-2 lg:bottom-4 rounded-[14px] border border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"
+        className="sticky bottom-[84px] mt-4 flex items-end gap-2 lg:bottom-4 rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--panel)] p-2 pl-4 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]"
       >
         <textarea
           rows={1}
@@ -220,13 +220,13 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
           type="submit"
           disabled={!input.trim() || busy}
           aria-label="Send"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-[var(--accent)] text-[var(--accent-ink)] transition-opacity disabled:opacity-30"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-[var(--r-md)] bg-[var(--accent)] text-[var(--accent-ink)] transition-opacity disabled:opacity-30"
         >
           <ArrowUp size={17} strokeWidth={2.3} />
         </button>
       </form>
       <p className="mt-2 text-center text-[11.5px] text-[var(--muted)]">
-        AI mode explains and routes. It never submits, pays or cancels anything — that happens inside a journey,
+        AI mode explains and routes. It never submits, pays or cancels anything - that happens inside a journey,
         where you confirm.
       </p>
     </div>
@@ -247,7 +247,7 @@ function Turn({
   if (turn.role === "citizen") {
     return (
       <div className="flex justify-end">
-        <p className="max-w-[80%] rounded-[14px] rounded-br-[4px] bg-[var(--accent-soft)] px-4 py-2.5 text-[14.5px] leading-relaxed text-[var(--ink)]">
+        <p className="max-w-[80%] rounded-[var(--r-lg)] rounded-br-[4px] bg-[var(--accent-soft)] px-4 py-2.5 text-[14.5px] leading-relaxed text-[var(--ink)]">
           {turn.text}
         </p>
       </div>
@@ -259,7 +259,7 @@ function Turn({
   return (
     <div className="rise">
       <div className="mb-1.5 flex items-center gap-2">
-        <span className="grid h-6 w-6 place-items-center rounded-[7px] bg-[var(--accent)] text-[var(--accent-ink)]">
+        <span className="grid h-6 w-6 place-items-center rounded-[var(--r-sm)] bg-[var(--accent)] text-[var(--accent-ink)]">
           <ShieldCheck size={13} strokeWidth={2.3} />
         </span>
         <span className="text-[12px] font-medium text-[var(--ink-2)]">Gov.in</span>
@@ -307,7 +307,7 @@ function Turn({
             <Link
               key={sg.id}
               href={sg.href}
-              className="flex items-center gap-3 rounded-[11px] border border-[var(--line)] bg-[var(--panel)] p-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+              className="flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] p-3 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
             >
               <ServiceMark id={sg.serviceId as ServiceId} size={32} />
               <span className="min-w-0 flex-1">

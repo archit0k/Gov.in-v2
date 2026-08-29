@@ -38,7 +38,7 @@ export default function PnrPage() {
             }}
             className="flex flex-wrap gap-2"
           >
-            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[11px] border border-[var(--line)] bg-[var(--panel)] px-3.5 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]">
+            <div className="flex h-11 min-w-[220px] flex-1 items-center gap-2.5 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] px-3.5 transition-all focus-within:border-[var(--accent)] focus-within:ring-4 focus-within:ring-[var(--accent-soft)]">
               <Search size={16} className="shrink-0 text-[var(--faint)]" />
               <input
                 value={pnr}
@@ -64,14 +64,14 @@ export default function PnrPage() {
           </button>
 
           {result === "none" && (
-            <p className="fade mt-4 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[13.5px] leading-relaxed text-[var(--muted)]">
-              No booking matches that number. Nothing was wrong with what you typed — this prototype only holds
+            <p className="fade mt-4 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[13.5px] leading-relaxed text-[var(--muted)]">
+              No booking matches that number. Nothing was wrong with what you typed - this prototype only holds
               the fictional bookings for this demo citizen.
             </p>
           )}
 
           {result && result !== "none" && (
-            <div className="fade mt-4 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-4">
+            <div className="fade mt-4 rounded-[var(--r-md)] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-4">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <p className="min-w-0 flex-1 truncate text-[14.5px] font-medium">{result.train}</p>
                 <Badge tone={result.status === "confirmed" ? "ok" : result.status === "cancelled" ? "danger" : "neutral"}>
@@ -86,7 +86,7 @@ export default function PnrPage() {
                 {result.berths.length > 0 && <DataRow k="Berths" v={result.berths.join(" · ")} />}
                 <DataRow k="Passengers" v={result.pax.join(", ")} />
               </dl>
-              <SourceTag label="Passenger Reservation System — Indian Railways" className="mt-3" />
+              <SourceTag label="Passenger Reservation System - Indian Railways" className="mt-3" />
             </div>
           )}
         </Card>
@@ -97,14 +97,14 @@ export default function PnrPage() {
           <PanelTitle>Reading a status honestly</PanelTitle>
           <div className="grid gap-3 text-[13px] leading-relaxed text-[var(--muted)]">
             <p>
-              <span className="text-[var(--ink)]">Confirmed</span> — you have a berth. Nothing else to do.
+              <span className="text-[var(--ink)]">Confirmed</span> - you have a berth. Nothing else to do.
             </p>
             <p>
-              <span className="text-[var(--ink)]">RAC</span> — you have a seat and share a berth until someone
+              <span className="text-[var(--ink)]">RAC</span> - you have a seat and share a berth until someone
               cancels. Under position 10 on most routes, this confirms more often than not.
             </p>
             <p>
-              <span className="text-[var(--ink)]">Waitlisted</span> — no seat yet. If it is still waitlisted when
+              <span className="text-[var(--ink)]">Waitlisted</span> - no seat yet. If it is still waitlisted when
               the chart is prepared, the ticket is dropped and the fare returns automatically.
             </p>
           </div>

@@ -2,7 +2,7 @@
    DOMAIN DATA
    The records a department owns and nobody else stores. This is
    the half of the architecture that does NOT move to shared
-   infrastructure — Passport Seva keeps its appointment inventory
+   infrastructure - Passport Seva keeps its appointment inventory
    and its fee schedule, IRCTC keeps its seats and its PNRs.
    All figures below are illustrative, for a fictional citizen.
    ============================================================ */
@@ -52,16 +52,16 @@ export const PASSPORT_CHECKLIST = [
 ];
 
 export const PSK_CENTRES = [
-  { name: "POPSK Pune — Senapati Bapat Road", distance: "6 km", earliest: "2 Sep, 09:45", slots: 18, type: "Post Office PSK" },
-  { name: "PSK Pune — Nigdi", distance: "11 km", earliest: "4 Sep, 09:15", slots: 42, type: "Passport Seva Kendra" },
+  { name: "POPSK Pune - Senapati Bapat Road", distance: "6 km", earliest: "2 Sep, 09:45", slots: 18, type: "Post Office PSK" },
+  { name: "PSK Pune - Nigdi", distance: "11 km", earliest: "4 Sep, 09:15", slots: 42, type: "Passport Seva Kendra" },
   { name: "POPSK Pimpri-Chinchwad", distance: "18 km", earliest: "1 Sep, 10:30", slots: 9, type: "Post Office PSK" },
-  { name: "PSK Mumbai — Lower Parel", distance: "148 km", earliest: "31 Aug, 08:30", slots: 63, type: "Passport Seva Kendra" },
+  { name: "PSK Mumbai - Lower Parel", distance: "148 km", earliest: "31 Aug, 08:30", slots: 63, type: "Passport Seva Kendra" },
 ];
 
 export const PASSPORT_FAQ = [
   {
     q: "Why does this need no documents when the old form wanted eleven?",
-    a: "Because the documents were never the point — the facts on them were. Passport Seva reads those facts from the departments that already verified them, with your consent, at the moment it needs them. You still carry your old booklet to the appointment.",
+    a: "Because the documents were never the point - the facts on them were. Passport Seva reads those facts from the departments that already verified them, with your consent, at the moment it needs them. You still carry your old booklet to the appointment.",
   },
   {
     q: "What actually happens at police verification?",
@@ -69,10 +69,10 @@ export const PASSPORT_FAQ = [
   },
   {
     q: "Does my passport number change on reissue?",
-    a: "Yes. A reissued passport carries a new number, and the old booklet is cancelled and returned to you. Anything holding your old number — a valid visa, for instance — needs the old booklet as proof.",
+    a: "Yes. A reissued passport carries a new number, and the old booklet is cancelled and returned to you. Anything holding your old number - a valid visa, for instance - needs the old booklet as proof.",
   },
   {
-    q: "Six months of validity — is that a rule?",
+    q: "Six months of validity - is that a rule?",
     a: "Not an Indian rule. Many destination countries require at least six months of validity remaining on arrival, which is why the reminder comes early rather than on the expiry date.",
   },
 ];
@@ -137,7 +137,7 @@ export const REFUND_RULES = [
   { window: "Between 48 and 12 hours", retained: "25% of the fare", pct: 25 },
   { window: "Between 12 and 4 hours", retained: "50% of the fare", pct: 50 },
   { window: "Under 4 hours, or after chart preparation", retained: "No refund", pct: 100 },
-  { window: "Train cancelled, or over 3 hours late", retained: "Nothing — full fare returns automatically", pct: 0 },
+  { window: "Train cancelled, or over 3 hours late", retained: "Nothing - full fare returns automatically", pct: 0 },
 ];
 
 export const IRCTC_FAQ = [

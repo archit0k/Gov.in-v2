@@ -10,7 +10,7 @@ import type { NavResult, ServiceId } from "@/lib/types";
 
 /* ============================================================
    THE FRONT DOOR
-   One input. Not "ask AI" — a navigation surface. It resolves
+   One input. Not "ask AI" - a navigation surface. It resolves
    deterministically when it can, and only reaches the model when
    the request is genuinely ambiguous. The badge tells you which
    happened, every time.
@@ -18,7 +18,7 @@ import type { NavResult, ServiceId } from "@/lib/types";
    AI mode sits beside it rather than replacing it: when a need
    cannot be phrased as a task, the whole surface becomes a
    conversation. It exists only on the infrastructure's own front
-   door — a department inherits the navigation surface, not a
+   door - a department inherits the navigation surface, not a
    chat product.
    ============================================================ */
 
@@ -99,7 +99,7 @@ export function IntentBar({
         className={cn(
           // The container carries the whole focus treatment: its border plus a
           // soft halo. The input inside must draw nothing of its own.
-          "flex items-center gap-3 rounded-[14px] border bg-[var(--panel)] transition-all duration-150",
+          "flex items-center gap-3 rounded-[var(--r-lg)] border bg-[var(--panel)] transition-all duration-150",
           hero ? "h-[62px] px-5" : "h-12 px-4",
           busy
             ? "border-[var(--accent)] ring-4 ring-[var(--accent-soft)]"
@@ -127,7 +127,7 @@ export function IntentBar({
         ) : (
           <>
             {q && (
-              <kbd className="hidden shrink-0 items-center gap-1 rounded-[6px] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
+              <kbd className="hidden shrink-0 items-center gap-1 rounded-[var(--r-sm)] border border-[var(--line)] px-1.5 py-1 text-[10.5px] text-[var(--muted)] sm:flex">
                 <CornerDownLeft size={11} /> Enter
               </kbd>
             )}
@@ -202,7 +202,7 @@ function Result({
           {res.mode === "clarify" && <Badge tone="warn">Needs one clarification</Badge>}
           {res.mode === "informational" && <Badge tone="info">Answer</Badge>}
           <span className="text-[12.5px] text-[var(--muted)]">
-            {res.source === "model" ? "resolved by the AI layer" : "resolved by the navigation engine — no model call"}
+            {res.source === "model" ? "resolved by the AI layer" : "resolved by the navigation engine - no model call"}
           </span>
           <button onClick={onClear} className="ml-auto text-[12px] text-[var(--faint)] hover:text-[var(--ink)]">
             Clear
@@ -213,7 +213,7 @@ function Result({
           <p className="mb-3.5 text-[14px] leading-relaxed text-[var(--ink-2)]">{res.reading}</p>
 
           {res.answer && (
-            <p className="mb-3.5 rounded-[10px] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[14px] leading-relaxed">
+            <p className="mb-3.5 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel-2)] p-3.5 text-[14px] leading-relaxed">
               {res.answer}
             </p>
           )}
@@ -221,12 +221,12 @@ function Result({
           {res.primary && (
             <Link
               href={res.primary.href}
-              className="flex items-center gap-3 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5 transition-all hover:shadow-[var(--shadow-2)]"
+              className="flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5 transition-all hover:shadow-[var(--shadow-2)]"
             >
               {res.primary.serviceId ? (
                 <ServiceMark id={res.primary.serviceId} size={38} />
               ) : (
-                <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[10px] bg-[var(--accent)] text-[var(--accent-ink)]">
+                <span className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[var(--r-md)] bg-[var(--accent)] text-[var(--accent-ink)]">
                   <Sparkles size={18} strokeWidth={1.9} />
                 </span>
               )}
@@ -241,7 +241,7 @@ function Result({
           {res.composed && (
             <ul className="mt-3 grid gap-1.5">
               {res.composed.steps.slice(0, -1).map((s, i) => (
-                <li key={s.id} className="flex items-center gap-2.5 rounded-[9px] border border-[var(--line)] px-3 py-2 text-[13px]">
+                <li key={s.id} className="flex items-center gap-2.5 rounded-[var(--r-sm)] border border-[var(--line)] px-3 py-2 text-[13px]">
                   <span className="tnum w-4 shrink-0 text-[11.5px] text-[var(--faint)]">{i + 1}</span>
                   <span className="truncate text-[var(--ink)]">{s.title}</span>
                   <span className="ml-auto truncate text-[11.5px] text-[var(--muted)]">{s.fields[0]?.label}</span>
@@ -257,7 +257,7 @@ function Result({
                 <Link
                   key={o.href + o.label}
                   href={o.href}
-                  className="flex items-center gap-2 rounded-[10px] border border-[var(--line)] px-3.5 py-2.5 text-[14px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                  className="flex items-center gap-2 rounded-[var(--r-md)] border border-[var(--line)] px-3.5 py-2.5 text-[14px] transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
                 >
                   {o.label}
                   <ArrowRight size={15} className="ml-auto text-[var(--faint)]" />
@@ -274,7 +274,7 @@ function Result({
                   <Link
                     key={a.href}
                     href={a.href}
-                    className="flex items-center gap-2.5 rounded-[9px] px-2 py-1.5 text-[13.5px] transition-colors hover:bg-[var(--line-2)]"
+                    className="flex items-center gap-2.5 rounded-[var(--r-sm)] px-2 py-1.5 text-[13.5px] transition-colors hover:bg-[var(--line-2)]"
                   >
                     <ServiceMark id={a.serviceId} size={24} />
                     <span className="truncate">{a.label}</span>
@@ -288,7 +288,7 @@ function Result({
           {aiMode && (res.mode === "clarify" || res.mode === "informational") && (
             <button
               onClick={onAsk}
-              className="mt-3 flex w-full items-center gap-2 rounded-[10px] border border-dashed border-[var(--line)] px-3.5 py-2.5 text-[13px] text-[var(--muted)] transition-colors hover:border-[var(--accent-line)] hover:text-[var(--accent)]"
+              className="mt-3 flex w-full items-center gap-2 rounded-[var(--r-md)] border border-dashed border-[var(--line)] px-3.5 py-2.5 text-[13px] text-[var(--muted)] transition-colors hover:border-[var(--accent-line)] hover:text-[var(--accent)]"
             >
               <Sparkles size={14} /> Still not it? Talk it through in AI mode
               <ArrowRight size={14} className="ml-auto" />

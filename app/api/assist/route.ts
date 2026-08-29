@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 /* ============================================================
    POST /api/assist
    Contextual help inside a journey. The model is told exactly
-   which step, which fields, and which department — so it answers
+   which step, which fields, and which department - so it answers
    about THIS screen instead of about government in general.
    ============================================================ */
 
@@ -59,12 +59,12 @@ Set certain=true when the CONTEXT below fully supports your answer. That is the 
 a well-supported answer is its own kind of unhelpfulness.
 Set certain=false, and say plainly what you do not know, only when the question asks for something the
 context does not contain. Do not pad a certain answer with speculation about what a department might also
-want — if it is not in the context, leave it out.
+want - if it is not in the context, leave it out.
 
 CONTEXT
-Journey: ${j?.title ?? "unknown"} — ${j?.goal ?? ""}
+Journey: ${j?.title ?? "unknown"} - ${j?.goal ?? ""}
 Department: ${j ? service(j.serviceId).name + " (" + service(j.serviceId).department + ")" : "unknown"}
-Current step: ${step?.title ?? "unknown"} — ${step?.intent ?? ""}
+Current step: ${step?.title ?? "unknown"} - ${step?.intent ?? ""}
 Fields on this step: ${step?.fields.map((f) => `${f.label} (${f.kind}${f.sourceLabel ? ", from " + f.sourceLabel : ""})`).join("; ") ?? "none"}
 Outcome when finished: ${j?.outcome ?? ""}
 What this replaced: ${j ? `${j.legacyEquivalent}, ${j.legacyFields} fields` : ""}`,

@@ -24,7 +24,7 @@ export default function ServicesPage() {
     <Page wide>
       <PageHead
         title="Government services"
-        sub="Ten departments, one infrastructure. Each keeps its own data, rules and identity — and none of them asks you to register again."
+        sub="Ten departments, one infrastructure. Each keeps its own data, rules and identity - and none of them asks you to register again."
       />
 
       <div className="mb-6 flex flex-wrap gap-1.5">

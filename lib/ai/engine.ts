@@ -5,7 +5,7 @@ import type { JourneyDef, NavResult, ServiceId } from "@/lib/types";
 /* ============================================================
    NAVIGATION ENGINE
    Deterministic first. If the citizen named a known service or
-   journey, we open it — no model call, no latency, no chatbot.
+   journey, we open it - no model call, no latency, no chatbot.
    The model is only reached for genuine ambiguity, and even then
    it may only choose from the registries below. It cannot invent
    a government service.
@@ -89,7 +89,7 @@ const LIFE_EVENTS: LifeEvent[] = [
       "Four departments, and three of them will reject you if you approach them out of order. Composed the correct sequence.",
     parts: [
       { serviceId: "mca", title: "Incorporate the company", intent: "Name reservation, DIN and incorporation in one filing.", journeyId: "mca-dir3-kyc", note: "Existing journey · MCA" },
-      { serviceId: "income-tax", title: "PAN and TAN for the company", intent: "Issued from the incorporation filing — you should never apply separately.", note: "Existing capability · CBDT" },
+      { serviceId: "income-tax", title: "PAN and TAN for the company", intent: "Issued from the incorporation filing - you should never apply separately.", note: "Existing capability · CBDT" },
       { serviceId: "gst", title: "GST registration", intent: "Required past the turnover threshold, or immediately for inter-state supply.", journeyId: "gst-address-amend", note: "Existing journey · GSTN" },
       { serviceId: "epfo", title: "Employer registration", intent: "Triggered at 20 employees. We will tell you when.", note: "Existing capability · EPFO" },
     ],
@@ -173,7 +173,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
     return { mode: "clarify", reading: "Tell us what you need in your own words.", confidence: 0, source: "engine" };
   }
 
-  /* 1 — life event? These are the requests no single portal answers, so a
+  /* 1 - life event? These are the requests no single portal answers, so a
      department-scoped search never composes one. */
   const ev = scope ? undefined : LIFE_EVENTS.find((e) => e.match.test(query));
   if (ev) {
@@ -193,7 +193,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
     };
   }
 
-  /* 2 — direct journey match. Deterministic wins, always. */
+  /* 2 - direct journey match. Deterministic wins, always. */
   // Inside a department, only that department's journeys are on offer.
   const pool = scope ? JOURNEYS.filter((j) => j.serviceId === scope) : JOURNEYS;
   const ranked = pool.map((j) => ({ j, s: scoreJourney(j, ts, raw) }))
@@ -227,7 +227,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
     };
   }
 
-  /* 3 — service-level match */
+  /* 3 - service-level match */
   const svc = scope ? undefined : SERVICES.find(
     (s) =>
       ts.some((t) => s.name.toLowerCase().includes(t) || s.shortName.toLowerCase() === t || s.id === t) ||
@@ -250,7 +250,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
     };
   }
 
-  /* 4 — genuine ambiguity */
+  /* 4 - genuine ambiguity */
   const guesses = ranked.slice(0, 3);
   if (guesses.length) {
     return {
@@ -270,7 +270,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
   if (scope) {
     return {
       mode: "clarify",
-      reading: `${service(scope).name} has no journey for that. It may well be another department's — the Gov.in front door searches all of them at once.`,
+      reading: `${service(scope).name} has no journey for that. It may well be another department's - the Gov.in front door searches all of them at once.`,
       confidence: 0.1,
       clarify: {
         question: "Where would you like to go?",
@@ -286,7 +286,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
   return {
     mode: "clarify",
     reading:
-      "No existing journey matches that yet. Rather than guess, this is logged as an unmet intent — repeated unmet intents are what tell government a service is missing.",
+      "No existing journey matches that yet. Rather than guess, this is logged as an unmet intent - repeated unmet intents are what tell government a service is missing.",
     confidence: 0.1,
     clarify: {
       question: "Is it closest to any of these?",

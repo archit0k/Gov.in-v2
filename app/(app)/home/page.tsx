@@ -44,12 +44,12 @@ export default function HomePage() {
             <span className="font-medium">
               {actions.length} {actions.length === 1 ? "thing needs" : "things need"} your attention
             </span>{" "}
-            <span className="text-[var(--muted)]">— everything else is on track.</span>
+            <span className="text-[var(--muted)]">- everything else is on track.</span>
           </p>
         )}
       </section>
 
-      {/* Needs your attention — actions, not a notification count */}
+      {/* Needs your attention - actions, not a notification count */}
       {actions.length > 0 && (
         <section className="mb-10">
           <SectionTitle>Needs your attention</SectionTitle>
@@ -179,7 +179,7 @@ export default function HomePage() {
           <div className="min-w-0 flex-1">
             <p className="text-[15px] font-medium">A new scheme may apply to your business</p>
             <p className="mt-1 max-w-[68ch] text-[13.5px] leading-relaxed text-[var(--ink-2)]">
-              We noticed it exists. We have <span className="font-medium">not</span> checked whether you qualify — that
+              We noticed it exists. We have <span className="font-medium">not</span> checked whether you qualify - that
               needs your data and therefore your permission.
             </p>
           </div>

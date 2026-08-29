@@ -39,7 +39,7 @@ export function Assist({
       setAnswer({ text: d.answer, certain: d.certain !== false });
     } catch {
       setAnswer({
-        text: "We could not reach the assistance service just now. Nothing you entered was lost — you can continue without it.",
+        text: "We could not reach the assistance service just now. Nothing you entered was lost - you can continue without it.",
         certain: false,
       });
     } finally {
@@ -48,7 +48,7 @@ export function Assist({
   }
 
   return (
-    <section className="mt-5 rounded-[14px] border border-[var(--line)] bg-[var(--panel-2)] p-4">
+    <section className="mt-5 rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--panel-2)] p-4">
       <div className="mb-2.5 flex items-center gap-2">
         <Sparkles size={14} className="text-[var(--accent)]" strokeWidth={2} />
         <span className="text-[12.5px] font-medium text-[var(--ink-2)]">Not sure about this step?</span>
@@ -83,12 +83,12 @@ export function Assist({
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="Or ask your own question about this step"
-          className="w-full rounded-[9px] border border-[var(--line)] bg-[var(--panel)] px-3 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
+          className="w-full rounded-[var(--r-sm)] border border-[var(--line)] bg-[var(--panel)] px-3 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
         />
       </form>
 
       {(busy || answer) && (
-        <div className="fade mt-3 rounded-[10px] border border-[var(--line)] bg-[var(--panel)] p-3.5">
+        <div className="fade mt-3 rounded-[var(--r-md)] border border-[var(--line)] bg-[var(--panel)] p-3.5">
           {busy ? (
             <div className="flex items-center gap-2 text-[13px] text-[var(--muted)]">
               <span className="h-1.5 w-1.5 animate-[pulse-soft_0.9s_infinite] rounded-full bg-[var(--accent)]" />

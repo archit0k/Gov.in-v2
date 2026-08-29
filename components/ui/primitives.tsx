@@ -37,7 +37,7 @@ export function ServiceMark({
     <span
       data-service={s.id}
       className={cn(
-        "inline-grid shrink-0 place-items-center rounded-[10px] border border-[var(--accent-line)] bg-[var(--accent-soft)] text-[var(--accent)]",
+        "inline-grid shrink-0 place-items-center rounded-[var(--r-md)] border border-[var(--accent-line)] bg-[var(--accent-soft)] text-[var(--accent)]",
         className,
       )}
       style={{ width: size, height: size, "--svc": s.accent } as React.CSSProperties}
@@ -76,7 +76,7 @@ type BtnProps = {
 };
 
 const BTN = {
-  base: "inline-flex items-center justify-center gap-2 rounded-[10px] font-medium transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none whitespace-nowrap",
+  base: "inline-flex items-center justify-center gap-2 rounded-[var(--r-md)] font-medium transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none whitespace-nowrap",
   primary:
     "bg-[var(--accent)] text-[var(--accent-ink)] shadow-[var(--shadow-1)] hover:brightness-110 active:scale-[0.985]",
   secondary:
@@ -117,7 +117,7 @@ export function Card({
     <As
       {...rest}
       className={cn(
-        "rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--panel)]",
+        "rounded-[var(--r-lg)] border border-[var(--line)] bg-[var(--panel)]",
         interactive && "transition-all duration-150 hover:border-[var(--faint)] hover:shadow-[var(--shadow-2)]",
         className,
       )}
@@ -237,7 +237,7 @@ export function EmptyState({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-6 py-14 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-[var(--r-lg)] border border-dashed border-[var(--line)] px-6 py-14 text-center">
       {icon && <div className="text-[var(--faint)]">{icon}</div>}
       <p className="text-[15px] font-medium text-[var(--ink)]">{title}</p>
       <p className="max-w-sm text-[13.5px] leading-relaxed text-[var(--muted)]">{body}</p>

@@ -73,7 +73,7 @@ export default function JourneysPage() {
       </section>
 
       <section>
-        <SectionTitle>Life events — composed on demand</SectionTitle>
+        <SectionTitle>Life events - composed on demand</SectionTitle>
         <p className="mb-3 max-w-[76ch] text-[13.5px] leading-relaxed text-[var(--muted)]">
           No department owns these. They are assembled from capabilities that already exist, for one citizen, when
           asked for. The AI layer may compose existing government capabilities. It may not invent one.

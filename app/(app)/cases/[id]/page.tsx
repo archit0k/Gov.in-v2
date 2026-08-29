@@ -57,7 +57,10 @@ function CaseView() {
           <div className="min-w-0 flex-1">
             <h1 className="text-[24px] font-semibold leading-tight tracking-[-0.02em]">{c.title}</h1>
             <p className="mono mt-1 text-[12.5px] text-[var(--muted)]">
-              {c.id} · {svc.name} · opened {fmtDateTime(c.openedAt)}
+              {c.id} · {svc.name}
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--muted)]">
+              Opened {fmtDateTime(c.openedAt)}
             </p>
           </div>
           <Badge tone={c.status === "action-needed" ? "danger" : done ? "ok" : "info"} className="mt-1.5">
@@ -74,7 +77,7 @@ function CaseView() {
                 <FastForward size={14} /> Simulate department update
               </Button>
               <span className="text-[12px] text-[var(--muted)]">
-                Demo control — in production this is a department event arriving on the event bus.
+                Demo control - in production this is a department event arriving on the event bus.
               </span>
             </div>
           )}

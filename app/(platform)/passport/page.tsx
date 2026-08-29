@@ -42,7 +42,7 @@ export default function PassportOverview() {
                 hint={`${left} days left · many countries require six months`}
               />
             </dl>
-            <SourceTag label="Passport Seva record — owned by this department, not copied elsewhere" className="mt-3" />
+            <SourceTag label="Passport Seva record - owned by this department, not copied elsewhere" className="mt-3" />
           </div>
         </Card>
 
@@ -68,7 +68,7 @@ export default function PassportOverview() {
             <PanelTitle>Your applications</PanelTitle>
             <p className="text-[13.5px] leading-relaxed text-[var(--muted)]">
               Nothing in progress. When you apply, it becomes a case you can follow from here or from anywhere
-              else in Gov.in — the same case, not a copy of it.
+              else in Gov.in - the same case, not a copy of it.
             </p>
           </Card>
         )}
@@ -85,7 +85,7 @@ export default function PassportOverview() {
               <Link
                 key={x.href}
                 href={x.href}
-                className="rounded-[11px] border border-[var(--line)] p-3.5 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
+                className="rounded-[var(--r-md)] border border-[var(--line)] p-3.5 transition-colors hover:border-[var(--accent-line)] hover:bg-[var(--accent-soft)]"
               >
                 <p className="text-[14px] font-medium">{x.t}</p>
                 <p className="mt-0.5 text-[12.5px] text-[var(--muted)]">{x.d}</p>

@@ -8,8 +8,8 @@ export const runtime = "nodejs";
 /* ============================================================
    POST /api/draft
    Rewrites what the citizen wrote into the form the receiving
-   officer needs. It never changes what is being asked — only how
-   it is worded — and the citizen always sees both versions.
+   officer needs. It never changes what is being asked - only how
+   it is worded - and the citizen always sees both versions.
    ============================================================ */
 
 /** Deterministic fallback. A template, and labelled as one. */
@@ -58,7 +58,7 @@ RULES SPECIFIC TO THIS TASK:
 - If the request contains something the law does not allow to be asked this way, say so inside "changed" rather than silently dropping it.
 
 CONTEXT
-Journey: ${j?.title ?? "unknown"} — ${j?.goal ?? ""}
+Journey: ${j?.title ?? "unknown"} - ${j?.goal ?? ""}
 Goes to: ${j ? service(j.serviceId).department : "a government department"}
 Step: ${stepId ?? ""}
 ${journeyId === "rti-file" ? "This is an RTI request under the Right to Information Act, 2005. It must ask for information the authority holds, not for opinions, reasons for policy, or answers to hypothetical questions." : ""}`,
