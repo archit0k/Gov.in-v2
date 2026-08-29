@@ -43,8 +43,14 @@
   --info: #1d5c78;
   --info-soft: #e5f1f6;
 
-  --radius: 12px;
-  --radius-lg: 18px;
+  /* One rounded scale, matching what the rest of the product already uses.
+     Tighter inside softer, so a control nested in a card is visibly its child. */
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 18px;
+
+  --radius: var(--r-md);
+  --radius-lg: var(--r-lg);
 
   /* Tinted toward the accent hue. A neutral grey shadow on a cool surface is
      the other half of why light mode looked dirty. */
