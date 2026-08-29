@@ -81,6 +81,13 @@ export interface SessionState {
   consents: ConsentGrant[];
   recentIntents: string[];
   conversations: Conversation[];
+  /**
+   * The journey the citizen is currently carrying. It survives navigation into
+   * a department subdomain, because a journey is infrastructure, not a screen:
+   * the department renders its own work inside it rather than being handed the
+   * citizen and handing them back.
+   */
+  activeJourney: { journeyId: string; startedAt: string } | null;
 }
 
 const initial: SessionState = {
@@ -112,6 +119,7 @@ const initial: SessionState = {
   ],
   recentIntents: [],
   conversations: [],
+  activeJourney: null,
 };
 
 type Action =
@@ -134,7 +142,10 @@ type Action =
   | { type: "titleConversation"; conversationId: string; title: string }
   | { type: "grantContext"; conversationId: string; key: string }
   | { type: "clearNeeds"; conversationId: string; turnId: string }
-  | { type: "deleteConversation"; conversationId: string };
+  | { type: "deleteConversation"; conversationId: string }
+  | { type: "recordCase"; caseId: string; serviceId: string; title: string; states: string[]; statusLine: string; data: Record<string, string> }
+  | { type: "carryJourney"; journeyId: string }
+  | { type: "dropJourney" };
 
 function reducer(s: SessionState, a: Action): SessionState {
   switch (a.type) {
@@ -309,6 +320,69 @@ function reducer(s: SessionState, a: Action): SessionState {
       };
     case "deleteConversation":
       return { ...s, conversations: s.conversations.filter((c) => c.id !== a.conversationId) };
+    case "recordCase": {
+      // A department finishing its own work opens a case. It does NOT end the
+      // journey that sent the citizen here - that was the bug: submit clears
+      // the draft, so the journey could never advance past the handoff.
+      const now = new Date().toISOString();
+      const newCase: GovCase = {
+        id: a.caseId,
+        journeyId: "",
+        serviceId: a.serviceId as GovCase["serviceId"],
+        title: a.title,
+        states: a.states,
+        stateIndex: 0,
+        status: "submitted",
+        statusLine: a.statusLine,
+        openedAt: now,
+        updatedAt: now,
+        data: a.data,
+        events: [
+          { at: now, label: a.states[0], detail: a.statusLine, actor: "citizen" },
+          {
+            at: now,
+            label: "Acknowledged",
+            detail: `${service(a.serviceId as GovCase["serviceId"]).name} recorded this in its own system and returned the reference.`,
+            actor: "system",
+          },
+        ],
+      };
+      return {
+        ...s,
+        cases: [newCase, ...s.cases],
+        inbox: [
+          {
+            id: `n-${a.caseId}`,
+            category: "update",
+            serviceId: a.serviceId as GovCase["serviceId"],
+            title: a.title,
+            body: a.statusLine,
+            at: now,
+            read: false,
+            caseId: a.caseId,
+            action: { label: "Track case", href: `/cases/${a.caseId}` },
+          },
+          ...s.inbox,
+        ],
+        timeline: [
+          { id: `t-${a.caseId}`, at: now, serviceId: a.serviceId as GovCase["serviceId"], title: a.title, detail: a.statusLine, kind: "submitted" },
+          ...s.timeline,
+        ],
+      };
+    }
+    case "carryJourney":
+      return {
+        ...s,
+        activeJourney: { journeyId: a.journeyId, startedAt: new Date().toISOString() },
+        drafts: s.drafts[a.journeyId]
+          ? s.drafts
+          : {
+              ...s.drafts,
+              [a.journeyId]: { journeyId: a.journeyId, stepIndex: 0, values: {}, startedAt: new Date().toISOString() },
+            },
+      };
+    case "dropJourney":
+      return { ...s, activeJourney: null };
     default:
       return s;
   }

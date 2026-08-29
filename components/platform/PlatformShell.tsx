@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Badge, ServiceMark, ServiceTheme, cn } from "@/components/ui/primitives";
 import { IntentBar } from "@/components/shell/IntentBar";
+import { JourneyRail } from "@/components/journey/JourneyRail";
 import { ThemeToggle } from "@/components/shell/AppShell";
 import { CITIZEN } from "@/lib/data/citizen";
 import { service } from "@/lib/data/services";
@@ -48,6 +49,10 @@ export function PlatformShell({
 
   return (
     <ServiceTheme id={id} className="min-h-dvh bg-[var(--surface)]">
+      {/* Handed down by the infrastructure. A department does not implement
+          this, restyle it, or opt out of it. */}
+      <JourneyRail inService />
+
       {/* The infrastructure strip. Different site, same citizen. */}
       <div className="border-b border-[var(--line)] bg-[var(--panel-2)]">
         <div className="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-3 gap-y-1.5 px-5 py-2 sm:px-8">

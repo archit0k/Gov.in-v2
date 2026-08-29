@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Badge, cn } from "@/components/ui/primitives";
 import { useSession } from "@/lib/state/store";
+import { JourneyRail } from "@/components/journey/JourneyRail";
 import { CITIZEN } from "@/lib/data/citizen";
 
 export function Wordmark({ className, sub }: { className?: string; sub?: string }) {
@@ -297,7 +298,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </button>
       </header>
 
-      <main className="min-w-0 flex-1 pb-[76px] lg:pb-0">{children}</main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <JourneyRail />
+        <main className="flex-1 pb-[76px] lg:pb-0">{children}</main>
+      </div>
 
       {/* ================= Mobile bottom bar =================
           Thumb-reachable, labelled, and every target is at least 44px.

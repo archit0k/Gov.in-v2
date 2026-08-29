@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight, ArrowLeft, Check, CircleAlert, Search, ShieldCheck, Ticket, TrainFront, Utensils,
@@ -14,6 +14,7 @@ import {
   searchTrains, type Availability, type BerthPref, type Leg, type Quota,
 } from "@/lib/services/irctc/engine";
 import { newCaseId, useSession } from "@/lib/state/store";
+import { useJourneyStep } from "@/components/journey/JourneyRail";
 
 /* ============================================================
    RESERVATION - the department's own application
@@ -57,6 +58,13 @@ export function BookingFlow({
 }) {
   const router = useRouter();
   const { dispatch } = useSession();
+  const carried = useJourneyStep();
+
+  // Pick the journey up on arrival so the rail renders over this department's
+  // own screens. The citizen never stops being inside the journey.
+  useEffect(() => {
+    if (journeyId) dispatch({ type: "carryJourney", journeyId });
+  }, [journeyId, dispatch]);
 
   const [stage, setStage] = useState<Stage>("search");
   const [from, setFrom] = useState("PUNE");
@@ -92,9 +100,12 @@ export function BookingFlow({
 
     const caseId = newCaseId("irctc");
     dispatch({
-      type: "submit",
-      journeyId: journeyId ?? "irctc-book",
+      type: "recordCase",
       caseId,
+      serviceId: "irctc",
+      title: `${STATION_MAP[from].city} to ${STATION_MAP[to].city}, ${leg.train.name}`,
+      states: ["Booked", "Chart prepared", "Journey complete"],
+      statusLine: `PNR ${pnr}. ${pax.length} ${pax.length === 1 ? "passenger" : "passengers"} in ${CLASSES[cls].name}, ${avail.label}.`,
       data: {
         PNR: pnr,
         Train: `${leg.train.number} ${leg.train.name}`,
@@ -149,8 +160,11 @@ export function BookingFlow({
       {stage === "done" && leg && cls && booking && fare && (
         <Done
           leg={leg} cls={cls} date={date} pax={pax} booking={booking} fare={fare}
-          returnTo={returnTo}
-          onDone={() => returnTo && router.push(returnTo)}
+          returnTo={returnTo ?? (journeyId ? `/journeys/${journeyId}` : undefined)}
+          onDone={() => {
+            if (journeyId) carried.complete("reservation", "done");
+            else if (returnTo) router.push(returnTo);
+          }}
         />
       )}
     </div>
