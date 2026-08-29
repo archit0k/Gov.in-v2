@@ -31,7 +31,12 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
   const params = useSearchParams();
   const seed = params.get("q") ?? "";
 
-  const [activeId, setActiveId] = useState<string | null>(conversationId ?? null);
+  // The URL owns which conversation is open. `pending` only covers the moment
+  // between creating one and the route catching up - mirroring the prop into
+  // state instead meant clicking a second conversation changed the address bar
+  // and nothing else.
+  const [pending, setPending] = useState<string | null>(null);
+  const activeId = conversationId ?? pending;
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
@@ -56,10 +61,11 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
     if (!body || busy) return;
 
     let id = convId ?? activeId;
+    if (id && !state.conversations.some((c) => c.id === id)) id = null;
     if (!id) {
       id = newId("conv");
       dispatch({ type: "newConversation", id, seed: body });
-      setActiveId(id);
+      setPending(id);
       router.replace(`/ai/${id}`);
     }
 
@@ -116,13 +122,33 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
   function grant(key: string, turnId: string) {
     if (!conv) return;
     dispatch({ type: "grantContext", conversationId: conv.id, key });
-    dispatch({ type: "clearNeeds", conversationId: conv.id, turnId });
+    // Permission given here is permission given, so it belongs in the same
+    // ledger as permission given inside a journey - visible and revocable in
+    // one place rather than two.
+    const def = contextKeyDef(key);
+    dispatch({
+      type: "grantConsent",
+      grant: {
+        id: `ai-${conv.id}-${key}`,
+        attribute: def?.label ?? key,
+        requestedBy: "gov-core",
+        purpose: `Answering "${conv.title}" in AI mode`,
+        retention: "Readable by this conversation only, until you withdraw it",
+        grantedAt: new Date().toISOString(),
+        journeyId: "",
+        contextKey: key,
+        conversationId: conv.id,
+      },
+    });
+    // Only this permission. The other request on the same turn is a separate
+    // question and the citizen has not answered it yet.
+    dispatch({ type: "clearNeeds", conversationId: conv.id, turnId, key });
     void send("I have shared that with you. Please continue.", conv.id, key);
   }
 
-  function decline(turnId: string) {
+  function declineOne(key: string, turnId: string) {
     if (!conv) return;
-    dispatch({ type: "clearNeeds", conversationId: conv.id, turnId });
+    dispatch({ type: "clearNeeds", conversationId: conv.id, turnId, key });
   }
 
   if (!ready) return null;
@@ -168,8 +194,18 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
         </div>
       ) : (
         <div className="flex-1 space-y-6">
-          {conv.turns.map((t) => (
-            <Turn key={t.id} turn={t} onGrant={grant} onDecline={decline} granted={conv.granted} />
+          {conv.turns.map((t, i) => (
+            <Turn
+              key={t.id}
+              turn={t}
+              onGrant={grant}
+              onDecline={declineOne}
+              granted={conv.granted}
+              // Only the newest reply may still be waiting on permission. An
+              // older request has been overtaken by the conversation, and
+              // leaving it live puts the same card on screen twice.
+              live={i === conv.turns.length - 1}
+            />
           ))}
           {busy && (
             <div className="flex items-center gap-2.5 text-[13.5px] text-[var(--muted)]">
@@ -233,16 +269,24 @@ export function AiMode({ conversationId }: { conversationId?: string }) {
   );
 }
 
+/** The model writes "why" as a sentence. This makes it read as a clause. */
+function clause(why: string) {
+  const t = why.trim().replace(/[.!]+$/, "");
+  return t.charAt(0).toLowerCase() + t.slice(1);
+}
+
 function Turn({
   turn,
   granted,
   onGrant,
   onDecline,
+  live,
 }: {
   turn: ChatTurn;
   granted: string[];
   onGrant: (key: string, turnId: string) => void;
-  onDecline: (turnId: string) => void;
+  onDecline: (key: string, turnId: string) => void;
+  live: boolean;
 }) {
   if (turn.role === "citizen") {
     return (
@@ -254,7 +298,7 @@ function Turn({
     );
   }
 
-  const needs = (turn.needs ?? []).filter((n) => !granted.includes(n.key));
+  const needs = live ? (turn.needs ?? []).filter((n) => !granted.includes(n.key)) : [];
 
   return (
     <div className="rise">
@@ -282,16 +326,19 @@ function Turn({
                       To answer this properly it needs {def?.label.toLowerCase() ?? n.key}
                     </p>
                     <p className="mt-1 text-[12.5px] leading-relaxed text-[var(--ink-2)]">
-                      {def?.detail} Held by {def?.holder}.{n.why ? ` Needed because ${n.why}.` : ""}
+                      {def?.detail} Held by {def?.holder}.{n.why ? ` Needed because ${clause(n.why)}.` : ""}
                     </p>
                   </div>
                 </div>
+                <p className="mb-2 text-[11.5px] text-[var(--muted)]">
+                  Declining keeps the answer above. It is written without this, not withheld until you agree.
+                </p>
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" onClick={() => onGrant(n.key, turn.id)}>
                     <Check size={13} /> Share for this conversation
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => onDecline(turn.id)}>
-                    <X size={13} /> Answer without it
+                  <Button size="sm" variant="ghost" onClick={() => onDecline(n.key, turn.id)}>
+                    <X size={13} /> Not now
                   </Button>
                 </div>
               </Card>

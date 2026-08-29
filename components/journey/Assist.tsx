@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AlertTriangle, Sparkles } from "lucide-react";
 import { cn } from "@/components/ui/primitives";
 
@@ -24,8 +24,11 @@ export function Assist({
   const [answer, setAnswer] = useState<{ text: string; certain: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
   const [custom, setCustom] = useState("");
+  // Only the most recent question may render its answer.
+  const runId = useRef(0);
 
   async function ask(question: string) {
+    const mine = ++runId.current;
     setAsked(question);
     setAnswer(null);
     setBusy(true);
@@ -36,14 +39,23 @@ export function Assist({
         body: JSON.stringify({ question, journeyId, stepId }),
       });
       const d = await r.json();
-      setAnswer({ text: d.answer, certain: d.certain !== false });
+      if (mine !== runId.current) return;
+      setAnswer(
+        typeof d.answer === "string" && d.answer.length > 0
+          ? { text: d.answer, certain: d.certain !== false }
+          : {
+              text: "No answer came back for that. It is logged, so the department can add it to this journey.",
+              certain: false,
+            },
+      );
     } catch {
+      if (mine !== runId.current) return;
       setAnswer({
         text: "We could not reach the assistance service just now. Nothing you entered was lost — you can continue without it.",
         certain: false,
       });
     } finally {
-      setBusy(false);
+      if (mine === runId.current) setBusy(false);
     }
   }
 
@@ -75,7 +87,10 @@ export function Assist({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (custom.trim()) ask(custom.trim());
+          if (custom.trim()) {
+            ask(custom.trim());
+            setCustom("");
+          }
         }}
         className="mt-2.5"
       >
@@ -83,6 +98,7 @@ export function Assist({
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="Or ask your own question about this step"
+          aria-label="Ask your own question about this step"
           className="w-full rounded-[9px] border border-[var(--line)] bg-[var(--panel)] px-3 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)]"
         />
       </form>

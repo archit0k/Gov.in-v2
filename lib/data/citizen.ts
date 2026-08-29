@@ -229,3 +229,29 @@ export function daysUntil(iso: string) {
   const d = new Date(iso + "T00:00:00").getTime();
   return Math.round((d - Date.now()) / 86_400_000);
 }
+
+/**
+ * Calendar dates, not instants.
+ *
+ * An appointment is on a day, and a day only exists in a timezone. Building
+ * "YYYY-MM-DD" out of toISOString() reads the UTC day, which after 18:30 in
+ * India is tomorrow - so the Seva Kendra picker was labelling one date and
+ * pricing the inventory of another. Everything date-only goes through these.
+ */
+export function todayISO(): string {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+/** Adds whole days to a "YYYY-MM-DD", staying on calendar days across DST. */
+export function addDaysISO(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1, d + days));
+  return t.toISOString().slice(0, 10);
+}
+
+/** Today plus n days, as a calendar date. */
+export function isoInDays(days: number): string {
+  return addDaysISO(todayISO(), days);
+}

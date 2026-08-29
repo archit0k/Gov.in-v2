@@ -144,7 +144,7 @@ export default function ArchitecturePage() {
       </section>
 
       <section className="mb-12">
-        <SectionTitle>Where the ten sit today</SectionTitle>
+        <SectionTitle>Where the eleven sit today</SectionTitle>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s) => (
             <Card key={s.id} className="flex items-center gap-3 p-3.5">

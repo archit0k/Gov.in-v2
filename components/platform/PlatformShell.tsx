@@ -60,7 +60,8 @@ export function PlatformShell({
           >
             <ArrowLeft size={12} /> Gov.in
           </Link>
-          <span className="text-[var(--line)]">|</span>
+          {/* Decoration. A screen reader reading "pipe" between two names helps nobody. */}
+          <span aria-hidden className="text-[var(--line)]">|</span>
           <span className="mono text-[12px] text-[var(--muted)]">{s.subdomain}</span>
           <div className="ml-auto flex items-center gap-2.5">
             <span className="hidden items-center gap-1.5 text-[12px] text-[var(--muted)] sm:flex">

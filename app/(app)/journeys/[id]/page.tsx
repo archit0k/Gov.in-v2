@@ -26,13 +26,23 @@ export default function JourneyPage() {
 
   // Start a draft once. Without the guard, submitting (which clears the draft)
   // would immediately re-create it and bounce the citizen back to step one.
+  //
+  // carryJourney rather than startJourney: opening a journey is what makes the
+  // citizen start carrying it, so the rail follows them into a department
+  // instead of appearing only once they are already there.
   const started = useRef<string | null>(null);
   useEffect(() => {
     if (j && started.current !== j.id) {
       started.current = j.id;
-      dispatch({ type: "startJourney", journeyId: j.id });
+      // A journey rebuilt from a deep link exists only in this render. The
+      // reducer resolves journeys from the registry or the session, so it has
+      // to be put in the session or submitting it would silently do nothing.
+      if (j.ephemeral && !state.composed.some((c) => c.id === j.id)) {
+        dispatch({ type: "addComposed", journey: j });
+      }
+      dispatch({ type: "carryJourney", journeyId: j.id });
     }
-  }, [j, dispatch]);
+  }, [j, dispatch, state.composed]);
 
   if (!ready) return null;
 

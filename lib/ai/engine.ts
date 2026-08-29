@@ -242,7 +242,7 @@ export function navigate(query: string, scope?: ServiceId): NavResult {
       confidence: 0.7,
       primary: {
         serviceId: svc.id,
-        href: `/services/${svc.id}`,
+        href: serviceHref(svc.id),
         label: svc.name,
         sublabel: svc.department,
       },

@@ -15,54 +15,31 @@ export const JOURNEYS: JourneyDef[] = [
     title: "Renew your passport",
     goal: "Get a new passport before the old one expires.",
     serviceId: "passport",
-    composes: ["gov-core"],
     estMinutes: 4,
     legacyEquivalent: "Passport Seva - Fresh/Reissue application (Form 1)",
     legacyFields: LEGACY_TOTAL,
-    outcome: "Application submitted and an appointment held at your chosen Seva Kendra.",
-    caseStates: ["Submitted", "Documents verified", "Appointment", "Police verification", "Printed and dispatched"],
+    outcome: "Application filed with the Ministry of External Affairs and an appointment held.",
+    caseStates: ["Submitted", "Documents verified", "Appointment", "Police verification", "Printed & dispatched"],
     tags: ["passport", "renew", "reissue", "travel", "expiry", "psk", "visa"],
     steps: [
       {
-        id: "identity",
-        title: "Confirm it is you",
-        intent: "Passport Seva needs a high-assurance identity. You already have one.",
-        assistPrompts: ["Why does this not need documents?", "What is identity assurance?"],
-        fields: [
-          { id: "name", kind: "prefilled", label: "Full name", sourcePath: "citizen.name", sourceLabel: "Verified government profile" },
-          { id: "dob", kind: "prefilled", label: "Date of birth", sourcePath: "citizen.dob", sourceLabel: "Verified government profile" },
-          { id: "assurance", kind: "prefilled", label: "Identity assurance", sourcePath: "citizen.assurance", sourceLabel: "Gov.in identity" },
-          {
-            id: "consent-parents",
-            kind: "consent",
-            label: "Parent details from your citizen graph",
-            help: "Passport applications require parent names and places of birth. You have already given these to government once.",
-            consent: {
-              attribute: "Father and mother - name, date of birth, place of birth",
-              requestedBy: "passport",
-              purpose: "Statutory requirement for passport issue under the Passports Act",
-              retention: "Held with your passport file only, not copied to other departments",
-            },
-            required: true,
-          },
-        ],
-      },
-      {
         id: "apply",
         title: "Apply and book your appointment",
-        intent: "This part is the Ministry's own system, and it should be.",
+        intent: "The application itself is the Ministry's own system, and it should be.",
+        assistPrompts: ["Why does this not need documents?", "What is police verification?"],
         fields: [
           {
             id: "appointment",
             kind: "handoff",
             label: "Apply on Passport Seva",
+            required: true,
             handoff: {
               serviceId: "passport",
               href: "/passport/apply",
               action: "Open Passport Seva",
               does: [
+                "Confirms your identity and the one consent it needs",
                 "Live counter inventory across five Seva Kendras",
-                "Slot-level availability by day, with Tatkaal held separately",
                 "Fee computed from service, booklet and scheme",
                 "Police verification routed from your verified jurisdiction",
               ],
@@ -72,8 +49,8 @@ export const JOURNEYS: JourneyDef[] = [
       },
       {
         id: "review",
-        title: "Review and submit",
-        intent: "Everything that will be sent to the Ministry of External Affairs.",
+        title: "Your application",
+        intent: "What came back from the Ministry, and where to follow it.",
         fields: [{ id: "review", kind: "review", label: "Review" }],
       },
     ],
@@ -582,6 +559,7 @@ export const JOURNEYS: JourneyDef[] = [
             id: "reservation",
             kind: "handoff",
             label: "Reserve on Indian Railways",
+            required: true,
             handoff: {
               serviceId: "irctc",
               href: "/irctc/book",
@@ -596,7 +574,12 @@ export const JOURNEYS: JourneyDef[] = [
           },
         ],
       },
-      { id: "review", title: "Review and book", intent: "Confirm before the seats are held.", fields: [{ id: "review", kind: "review", label: "Review" }] },
+      {
+        id: "review",
+        title: "Your reservation",
+        intent: "What came back from Railways, and where to follow it.",
+        fields: [{ id: "review", kind: "review", label: "Review" }],
+      },
     ],
   },
 

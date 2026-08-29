@@ -49,7 +49,7 @@ export default function InboxPage() {
       <div className="mb-5 flex flex-wrap gap-1.5">
         {TABS.map((t) => {
           const n = t.id === "all" ? state.inbox.length : state.inbox.filter((x) => x.category === t.id).length;
-          if (n === 0 && t.id !== "all") return null;
+          if (n === 0 && t.id !== "all" && tab !== t.id) return null;
           return (
             <button
               key={t.id}
@@ -75,6 +75,9 @@ export default function InboxPage() {
             <article
               key={n.id}
               className={cn("flex gap-3.5 p-4 transition-colors", !n.read && "bg-[var(--panel-2)]")}
+              // Reading is what a click on the row means. It is also offered as
+              // a real button below, because a click handler on an <article> is
+              // unreachable without a mouse.
               onClick={() => !n.read && dispatch({ type: "readInbox", id: n.id })}
             >
               <div className="relative shrink-0">
@@ -91,9 +94,21 @@ export default function InboxPage() {
                 <p className="mt-1 max-w-[76ch] text-[13.5px] leading-relaxed text-[var(--muted)]">{n.body}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   {n.action && (
-                    <Link href={n.action.href} className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--accent)] hover:underline">
+                    <Link
+                      href={n.action.href}
+                      onClick={() => !n.read && dispatch({ type: "readInbox", id: n.id })}
+                      className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--accent)] hover:underline"
+                    >
                       {n.action.label} <ArrowRight size={13} />
                     </Link>
+                  )}
+                  {!n.read && (
+                    <button
+                      onClick={() => dispatch({ type: "readInbox", id: n.id })}
+                      className="text-[13px] text-[var(--muted)] hover:text-[var(--ink)] hover:underline"
+                    >
+                      Mark read
+                    </button>
                   )}
                   {n.caseId && <span className="mono text-[11.5px] text-[var(--faint)]">{n.caseId}</span>}
                 </div>

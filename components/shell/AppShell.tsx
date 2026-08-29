@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import {
   Bell, Clock3, Home, LayoutGrid, LogOut, Moon, Plus, Route, ScrollText, ShieldCheck, Sparkles, Sun, Trash2, User, Network, RotateCcw,
 } from "lucide-react";
@@ -41,28 +41,24 @@ const MOBILE_NAV = [
 
 /* ------------------------------------------------------------
    Theme. The DOM class is the source of truth, not React state,
-   because the stylesheet already honours the system preference
-   with no class at all. Reading it through an external store
-   keeps the two from disagreeing.
+   because a script in the root layout has already stamped it
+   before React runs. Reading it through an external store keeps
+   the two from disagreeing.
    ------------------------------------------------------------ */
 
 const themeListeners = new Set<() => void>();
 
 function subscribeTheme(cb: () => void) {
   themeListeners.add(cb);
-  const mq = window.matchMedia("(prefers-color-scheme: dark)");
-  mq.addEventListener("change", cb);
   return () => {
     themeListeners.delete(cb);
-    mq.removeEventListener("change", cb);
   };
 }
 
 function isDark() {
-  const el = document.documentElement;
-  if (el.classList.contains("dark")) return true;
-  if (el.classList.contains("light")) return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // Dark unless light was explicitly chosen. The boot script in the root layout
+  // stamps both classes before first paint, so this is never ambiguous.
+  return !document.documentElement.classList.contains("light");
 }
 
 function applyTheme(dark: boolean) {
@@ -78,20 +74,11 @@ function applyTheme(dark: boolean) {
 }
 
 function useTheme() {
-  const dark = useSyncExternalStore(subscribeTheme, isDark, () => false);
+  // The server renders the default, which is dark, so the snapshots agree.
+  const dark = useSyncExternalStore(subscribeTheme, isDark, () => true);
 
-  useEffect(() => {
-    // Re-apply a previous explicit choice. No preference means the stylesheet
-    // follows the system, which is the behaviour we want by default.
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem("gov.in.theme");
-    } catch {
-      /* ignore */
-    }
-    if (saved) applyTheme(saved === "dark");
-  }, []);
-
+  // The saved choice is applied before first paint by a script in the root
+  // layout, so there is nothing to re-apply here.
   return { dark, toggle: () => applyTheme(!dark) };
 }
 
@@ -212,9 +199,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       {c.title}
                     </Link>
                     <button
-                      onClick={() => dispatch({ type: "deleteConversation", conversationId: c.id })}
+                      onClick={() => {
+                        dispatch({ type: "deleteConversation", conversationId: c.id });
+                        // Deleting the conversation you are reading otherwise
+                        // leaves the address bar pointing at something that no
+                        // longer exists, and the screen stops responding.
+                        if (path === `/ai/${c.id}`) router.replace("/ai");
+                      }}
                       aria-label={`Delete conversation: ${c.title}`}
-                      className="absolute right-1 top-1/2 hidden -translate-y-1/2 rounded-[6px] p-1 text-[var(--faint)] hover:text-[var(--danger)] group-hover/conv:block"
+                      // Revealed on hover, and on keyboard focus - otherwise it
+                      // is unreachable without a mouse.
+                      className="absolute right-1 top-1/2 -translate-y-1/2 rounded-[6px] p-1 text-[var(--faint)] opacity-0 transition-opacity hover:text-[var(--danger)] focus-visible:opacity-100 group-hover/conv:opacity-100"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -230,7 +225,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href="/case"
             className={cn(
               "flex items-center gap-2.5 rounded-[var(--r-md)] px-2.5 py-2 text-[14px] transition-colors",
-              path.startsWith("/case")
+              // isActive, not startsWith: "/cases/PSP-2026-481922" is a case
+              // record, not the argument for the product, and it was lighting
+              // this up every time someone opened one.
+              isActive("/case")
                 ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                 : "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
             )}
@@ -338,7 +336,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span className="relative">
                 <Icon size={21} strokeWidth={active ? 2.1 : 1.8} />
                 {badge && unread > 0 && (
-                  <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--danger)] px-1 text-[9.5px] font-semibold text-white">
+                  <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--danger)] px-1 text-[9.5px] font-semibold text-[var(--danger-ink)]">
                     {unread}
                   </span>
                 )}

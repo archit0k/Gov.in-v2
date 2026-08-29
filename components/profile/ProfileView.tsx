@@ -6,7 +6,7 @@ import { Fingerprint, IdCard, KeyRound, Languages, Users } from "lucide-react";
 import { Page, PageHead } from "@/components/shell/AppShell";
 import { Badge, Card, Kv, SectionTitle, ServiceMark, SourceTag, cn, fmtDateTime } from "@/components/ui/primitives";
 import { CITIZEN, daysUntil, formatDate } from "@/lib/data/citizen";
-import { service } from "@/lib/data/services";
+import { service, serviceHref } from "@/lib/data/services";
 import { useSession } from "@/lib/state/store";
 
 type Tab = "identity" | "credentials" | "relationships" | "permissions";
@@ -20,7 +20,10 @@ const TABS: { id: Tab; label: string; href: string }[] = [
 
 export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
   const [tab, setTab] = useState<Tab>(initial);
-  const { state } = useSession();
+  // Withdrawing removes the row, so without this the citizen is left wondering
+  // whether the click registered at all.
+  const [withdrawn, setWithdrawn] = useState<string | null>(null);
+  const { state, dispatch } = useSession();
   const c = CITIZEN;
 
   return (
@@ -152,7 +155,7 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
                     </div>
                   )}
                 </div>
-                <Link href={`/services/${k.serviceId}`} className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">
+                <Link href={serviceHref(k.serviceId)} className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">
                   {service(k.serviceId).shortName}
                 </Link>
               </Card>
@@ -211,6 +214,29 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
               one stated purpose, and you can withdraw it.
             </p>
           </Card>
+          {withdrawn && (
+            <Card className="fade flex flex-wrap items-center gap-3 border-[var(--ok)] bg-[var(--ok-soft)] p-4">
+              <p className="min-w-0 flex-1 text-[13.5px] leading-relaxed">
+                Withdrawn. <span className="text-[var(--ink-2)]">{withdrawn}</span> is no longer readable, and the
+                department has been told. Anything already filed stays filed.
+              </p>
+              <button
+                onClick={() => setWithdrawn(null)}
+                className="shrink-0 text-[12.5px] text-[var(--muted)] hover:underline"
+              >
+                Dismiss
+              </button>
+            </Card>
+          )}
+          {state.consents.length === 0 && (
+            <Card className="p-5">
+              <p className="text-[14px] font-medium">Nothing is shared right now</p>
+              <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-[var(--muted)]">
+                No department currently holds a grant from you. Anything you allow during a journey appears here,
+                and can be withdrawn from here.
+              </p>
+            </Card>
+          )}
           {state.consents.map((g) => (
             <Card key={g.id} className="flex flex-wrap items-start gap-3.5 p-4">
               <ServiceMark id={g.requestedBy as never} size={34} />
@@ -221,7 +247,13 @@ export function ProfileView({ initial = "identity" }: { initial?: Tab }) {
                   {service(g.requestedBy as never).name} · granted {fmtDateTime(g.grantedAt)} · {g.retention}
                 </p>
               </div>
-              <button className="shrink-0 rounded-[8px] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]">
+              <button
+                onClick={() => {
+                  dispatch({ type: "revokeConsent", id: g.id });
+                  setWithdrawn(g.attribute);
+                }}
+                className="shrink-0 rounded-[8px] border border-[var(--line)] px-2.5 py-1.5 text-[12px] text-[var(--muted)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]"
+              >
                 Withdraw
               </button>
             </Card>

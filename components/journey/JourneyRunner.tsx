@@ -36,10 +36,16 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
   const svc = service(journey.serviceId);
 
   const draft = state.drafts[journey.id];
-  const stepIndex = draft?.stepIndex ?? 0;
+  // Clamped, so a saved draft can never point past the end of the journey and
+  // render nothing.
+  const stepIndex = Math.min(draft?.stepIndex ?? 0, journey.steps.length - 1);
   const values = useMemo(() => draft?.values ?? {}, [draft]);
   const step = journey.steps[stepIndex];
   const isReview = step?.fields.some((f) => f.kind === "review");
+  // A department that ran its own application has already opened the case and
+  // returned its reference. The journey reports that outcome; it does not file
+  // the same application a second time.
+  const filedCaseId = values["__caseId"];
 
   function set(fieldId: string, value: string) {
     if (!draft) dispatch({ type: "startJourney", journeyId: journey.id });
@@ -51,8 +57,10 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
   const shown = step ? visibleFields(step.fields, values) : [];
   const blocking = shown.filter((f) => f.required && !values[f.id]);
   const canAdvance = blocking.length === 0;
+  const blockedBy = blocking[0];
 
-  const typedCount = Object.entries(values).filter(([, v]) => v && v.length > 0).length;
+  const fieldIds = new Set(journey.steps.flatMap((st) => st.fields).map((f) => f.id));
+  const typedCount = Object.entries(values).filter(([k, v]) => fieldIds.has(k) && v && v.length > 0).length;
   const reusedCount = journey.steps.flatMap((s) => s.fields).filter((f) => f.kind === "prefilled").length;
 
   function next() {
@@ -142,7 +150,7 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
 
           <div className="divide-y divide-[var(--line-2)]">
             {isReview ? (
-              <Review journey={journey} values={values} />
+              <Review journey={journey} values={values} filedCaseId={filedCaseId} />
             ) : (
               shown.map((f) => (
                 <Field
@@ -165,11 +173,23 @@ export function JourneyRunner({ journey }: { journey: JourneyDef }) {
             )}
             <div className="ml-auto flex items-center gap-3">
               {!canAdvance && (
-                <span className="hidden text-[12.5px] text-[var(--muted)] sm:inline">
-                  {blocking.length} {blocking.length === 1 ? "answer" : "answers"} needed
+                <span className="hidden max-w-[38ch] text-right text-[12.5px] text-[var(--muted)] sm:inline">
+                  {blockedBy?.kind === "handoff"
+                    ? `Finish this on ${service(blockedBy.handoff!.serviceId).name} first`
+                    : `${blocking.length} ${blocking.length === 1 ? "answer" : "answers"} needed`}
                 </span>
               )}
-              {isReview ? (
+              {isReview && filedCaseId ? (
+                <Button
+                  size="lg"
+                  onClick={() => {
+                    dispatch({ type: "finishJourney", journeyId: journey.id });
+                    router.push(`/cases/${filedCaseId}`);
+                  }}
+                >
+                  <Check size={16} /> Open the case
+                </Button>
+              ) : isReview ? (
                 <Button size="lg" onClick={submit} disabled={submitting}>
                   {submitting ? (
                     <>
@@ -239,6 +259,7 @@ function Prefilled({ f, value, onChange }: { f: FieldDef; value: string; onChang
           {editing ? (
             <input
               autoFocus
+              aria-label={f.label}
               value={value || held}
               onChange={(e) => onChange(e.target.value)}
               onBlur={() => setEditing(false)}
@@ -593,7 +614,15 @@ function Handoff({ f, value, journeyId }: { f: FieldDef; value: string; journeyI
 
 /* ---------------- Review ---------------- */
 
-function Review({ journey, values }: { journey: JourneyDef; values: Record<string, string> }) {
+function Review({
+  journey,
+  values,
+  filedCaseId,
+}: {
+  journey: JourneyDef;
+  values: Record<string, string>;
+  filedCaseId?: string;
+}) {
   const svc = service(journey.serviceId);
   const rows = journey.steps
     .filter((s) => !s.fields.some((f) => f.kind === "review"))
@@ -608,9 +637,23 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
   return (
     <>
       <Row>
-        <p className="text-[13.5px] leading-relaxed text-[var(--muted)]">
-          This is everything that will be sent to {svc.department}. Nothing else from your profile goes with it.
-        </p>
+        {filedCaseId ? (
+          <div className="flex gap-2.5 rounded-[var(--r-md)] border border-[var(--ok)] bg-[var(--ok-soft)] p-3.5">
+            <Check size={15} className="mt-0.5 shrink-0 text-[var(--ok)]" strokeWidth={2.6} />
+            <div>
+              <p className="text-[14px] font-medium leading-snug">{svc.name} has filed this</p>
+              <p className="mt-1 max-w-[62ch] text-[13px] leading-relaxed text-[var(--ink-2)]">
+                The department ran its own application and returned the reference below. Nothing is submitted
+                again from here — this is the record it opened, and where you follow it.
+              </p>
+              <p className="mono mt-1.5 text-[12px] text-[var(--muted)]">{filedCaseId}</p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-[13.5px] leading-relaxed text-[var(--muted)]">
+            This is everything that will be sent to {svc.department}. Nothing else from your profile goes with it.
+          </p>
+        )}
       </Row>
       {rows.map(({ step, fields }) => (
         <Row key={step.id}>
@@ -637,8 +680,9 @@ function Review({ journey, values }: { journey: JourneyDef; values: Record<strin
         <div className="flex gap-2.5 rounded-[10px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">
           <Sparkles size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
           <p className="text-[13px] leading-relaxed text-[var(--ink-2)]">
-            After you submit, this becomes a case you can track from anywhere in Gov.in. Updates arrive in your
-            inbox with the case attached — you will never be told to log in somewhere else to find out what happened.
+            {filedCaseId
+              ? "This is now a case you can track from anywhere in Gov.in. Every update the department makes arrives in your inbox against it — you will never be told to log in somewhere else to find out what happened."
+              : "After you submit, this becomes a case you can track from anywhere in Gov.in. Updates arrive in your inbox with the case attached — you will never be told to log in somewhere else to find out what happened."}
           </p>
         </div>
       </Row>
@@ -651,6 +695,7 @@ function displayValue(f: FieldDef, values: Record<string, string>): string {
   if (f.kind === "prefilled") return raw && raw.length > 0 ? raw : sourceValue(f);
   if (f.kind === "consent") return raw === "granted" ? "Allowed" : "Not allowed";
   if (f.kind === "payment") return `₹${f.amount?.toLocaleString("en-IN")}`;
+  if (f.kind === "handoff") return raw === "done" ? `Completed on ${service(f.handoff!.serviceId).name}` : "Not done yet";
   if (!raw) return "—";
   const opt = f.options?.find((o) => o.value === raw);
   return opt?.label ?? raw;

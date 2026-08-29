@@ -7,6 +7,54 @@
    ============================================================ */
 
 :root {
+  /* One rounded scale, matching what the rest of the product already uses.
+     Tighter inside softer, so a control nested in a card is visibly its child. */
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 18px;
+
+  --radius: var(--r-md);
+  --radius-lg: var(--r-lg);
+}
+
+/* Dark is the default. Government services a citizen already uses open light,
+   which is why light was the default before - but this product is read at
+   night, on a phone, by people chasing something that has gone wrong, and the
+   dark surface is the one it was designed against. An explicit choice still
+   wins, and it is stamped on <html> before first paint. */
+:root,
+:root.dark {
+  --surface: #0c0f14;
+  --panel: #141821;
+  --panel-2: #1a1f29;
+  --ink: #eef1f6;
+  --ink-2: #c0c8d4;
+  --muted: #929cab;
+  --faint: #8893a2;
+  --line: #262c38;
+  --line-2: #1d222c;
+
+  --accent: #7ba2ec;
+  --accent-ink: #0c0f14;
+  --accent-soft: #16233c;
+  --accent-line: #2b3f66;
+
+  --ok: #4fc48d;
+  --ok-soft: #10261d;
+  --warn: #e0a458;
+  --warn-soft: #2a1f10;
+  --danger: #ef8a83;
+  --danger-ink: #0c0f14;
+  --danger-soft: #2b1512;
+  --info: #6fb8d3;
+  --info-soft: #10242c;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+}
+
+:root.light {
   /* Neutrals carry a slight cool tint toward the accent hue rather than being
      warm or pure grey. Warm neutrals under a navy accent are what made this
      look muddy. The tint is kept low-chroma on purpose: eleven departments
@@ -14,7 +62,7 @@
 
      Roles follow the familiar 12-step model — surface and panel are the
      backgrounds, line and line-2 are the borders, accent is the solid, and
-     ink through faint is a four-step text ramp at 18 / 9.9 / 7.0 / 5.2 on
+     ink through faint is a four-step text ramp at 18 / 9.9 / 7.0 / 5.5 on
      white so de-emphasis never costs legibility. */
 
   --surface: #eef1f6;
@@ -24,7 +72,10 @@
   --ink: #101723;
   --ink-2: #394454;
   --muted: #4e5a6d;
-  --faint: #636e81;
+  /* Nudged darker: at #636e81 the faint tokens fell to 4.45:1 on an accent-soft
+     surface, which is the one place they are most often used - counts inside a
+     selected tab, timestamps on a highlighted row. */
+  --faint: #5f6a7d;
 
   --line: #dde3ec;
   --line-2: #eaeef4;
@@ -39,18 +90,13 @@
   --warn: #8f5410;
   --warn-soft: #fbf0df;
   --danger: #a02722;
+  /* What is legible ON --danger. In dark mode --danger is a soft salmon meant
+     for text, so white on it fails; the surface colour is what reads there. */
+  --danger-ink: #ffffff;
   --danger-soft: #fbebea;
   --info: #1d5c78;
   --info-soft: #e5f1f6;
 
-  /* One rounded scale, matching what the rest of the product already uses.
-     Tighter inside softer, so a control nested in a card is visibly its child. */
-  --r-sm: 9px;
-  --r-md: 12px;
-  --r-lg: 18px;
-
-  --radius: var(--r-md);
-  --radius-lg: var(--r-lg);
 
   /* Tinted toward the accent hue. A neutral grey shadow on a cool surface is
      the other half of why light mode looked dirty. */
@@ -59,69 +105,6 @@
   --shadow-3: 0 24px 60px -20px rgba(16, 24, 48, 0.28);
 }
 
-
-.dark {
-  --surface: #0c0f14;
-  --panel: #141821;
-  --panel-2: #1a1f29;
-  --ink: #eef1f6;
-  --ink-2: #c0c8d4;
-  --muted: #929cab;
-  --faint: #8893a2;
-  --line: #262c38;
-  --line-2: #1d222c;
-
-  --accent: #7ba2ec;
-  --accent-ink: #0c0f14;
-  --accent-soft: #16233c;
-  --accent-line: #2b3f66;
-
-  --ok: #4fc48d;
-  --ok-soft: #10261d;
-  --warn: #e0a458;
-  --warn-soft: #2a1f10;
-  --danger: #ef8a83;
-  --danger-soft: #2b1512;
-  --info: #6fb8d3;
-  --info-soft: #10242c;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-2: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
-  --shadow-3: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-}
-
-/* System preference, unless the citizen has explicitly chosen light. */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-  --surface: #0c0f14;
-  --panel: #141821;
-  --panel-2: #1a1f29;
-  --ink: #eef1f6;
-  --ink-2: #c0c8d4;
-  --muted: #929cab;
-  --faint: #8893a2;
-  --line: #262c38;
-  --line-2: #1d222c;
-
-  --accent: #7ba2ec;
-  --accent-ink: #0c0f14;
-  --accent-soft: #16233c;
-  --accent-line: #2b3f66;
-
-  --ok: #4fc48d;
-  --ok-soft: #10261d;
-  --warn: #e0a458;
-  --warn-soft: #2a1f10;
-  --danger: #ef8a83;
-  --danger-soft: #2b1512;
-  --info: #6fb8d3;
-  --info-soft: #10242c;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-2: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
-  --shadow-3: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-  }
-}
 
 @theme inline {
   --color-surface: var(--surface);
@@ -135,6 +118,7 @@
   --color-line-2: var(--line-2);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
+  --color-danger-ink: var(--danger-ink);
   --color-accent-soft: var(--accent-soft);
   --color-accent-line: var(--accent-line);
   --color-ok: var(--ok);
@@ -159,27 +143,25 @@
    department can ship an unreadable combination.
    ============================================================ */
 
-[data-service] {
-  --accent: var(--svc);
-  --accent-soft: color-mix(in srgb, var(--svc) 9%, var(--panel));
-  --accent-line: color-mix(in srgb, var(--svc) 26%, var(--panel));
-  --accent-ink: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) [data-service] {
-    --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
-    --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
-    --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
-    --accent-ink: #0c0f14;
-  }
-}
-
+/* Keyed off the theme class, exactly like the base palette above, and in the
+   same order: dark is what you get without a choice. Deriving these from
+   prefers-color-scheme instead meant a citizen whose system disagreed with
+   their choice got one theme's accents on the other theme's surfaces - a 42%
+   tint of the department colour sitting on a 30% tint of the same colour,
+   which is roughly 1.3:1 and unreadable. */
+[data-service],
 :root.dark [data-service] {
   --accent: color-mix(in srgb, var(--svc) 42%, #ffffff);
   --accent-soft: color-mix(in srgb, var(--svc) 30%, var(--panel));
   --accent-line: color-mix(in srgb, var(--svc) 48%, var(--panel));
   --accent-ink: #0c0f14;
+}
+
+:root.light [data-service] {
+  --accent: var(--svc);
+  --accent-soft: color-mix(in srgb, var(--svc) 9%, var(--panel));
+  --accent-line: color-mix(in srgb, var(--svc) 26%, var(--panel));
+  --accent-ink: #ffffff;
 }
 
 * {

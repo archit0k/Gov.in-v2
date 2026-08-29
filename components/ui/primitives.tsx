@@ -82,7 +82,7 @@ const BTN = {
   secondary:
     "bg-[var(--panel)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--faint)] hover:bg-[var(--panel-2)] active:scale-[0.985]",
   ghost: "text-[var(--ink-2)] hover:bg-[var(--line-2)] hover:text-[var(--ink)]",
-  danger: "bg-[var(--danger)] text-white hover:brightness-110",
+  danger: "bg-[var(--danger)] text-[var(--danger-ink)] hover:brightness-110",
   sm: "h-8 px-3 text-[13px]",
   md: "h-10 px-4 text-[14px]",
   lg: "h-12 px-6 text-[15px]",

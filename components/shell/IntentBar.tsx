@@ -53,12 +53,17 @@ export function IntentBar({
   const { dispatch } = useSession();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  // Two searches in quick succession used to race: whichever request finished
+  // last won, so a slow answer to an abandoned query could overwrite a fast
+  // answer to the current one. Only the newest run is allowed to render.
+  const runId = useRef(0);
   const hero = size === "hero";
   const chips = examples ?? EXAMPLES;
 
   async function run(text: string) {
     const query = text.trim();
     if (!query) return;
+    const mine = ++runId.current;
     setBusy(true);
     setRes(null);
     dispatch({ type: "recordIntent", text: query });
@@ -69,9 +74,11 @@ export function IntentBar({
         body: JSON.stringify({ query, scope }),
       });
       const data: NavResult = await r.json();
+      if (mine !== runId.current) return;
       if (data.composed) dispatch({ type: "addComposed", journey: data.composed });
       setRes(data);
     } catch {
+      if (mine !== runId.current) return;
       setRes({
         mode: "clarify",
         reading: "We could not reach the navigation service. Your request was not lost.",
@@ -80,7 +87,7 @@ export function IntentBar({
         clarify: { question: "Try one of these", options: [{ label: "Browse all services", href: "/services" }] },
       });
     } finally {
-      setBusy(false);
+      if (mine === runId.current) setBusy(false);
     }
   }
 
@@ -150,6 +157,7 @@ export function IntentBar({
           {chips.map((e) => (
             <button
               key={e}
+              disabled={busy}
               onClick={() => {
                 setQ(e);
                 run(e);

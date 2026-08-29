@@ -12,9 +12,18 @@ export const metadata: Metadata = {
     "Shared citizen infrastructure for Indian public services. One identity, one front door, one case history — while departments keep owning their domains.",
 };
 
+/* Runs before the first paint. The theme is a saved choice, and applying it
+   from an effect meant every page load flashed the default first. Dark is what
+   you get without a choice, and the stylesheet already renders that way, so
+   this only has to stamp the classes for an explicit one. */
+const THEME_BOOT = `try{var l=localStorage.getItem("gov.in.theme")==="light";document.documentElement.classList.toggle("light",l);document.documentElement.classList.toggle("dark",!l)}catch(e){}`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body className="min-h-full">
         <a
           href="#main"

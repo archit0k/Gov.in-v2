@@ -57,7 +57,7 @@ const SIMULATED = [
   "Payments are mocked. Nothing charges anything.",
   "Identity assurance is asserted rather than established. There is no real verification behind it.",
   "Availability and inventory are generated deterministically from the date and service, not read from a real system.",
-  "Eight of the ten departments are registry entries with a single page, not full applications.",
+  "Nine of the eleven departments are registry entries with a single page, not full applications.",
 ];
 
 export default function LimitsPage() {

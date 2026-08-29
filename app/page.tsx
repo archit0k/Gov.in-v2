@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowRight, KeyRound, Network, ShieldCheck } from "lucide-react";
-import { Badge, Button, ServiceMark, cn } from "@/components/ui/primitives";
+import { Badge, Button, ServiceMark } from "@/components/ui/primitives";
 import { Wordmark, ThemeToggle } from "@/components/shell/AppShell";
 import { SERVICES } from "@/lib/data/services";
 import { CITIZEN } from "@/lib/data/citizen";
@@ -42,8 +42,8 @@ export default function Landing() {
             You should not have to understand government to use it.
           </h1>
           <p className="mt-6 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-2)]">
-            India has world-class public digital services. It has ten of them, and each was built as if it were the
-            only one. Ten logins, ten interfaces, ten places to be told your application is
+            India has world-class public digital services. It has eleven of them, and each was built as if it were the
+            only one. Eleven logins, eleven interfaces, eleven places to be told your application is
             <span className="text-[var(--ink)]"> pending</span>.
           </p>
           <p className="mt-4 max-w-[54ch] text-[16px] leading-relaxed text-[var(--ink-2)]">
@@ -78,17 +78,18 @@ export default function Landing() {
         {/* The problem, shown rather than described */}
         <div className="rise" style={{ animationDelay: "90ms" }}>
           <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--faint)]">
-            Today — ten services, ten relationships
+            Today — eleven services, eleven relationships
           </p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">
+          {/* A plain grid. These were scattered on staggered offsets to suggest
+              fragmentation, but two of the modulo rules overlapped, so tiles
+              collided into the gaps and it read as a broken layout rather than
+              a point. Ten tiles each saying "separate login" makes the point
+              on their own. */}
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-2">
             {SERVICES.map((s, i) => (
               <div
                 key={s.id}
-                className={cn(
-                  "rise rounded-[11px] border border-[var(--line)] bg-[var(--panel)] p-3 opacity-[0.86]",
-                  i % 3 === 0 && "translate-y-1",
-                  i % 4 === 1 && "-translate-y-1",
-                )}
+                className="rise flex flex-col rounded-[11px] border border-[var(--line)] bg-[var(--panel)] p-3 opacity-[0.86]"
                 style={{ animationDelay: `${120 + i * 35}ms` }}
               >
                 <ServiceMark id={s.id} size={26} />
@@ -114,7 +115,7 @@ export default function Landing() {
               </span>
               <div>
                 <Wordmark />
-                <p className="text-[12.5px] text-[var(--muted)]">One identity. Ten departments. Same infrastructure.</p>
+                <p className="text-[12.5px] text-[var(--muted)]">One identity. Eleven departments. Same infrastructure.</p>
               </div>
             </div>
           </div>

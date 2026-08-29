@@ -32,6 +32,13 @@ export interface ConsentGrant {
   retention: string;
   grantedAt: string;
   journeyId: string;
+  /**
+   * Set when the grant came from a conversation. Withdrawing it in the profile
+   * has to take it back out of that conversation too, or the ledger would say
+   * one thing and the AI would still be reading another.
+   */
+  contextKey?: string;
+  conversationId?: string;
 }
 
 export interface Suggestion {
@@ -131,6 +138,7 @@ type Action =
   | { type: "setStep"; journeyId: string; stepIndex: number }
   | { type: "setField"; journeyId: string; fieldId: string; value: string }
   | { type: "grantConsent"; grant: ConsentGrant }
+  | { type: "revokeConsent"; id: string }
   | { type: "submit"; journeyId: string; caseId: string; data: Record<string, string> }
   | { type: "advanceCase"; caseId: string }
   | { type: "readInbox"; id: string }
@@ -141,11 +149,24 @@ type Action =
   | { type: "addTurn"; conversationId: string; turn: ChatTurn }
   | { type: "titleConversation"; conversationId: string; title: string }
   | { type: "grantContext"; conversationId: string; key: string }
-  | { type: "clearNeeds"; conversationId: string; turnId: string }
+  | { type: "clearNeeds"; conversationId: string; turnId: string; key?: string }
   | { type: "deleteConversation"; conversationId: string }
-  | { type: "recordCase"; caseId: string; serviceId: string; title: string; states: string[]; statusLine: string; data: Record<string, string> }
+  | { type: "recordCase"; caseId: string; serviceId: string; title: string; states: string[]; statusLine: string; data: Record<string, string>; journeyId?: string }
+  | { type: "finishJourney"; journeyId: string }
   | { type: "carryJourney"; journeyId: string }
   | { type: "dropJourney" };
+
+/**
+ * A draft can be written to before it has been opened - a department completing
+ * a handoff, or a deep link straight into a step. Spreading an undefined draft
+ * produced a half-built object with no journeyId and no start time, which then
+ * persisted. Every write goes through this instead.
+ */
+function draftFor(s: SessionState, journeyId: string): Draft {
+  return (
+    s.drafts[journeyId] ?? { journeyId, stepIndex: 0, values: {}, startedAt: new Date().toISOString() }
+  );
+}
 
 function reducer(s: SessionState, a: Action): SessionState {
   switch (a.type) {
@@ -169,25 +190,38 @@ function reducer(s: SessionState, a: Action): SessionState {
     case "setStep":
       return {
         ...s,
-        drafts: { ...s.drafts, [a.journeyId]: { ...s.drafts[a.journeyId], stepIndex: a.stepIndex } },
+        drafts: { ...s.drafts, [a.journeyId]: { ...draftFor(s, a.journeyId), stepIndex: a.stepIndex } },
       };
-    case "setField":
+    case "setField": {
+      const d = draftFor(s, a.journeyId);
       return {
         ...s,
-        drafts: {
-          ...s.drafts,
-          [a.journeyId]: {
-            ...s.drafts[a.journeyId],
-            values: { ...s.drafts[a.journeyId]?.values, [a.fieldId]: a.value },
-          },
-        },
+        drafts: { ...s.drafts, [a.journeyId]: { ...d, values: { ...d.values, [a.fieldId]: a.value } } },
       };
+    }
     case "grantConsent":
-      if (s.consents.some((c) => c.id === a.grant.id)) return s;
-      return { ...s, consents: [a.grant, ...s.consents] };
+      // Replace rather than skip, so granting again after a revoke works.
+      return { ...s, consents: [a.grant, ...s.consents.filter((c) => c.id !== a.grant.id)] };
+    case "revokeConsent": {
+      const gone = s.consents.find((c) => c.id === a.id);
+      return {
+        ...s,
+        consents: s.consents.filter((c) => c.id !== a.id),
+        conversations:
+          gone?.contextKey && gone.conversationId
+            ? s.conversations.map((c) =>
+                c.id === gone.conversationId
+                  ? { ...c, granted: c.granted.filter((k) => k !== gone.contextKey) }
+                  : c,
+              )
+            : s.conversations,
+      };
+    }
     case "submit": {
       const j = journeyFrom(s, a.journeyId);
       if (!j) return s;
+      // A second dispatch of the same submission must not open a second case.
+      if (s.cases.some((c) => c.id === a.caseId)) return s;
       const now = new Date().toISOString();
       const newCase: GovCase = {
         id: a.caseId,
@@ -314,20 +348,34 @@ function reducer(s: SessionState, a: Action): SessionState {
         ...s,
         conversations: s.conversations.map((c) =>
           c.id === a.conversationId
-            ? { ...c, turns: c.turns.map((t) => (t.id === a.turnId ? { ...t, needs: [] } : t)) }
+            ? {
+                ...c,
+                turns: c.turns.map((t) =>
+                  t.id === a.turnId
+                    ? { ...t, needs: a.key ? (t.needs ?? []).filter((n) => n.key !== a.key) : [] }
+                    : t,
+                ),
+              }
             : c,
         ),
       };
     case "deleteConversation":
-      return { ...s, conversations: s.conversations.filter((c) => c.id !== a.conversationId) };
+      // Deleting the conversation withdraws what was shared with it. A grant
+      // that outlives the reason for it is exactly what this product argues against.
+      return {
+        ...s,
+        conversations: s.conversations.filter((c) => c.id !== a.conversationId),
+        consents: s.consents.filter((c) => c.conversationId !== a.conversationId),
+      };
     case "recordCase": {
       // A department finishing its own work opens a case. It does NOT end the
       // journey that sent the citizen here - that was the bug: submit clears
       // the draft, so the journey could never advance past the handoff.
+      if (s.cases.some((c) => c.id === a.caseId)) return s;
       const now = new Date().toISOString();
       const newCase: GovCase = {
         id: a.caseId,
-        journeyId: "",
+        journeyId: a.journeyId ?? "",
         serviceId: a.serviceId as GovCase["serviceId"],
         title: a.title,
         states: a.states,
@@ -383,6 +431,17 @@ function reducer(s: SessionState, a: Action): SessionState {
       };
     case "dropJourney":
       return { ...s, activeJourney: null };
+    case "finishJourney": {
+      // The department already opened the case. This only clears the draft and
+      // stops carrying the journey; it must not file anything a second time.
+      const { [a.journeyId]: _done, ...rest } = s.drafts;
+      void _done;
+      return {
+        ...s,
+        drafts: rest,
+        activeJourney: s.activeJourney?.journeyId === a.journeyId ? null : s.activeJourney,
+      };
+    }
     default:
       return s;
   }
@@ -410,7 +469,23 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) dispatch({ type: "hydrate", state: { ...initial, ...JSON.parse(raw) } });
+      if (raw) {
+        const saved = { ...initial, ...JSON.parse(raw) } as SessionState;
+        // A stored session can outlive the journey it points at, and a draft can
+        // sit on a step that no longer exists. Both render a blank screen, so
+        // they are repaired on the way in rather than guarded at every read.
+        const known = (id: string) => Boolean(JOURNEY_MAP[id] ?? saved.composed?.find((c) => c.id === id));
+        if (saved.activeJourney && !known(saved.activeJourney.journeyId)) saved.activeJourney = null;
+        saved.drafts = Object.fromEntries(
+          Object.entries(saved.drafts ?? {})
+            .filter(([id]) => known(id))
+            .map(([id, d]) => {
+              const j = JOURNEY_MAP[id] ?? saved.composed.find((c) => c.id === id)!;
+              return [id, { ...d, stepIndex: Math.min(d.stepIndex ?? 0, j.steps.length - 1) }];
+            }),
+        );
+        dispatch({ type: "hydrate", state: saved });
+      }
     } catch {
       /* private mode, blocked storage — the demo still works, just not across reloads */
     }

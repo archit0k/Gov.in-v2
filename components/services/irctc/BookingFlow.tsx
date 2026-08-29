@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight, ArrowLeft, Check, CircleAlert, Search, ShieldCheck, Ticket, TrainFront, Utensils,
 } from "lucide-react";
 import { Badge, Button, Card, SourceTag, cn } from "@/components/ui/primitives";
 import { StationPicker } from "./StationPicker";
-import { CITIZEN, formatDate } from "@/lib/data/citizen";
+import { CITIZEN, formatDate, isoInDays } from "@/lib/data/citizen";
 import { CLASSES, DAY_NAMES, STATION_MAP, type ClassCode } from "@/lib/services/irctc/network";
 import {
   BERTH_PREFS, QUOTAS, allAvailability, allocate, availabilityFor, fareBreakdown, legTimes, makePnr,
@@ -46,7 +46,22 @@ const GRAPH_PEOPLE = [
 ];
 
 function isoPlus(days: number) {
-  return new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
+  return isoInDays(days);
+}
+
+const PAX_SETS: Record<string, string[]> = {
+  self: ["self"],
+  "self-spouse": ["self", "spouse"],
+  "self-parents": ["self", "father", "mother"],
+};
+
+/** Turns the journey's answer into the department's own passenger list. */
+function paxFromJourney(answer: string | undefined): Passenger[] {
+  const ids = PAX_SETS[answer ?? ""] ?? ["self"];
+  return ids
+    .map((id) => GRAPH_PEOPLE.find((p) => p.id === id))
+    .filter((p): p is (typeof GRAPH_PEOPLE)[number] => Boolean(p))
+    .map((p) => ({ id: p.id, name: p.name, age: p.age, gender: p.gender, berth: "LB" as const, fromGraph: p.relation }));
 }
 
 export function BookingFlow({
@@ -57,8 +72,9 @@ export function BookingFlow({
   returnTo?: string;
 }) {
   const router = useRouter();
-  const { dispatch } = useSession();
+  const { state, dispatch } = useSession();
   const carried = useJourneyStep();
+  const caseIdRef = useRef<string | null>(null);
 
   // Pick the journey up on arrival so the rail renders over this department's
   // own screens. The citizen never stops being inside the journey.
@@ -74,9 +90,17 @@ export function BookingFlow({
 
   const [leg, setLeg] = useState<Leg | null>(null);
   const [cls, setCls] = useState<ClassCode | null>(null);
-  const [pax, setPax] = useState<Passenger[]>([
-    { id: "self", name: CITIZEN.name, age: 32, gender: "M", berth: "LB", fromGraph: "You" },
-  ]);
+  // The journey already asked who is travelling. Asking again in the department
+  // is exactly the fragmentation this product exists to remove, so the answer
+  // travels in with the citizen.
+  //
+  // Derived rather than seeded into state: the session hydrates from storage
+  // one tick after mount, so an initial-value read would have caught an empty
+  // draft and silently fallen back to "just you". Once the citizen edits the
+  // list, their edit is the answer.
+  const [editedPax, setEditedPax] = useState<Passenger[] | null>(null);
+  const pax = editedPax ?? paxFromJourney(journeyId ? state.drafts[journeyId]?.values?.pax : undefined);
+  const setPax = setEditedPax;
   const [booking, setBooking] = useState<{ pnr: string; seats: ReturnType<typeof allocate>; avail: Availability } | null>(null);
 
   const legs = useMemo(() => (from && to ? searchTrains(from, to, date) : []), [from, to, date]);
@@ -99,9 +123,11 @@ export function BookingFlow({
     setStage("done");
 
     const caseId = newCaseId("irctc");
+    caseIdRef.current = caseId;
     dispatch({
       type: "recordCase",
       caseId,
+      journeyId,
       serviceId: "irctc",
       title: `${STATION_MAP[from].city} to ${STATION_MAP[to].city}, ${leg.train.name}`,
       states: ["Booked", "Chart prepared", "Journey complete"],
@@ -162,7 +188,7 @@ export function BookingFlow({
           leg={leg} cls={cls} date={date} pax={pax} booking={booking} fare={fare}
           returnTo={returnTo ?? (journeyId ? `/journeys/${journeyId}` : undefined)}
           onDone={() => {
-            if (journeyId) carried.complete("reservation", "done");
+            if (journeyId) carried.complete("reservation", "done", caseIdRef.current ?? undefined);
             else if (returnTo) router.push(returnTo);
           }}
         />

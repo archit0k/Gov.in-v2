@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, ArrowRight, Building2, Check, CircleAlert, Info, Lock, MapPin, ShieldCheck, Wallet,
 } from "lucide-react";
 import { Badge, Button, Card, SourceTag, cn } from "@/components/ui/primitives";
-import { CITIZEN, daysUntil, formatDate } from "@/lib/data/citizen";
+import { CITIZEN, daysUntil, formatDate, isoInDays } from "@/lib/data/citizen";
 import {
   APPLICATION_TYPES, APPLICATION_TYPE_MAP, APPOINTMENT_STATES, KENDRAS, carryList, earliestOpening,
   feeFor, feeTotal, inventoryRange, makeFileNumber, processingDays,
@@ -36,7 +37,9 @@ const STEPS: { id: Stage; label: string }[] = [
   { id: "review", label: "Review and submit" },
 ];
 
-const isoPlus = (d: number) => new Date(Date.now() + d * 86_400_000).toISOString().slice(0, 10);
+const PARENT_CONSENT_ID = "passport-parent-details";
+
+
 
 const REASONS: { id: ServiceType; label: string; hint: string }[] = APPLICATION_TYPES.filter(
   (a) => a.id !== "pcc",
@@ -44,7 +47,7 @@ const REASONS: { id: ServiceType; label: string; hint: string }[] = APPLICATION_
 
 export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnTo?: string }) {
   const router = useRouter();
-  const { dispatch } = useSession();
+  const { state, dispatch } = useSession();
   const carried = useJourneyStep();
 
   useEffect(() => {
@@ -52,7 +55,10 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
   }, [journeyId, dispatch]);
 
   const [stage, setStage] = useState<Stage>("identity");
-  const [consent, setConsent] = useState(false);
+  // Read from the ledger rather than kept beside it. Two copies of the same
+  // permission is how "the profile says granted but the department asks again"
+  // happens, and the consent ledger is meant to be the single answer.
+  const consent = state.consents.some((c) => c.id === PARENT_CONSENT_ID);
   const [type, setType] = useState<ServiceType>("reissue-expiry");
   const [booklet, setBooklet] = useState<Booklet>(36);
   const [scheme, setScheme] = useState<Scheme>("normal");
@@ -60,10 +66,11 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
   const [otherName, setOtherName] = useState("");
   const [otherPhone, setOtherPhone] = useState("");
   const [kendra, setKendra] = useState("psk-nigdi");
-  const [weekStart, setWeekStart] = useState(isoPlus(1));
+  const [weekStart, setWeekStart] = useState(isoInDays(1));
   const [day, setDay] = useState<string | null>(null);
   const [slot, setSlot] = useState<string | null>(null);
   const [fileNo, setFileNo] = useState<string | null>(null);
+  const [caseId, setCaseId] = useState<string | null>(null);
 
   const passport = CITIZEN.credentials.find((c) => c.id === "cred-passport")!;
   const at = APPLICATION_TYPE_MAP[type];
@@ -79,13 +86,17 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
   };
 
   function submit() {
+    if (fileNo) return; // Already filed. Re-entering this screen must not file twice.
     const f = makeFileNumber(kendra);
     setFileNo(f);
     go("done");
     const k = KENDRAS.find((x) => x.id === kendra)!;
+    const id = newCaseId("passport");
+    setCaseId(id);
     dispatch({
       type: "recordCase",
-      caseId: newCaseId("passport"),
+      caseId: id,
+      journeyId,
       serviceId: "passport",
       title: at.name,
       states: APPOINTMENT_STATES,
@@ -118,9 +129,9 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
           blocked={!consent ? "Allow the one access below to continue" : undefined}
         >
           <Held rows={[
-            ["Full name", CITIZEN.name, "Verified government profile"],
-            ["Date of birth", formatDate(CITIZEN.dob), "Verified government profile"],
-            ["Identity assurance", `High, verified in person on ${formatDate(CITIZEN.verifiedOn)}`, "Gov.in identity"],
+            ["Full name", CITIZEN.name, "Verified government profile", "/profile"],
+            ["Date of birth", formatDate(CITIZEN.dob), "Verified government profile", "/profile"],
+            ["Identity assurance", `High, verified in person on ${formatDate(CITIZEN.verifiedOn)}`, "Gov.in identity", "/profile"],
           ]} />
 
           <div className={cn("mt-4 rounded-[var(--r-md)] border p-4 transition-colors",
@@ -146,12 +157,33 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
             {consent ? (
               <div className="flex items-center justify-between gap-3">
                 <Badge tone="ok"><ShieldCheck size={11} strokeWidth={2.4} /> Granted and logged</Badge>
-                <button onClick={() => setConsent(false)} className="text-[12.5px] text-[var(--muted)] hover:underline">
+                <button
+                  onClick={() => dispatch({ type: "revokeConsent", id: PARENT_CONSENT_ID })}
+                  className="text-[12.5px] text-[var(--muted)] hover:underline"
+                >
                   Withdraw
                 </button>
               </div>
             ) : (
-              <Button size="sm" onClick={() => setConsent(true)}>Allow this specific access</Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  dispatch({
+                    type: "grantConsent",
+                    grant: {
+                      id: PARENT_CONSENT_ID,
+                      attribute: "Father and mother, name, date of birth, place of birth",
+                      requestedBy: "passport",
+                      purpose: "Statutory requirement for passport issue under the Passports Act",
+                      retention: "Held with your passport file only, not copied to other departments",
+                      grantedAt: new Date().toISOString(),
+                      journeyId: journeyId ?? "passport-renewal",
+                    },
+                  });
+                }}
+              >
+                Allow this specific access
+              </Button>
             )}
           </div>
         </Screen>
@@ -200,10 +232,10 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
           nextDisabled={emergency === "other" && (!otherName.trim() || !otherPhone.trim())}
         >
           <Held rows={[
-            ["Current address", `${CITIZEN.addresses[0].line1}, ${CITIZEN.addresses[0].line2}, ${CITIZEN.addresses[0].city}, ${CITIZEN.addresses[0].state} ${CITIZEN.addresses[0].pin}`, "Verified profile, updated Nov 2024"],
-            ["Father", "Ramesh Deshmukh", "Citizen graph, verified"],
-            ["Mother", "Sunanda Deshmukh", "Citizen graph, verified"],
-            ["Spouse", "Meera Deshmukh", "Citizen graph, verified"],
+            ["Current address", `${CITIZEN.addresses[0].line1}, ${CITIZEN.addresses[0].line2}, ${CITIZEN.addresses[0].city}, ${CITIZEN.addresses[0].state} ${CITIZEN.addresses[0].pin}`, "Verified profile, updated Nov 2024", "/profile"],
+            ["Father", "Ramesh Deshmukh", "Citizen graph, verified", "/profile/relationships"],
+            ["Mother", "Sunanda Deshmukh", "Citizen graph, verified", "/profile/relationships"],
+            ["Spouse", "Meera Deshmukh", "Citizen graph, verified", "/profile/relationships"],
           ]} />
 
           <Choice
@@ -274,8 +306,8 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
               <p className="text-[13.5px] font-medium">Pick a day</p>
               {scheme === "tatkaal" && <Badge tone="warn">Tatkaal quota, far fewer slots</Badge>}
               <div className="ml-auto flex gap-1.5">
-                <Button size="sm" variant="secondary" onClick={() => setWeekStart(isoPlus(1))}>Next 14 days</Button>
-                <Button size="sm" variant="secondary" onClick={() => setWeekStart(isoPlus(15))}>The fortnight after</Button>
+                <Button size="sm" variant="secondary" onClick={() => setWeekStart(isoInDays(1))}>Next 14 days</Button>
+                <Button size="sm" variant="secondary" onClick={() => setWeekStart(isoInDays(15))}>The fortnight after</Button>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
@@ -450,7 +482,7 @@ export function ApplyFlow({ journeyId, returnTo }: { journeyId?: string; returnT
               inbox against it, so there is no application number to keep safe.
             </p>
             {journeyId ? (
-              <Button onClick={() => carried.complete("appointment", "done")}>
+              <Button onClick={() => carried.complete("appointment", "done", caseId ?? undefined)}>
                 Back to your journey <ArrowRight size={15} />
               </Button>
             ) : returnTo ? (
@@ -530,17 +562,31 @@ function Screen({
   );
 }
 
-function Held({ rows }: { rows: string[][] }) {
+/**
+ * Values the citizen does not retype because government already holds them.
+ *
+ * The fourth entry is where the value is actually maintained. A row that has
+ * one offers to take you there; a row held by the department itself offers
+ * nothing, because a button that cannot change anything is worse than no
+ * button - and the Ministry's own register is not the citizen's to edit.
+ */
+function Held({ rows }: { rows: (string | undefined)[][] }) {
   return (
     <div className="divide-y divide-[var(--line-2)]">
-      {rows.map(([k, v, src]) => (
+      {rows.map(([k, v, src, href]) => (
         <div key={k} className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1.5 py-3 first:pt-0">
           <div className="min-w-0">
             <p className="text-[12.5px] text-[var(--muted)]">{k}</p>
             <p className="mt-0.5 text-[15px] leading-snug">{v}</p>
             {src && <SourceTag label={src} className="mt-1.5" />}
           </div>
-          <button className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">Change</button>
+          {href ? (
+            <Link href={href} className="shrink-0 text-[12.5px] text-[var(--accent)] hover:underline">
+              Change in your profile
+            </Link>
+          ) : (
+            <span className="shrink-0 text-[12.5px] text-[var(--faint)]">Held by this department</span>
+          )}
         </div>
       ))}
     </div>

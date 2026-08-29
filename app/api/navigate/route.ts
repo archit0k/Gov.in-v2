@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { navigate, groundingCatalogue, lifeEventById } from "@/lib/ai/engine";
 import { GROUND_RULES, jsonCall } from "@/lib/ai/model";
 import { JOURNEY_MAP } from "@/lib/data/journeys";
-import { SERVICE_MAP, service } from "@/lib/data/services";
+import { SERVICE_MAP, service, serviceHref } from "@/lib/data/services";
 import type { NavResult, ServiceId } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -109,7 +109,7 @@ function ground(out: Record<string, unknown>, fallback: NavResult): NavResult {
       mode: "deterministic",
       reading,
       confidence: 0.8,
-      primary: { serviceId: s.id, href: `/services/${s.id}`, label: s.name, sublabel: s.department },
+      primary: { serviceId: s.id, href: serviceHref(s.id), label: s.name, sublabel: s.department },
       source: "model",
     };
   }
@@ -123,7 +123,7 @@ function ground(out: Record<string, unknown>, fallback: NavResult): NavResult {
       .filter((o) => o?.id && (JOURNEY_MAP[o.id] || SERVICE_MAP[o.id]))
       .map((o) => ({
         label: o.label ?? JOURNEY_MAP[o.id!]?.title ?? SERVICE_MAP[o.id!]?.name ?? "",
-        href: JOURNEY_MAP[o.id!] ? `/journeys/${o.id}` : `/services/${o.id}`,
+        href: JOURNEY_MAP[o.id!] ? `/journeys/${o.id}` : serviceHref(o.id as ServiceId),
       }));
     if (opts.length) {
       return {

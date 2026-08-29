@@ -170,11 +170,16 @@ export function useJourneyStep() {
   return {
     journey: j,
     stepIndex: draft?.stepIndex ?? 0,
-    /** Record this step's result and move the journey on. */
-    complete(fieldId: string, value: string) {
+    /**
+     * Record this step's result and move the journey on. `caseId` is the
+     * department's own reference: the journey remembers it so the review step
+     * shows what was actually filed instead of filing it a second time.
+     */
+    complete(fieldId: string, value: string, caseId?: string) {
       if (!j) return;
       const i = draft?.stepIndex ?? 0;
       dispatch({ type: "setField", journeyId: j.id, fieldId, value });
+      if (caseId) dispatch({ type: "setField", journeyId: j.id, fieldId: "__caseId", value: caseId });
       if (i < j.steps.length - 1) {
         dispatch({ type: "setStep", journeyId: j.id, stepIndex: i + 1 });
       }

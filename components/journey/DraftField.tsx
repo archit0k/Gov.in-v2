@@ -27,10 +27,12 @@ export function DraftField({
 }) {
   const [busy, setBusy] = useState(false);
   const [suggestion, setSuggestion] = useState<{ draft: string; changed: string; source: string } | null>(null);
+  const [failed, setFailed] = useState(false);
 
   async function improve() {
     setBusy(true);
     setSuggestion(null);
+    setFailed(false);
     try {
       const r = await fetch("/api/draft", {
         method: "POST",
@@ -39,8 +41,11 @@ export function DraftField({
       });
       const d = await r.json();
       if (d.draft) setSuggestion(d);
+      else setFailed(true);
     } catch {
-      /* silent — the citizen's own wording is always a valid submission */
+      // Never silent. A button that appears to do nothing is worse than one
+      // that says it could not help; the citizen's own wording still stands.
+      setFailed(true);
     } finally {
       setBusy(false);
     }
@@ -79,6 +84,13 @@ export function DraftField({
           Optional. Your own words are a valid application.
         </span>
       </div>
+
+      {failed && (
+        <p className="fade mt-2.5 text-[12.5px] leading-relaxed text-[var(--warn)]">
+          The drafting service could not be reached. What you have written is a valid application on its own, and
+          nothing you typed was lost.
+        </p>
+      )}
 
       {suggestion && (
         <div className="fade mt-3 rounded-[12px] border border-[var(--accent-line)] bg-[var(--accent-soft)] p-3.5">

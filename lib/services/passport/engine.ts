@@ -11,6 +11,8 @@
    same way and a demo can be rehearsed.
    ============================================================ */
 
+import { addDaysISO, isoInDays } from "@/lib/data/citizen";
+
 function hash(str: string) {
   let h = 2166136261 ^ str.length;
   for (let i = 0; i < str.length; i++) {
@@ -254,18 +256,15 @@ export function inventoryFor(kendraId: string, dateISO: string, scheme: Scheme):
 /** The next `days` days of inventory for a Kendra, for the calendar strip. */
 export function inventoryRange(kendraId: string, startISO: string, days: number, scheme: Scheme): DayInventory[] {
   const out: DayInventory[] = [];
-  const start = new Date(startISO + "T00:00:00");
   for (let i = 0; i < days; i++) {
-    const d = new Date(start.getTime() + i * 86_400_000);
-    out.push(inventoryFor(kendraId, d.toISOString().slice(0, 10), scheme));
+    out.push(inventoryFor(kendraId, addDaysISO(startISO, i), scheme));
   }
   return out;
 }
 
 /** Earliest day with anything free, which is the only question most people have. */
 export function earliestOpening(kendraId: string, scheme: Scheme) {
-  const start = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
-  return inventoryRange(kendraId, start, 45, scheme).find((d) => d.open && d.total > 0) ?? null;
+  return inventoryRange(kendraId, isoInDays(1), 45, scheme).find((d) => d.open && d.total > 0) ?? null;
 }
 
 /* ---------------- What the citizen must carry ---------------- */
